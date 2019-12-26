@@ -6,7 +6,7 @@ import datetime
 class InterfaceAV:
     def __init__(self):
         self._Builder=Builder.Builder()
-        self._Reader=Reader.Reader()
+        self._Reader=Reader.Reader(3,60)
 
     #Private Methods of instance
 

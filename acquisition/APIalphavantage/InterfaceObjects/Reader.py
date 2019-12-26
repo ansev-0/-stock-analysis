@@ -15,12 +15,14 @@ class GetCompany:
 
 
 
-class CompanyReader:
+class CompanyReader(GetCompany):
     '''This class accepts a list of dictionaries (companies_list)
      It get a url and use the getCompany object to make requests to the API'''
 
-    def __init__(self):
-        self.__GetCompany=GetCompany()
+    def __init__(self,attempts,delay_error):
+
+        self.attempts = attempts
+        self.delay_error = delay_error
 
 
 
@@ -33,7 +35,7 @@ class CompanyReader:
                     return False
             return True
 
-        self._Output_list_Json = []
+        Output_list_Json = []
         
         header='https://www.alphavantage.co/query?'
 
@@ -47,47 +49,51 @@ class CompanyReader:
             
         
         if not companies_list:
-            self._Output_list_Json.append({'Error':{'Error empty': 'empty list has been passed'}})
+            Output_list_Json.append({'Error':{'Error empty': 'empty list has been passed'}})
 
         else:
 
             for company in companies_list:
                 if company.keys() != load_dict.keys():
-                    self._Output_list_Json.append({'Error': {'Error keys': 'Missing or Invalid keys'}})
+                    Output_list_Json.append({'Error': {'Error keys': 'Missing or Invalid keys'}})
                 else:
                     
                     if CheckStringValues(company):
+
                         load_dict.update(company)
                         url = header+( ''.join([f'&{x}={y}'.format(x,y) for x,y in load_dict.items()])[1:] )
-                        for i in np.arange(3):
-                            
+                        symbol = load_dict['symbol']
+
+                        for i in range(self.attempts):
+
                             try:
-                                print('Trying connect with API alphavantage ...')
-                                out=self.__GetCompany.get(url)
+                                print(f'Trying connect with API alphavantage, company: {symbol}...')
+                                out=self.get(url)
                                 if len(out)<2 or isinstance(out,str):
                                     raise ValueError('Failed response')
-                                self._Output_list_Json.append(out)
-                                print('Connect successfully')
-                                break
+                                else:
+                                    Output_list_Json.append(out)
+                                    print('Connect successfully')
+                                    break
                             except Exception:
                                 print('Connect failed trying again ...')
-                                if i==2:
-                                    self._Output_list_Json.append({'Error':{'Error connect':{'url':url,'company parameters':company}}})
-                                    print("it was not possible to establish connection")
-                                    break
-                                time.sleep(60)
+                                if i==self.attempts-1:
+                                        Output_list_Json.append({'Error':{'Error connect':{'url':url,'company parameters':company}}})
+                                        print("it was not possible to establish connection")
+                                        break
+                                time.sleep(self.delay_error)
                         
 
                     else:
-                        self._Output_list_Json.append({'Error String': 'Any value is not str'})
-        return self._Output_list_Json
+                            Output_list_Json.append({'Error':{'Error String': 'Any value is not str'}})
+        return Output_list_Json
 
 
 
 ######################################################
 #Object Constructor
-def Reader():
-    return CompanyReader()
+def Reader(attempts,delay_error):
+    return CompanyReader(attempts=attempts,delay_error = delay_error)
 
 
     
