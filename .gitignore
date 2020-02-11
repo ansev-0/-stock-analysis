@@ -4,4 +4,4 @@
 /papers/
 /financialworks.egg-info/
 /dist/
-/src/acquisition/alphavantage/tests/test_reader.py
+/src/acquisition/alphavantage/tests/
