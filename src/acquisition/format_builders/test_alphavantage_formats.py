@@ -64,7 +64,7 @@ class Test_Alphavantage_Formats_build_frame(CheckDataFrame):
     def test_timeseries_intraday(self):
 
         default_query = {'json':self.json_dict['TIME_SERIES_INTRADAY'],
-                         'query':self.queries['TIME_SERIES_INTRADAY']}
+                         'function':'TIME_SERIES_INTRADAY'}
 
         #test default query
         self.df = self.builder_formats.build_frame(**default_query)
