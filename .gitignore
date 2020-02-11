@@ -5,4 +5,5 @@
 /financialworks.egg-info/
 /dist/
 /**/src/__pycache__/
+/src/
 
