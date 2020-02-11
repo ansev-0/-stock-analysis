@@ -6,3 +6,6 @@
 /dist/
 /src/__pycache__/
 dist/
+/src/**/__pycache__
+/src/*/__pycache__
+

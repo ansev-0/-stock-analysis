@@ -1,0 +1,9 @@
+class ErrorsResponseApi():
+    pass
+
+
+
+    
+
+            
+            
