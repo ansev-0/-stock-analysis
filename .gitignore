@@ -5,3 +5,4 @@
 /financialworks.egg-info/
 /dist/
 /src/acquisition/alphavantage/tests/
+/__pycache__
