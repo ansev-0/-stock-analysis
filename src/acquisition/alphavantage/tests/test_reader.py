@@ -7,36 +7,36 @@ class Test_reader(unittest.TestCase):
            'interval':'1min',
            'outputsize':'full',
            'datatype':'json',
-           'apikey':'O39L8VIVYYJYUN3P'}
+           'apikey':'demo'}
 
         self.time_series_daily={'function':'TIME_SERIES_DAILY',
            'symbol':'TWTR',
            'outputsize':'compact',
            'datatype':'json',
-           'apikey':'O39L8VIVYYJYUN3P'}
+           'apikey':'demo'}
 
 
         self.time_series_daily_adjusted={'function':'TIME_SERIES_DAILY_ADJUSTED',
            'symbol':'TWTR',
            'outputsize':'compact',
            'datatype':'json',
-           'apikey':'O39L8VIVYYJYUN3P'}
+           'apikey':'demo'}
 
 
         self.time_series_weekly={'function':'TIME_SERIES_WEEKLY',
            'symbol':'TWTR',
            'outputsize':'compact',
            'datatype':'json',
-           'apikey':'O39L8VIVYYJYUN3P'}
+           'apikey':'demo'}
 
 
         self.time_series_weekly_adjusted={'function':'TIME_SERIES_WEEKLY_ADJUSTED',
            'symbol':'TWTR',
            'outputsize':'compact',
            'datatype':'json',
-           'apikey':'O39L8VIVYYJYUN3P'}
+           'apikey':'demo'}
 
-        self.reader=reader.ReaderAlphaVantage(params = {'apikey':'O39L8VIVYYJYUN3P'})
+        self.reader=reader.ReaderAlphaVantage(params = {'apikey':'demo'})
 
     def test_correct_requests(self):
         valid, errors = self.reader.read(queries=[self.time_series_intraday,
