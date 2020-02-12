@@ -57,16 +57,14 @@ class ReaderAlphaVantage():
 
             # Getting key
             key_dict = join_values_filtered_by_keys(query, keys_response)
-            if key_dict == '':
-                raise ValueError('Invalid keys in keys_response')
-
+            self.test_response.empty_keys(key_dict)
             # Trying get response
             count_attemps = 0
             while count_attemps < self.attemps:
                 try:
                     response = self.request.get(params=query)
                 except requests.exceptions.RequestException as error:
-                    dict_errors[key_dict] = [query, error, response.staus_code]
+                    dict_errors[key_dict] = [query, error, response.status_code]
                     count_attemps = self.attemps
                 else:
                     json = response.json()
@@ -74,11 +72,12 @@ class ReaderAlphaVantage():
 
                     try:
                         self.test_response.pass_test(json, query)
+                        
                     except AlphaVantageError:
-
+                        print(json)
                         if count_attemps == self.attemps:
                             #add error to dict_errors
-                            dict_errors[key_dict] = [query, json.copy(), response.staus_code]
+                            dict_errors[key_dict] = [query, json.copy(), response.status_code]
                         else:
                             #try again
                             time.sleep(self.delays[count_attemps-1])
