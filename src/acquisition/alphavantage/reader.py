@@ -1,7 +1,8 @@
 import time
 import requests
 from src import request_api
-from src.acquisition.errors_response import check_errors_alphavantage
+from src.acquisition.errors_response import check_errors_alphavantage as errors_response
+from src.acquisition.errors_queries import check_errors_alphavantage as error_queries
 from src.acquisition.format_builders import alphavantage_formats
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.builders import inlist, join_values_filtered_by_keys
@@ -12,7 +13,8 @@ class ReaderAlphaVantage():
 
         self.format_builder = alphavantage_formats.FormatBuilderAlphavantage()
         self.config(delays)
-        self.test_response = check_errors_alphavantage.ErrorsResponseApiAlphavantage()
+        self.test_response = errors_response.ErrorsResponseApiAlphavantage()
+        self.test_queries = error_queries.ErrorsQueryApiAlphavantage()
         self.request = request_api.RequestsApi(base_url='https://www.alphavantage.co/query',
                                                **kwards)
 
@@ -57,7 +59,7 @@ class ReaderAlphaVantage():
 
             # Getting key
             key_dict = join_values_filtered_by_keys(query, keys_response)
-            self.test_response.empty_keys(key_dict)
+            self.test_queries.empty_keys(key_dict)
             # Trying get response
             count_attemps = 0
             while count_attemps < self.attemps:
@@ -72,9 +74,8 @@ class ReaderAlphaVantage():
 
                     try:
                         self.test_response.pass_test(json, query)
-                        
+
                     except AlphaVantageError:
-                        print(json)
                         if count_attemps == self.attemps:
                             #add error to dict_errors
                             dict_errors[key_dict] = [query, json.copy(), response.status_code]
