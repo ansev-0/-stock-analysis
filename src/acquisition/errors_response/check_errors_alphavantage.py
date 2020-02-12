@@ -16,10 +16,6 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
                           'SECTOR': self._sector_performance,
                           }
 
-    def empty_keys(self, key):
-        if key == '':
-            raise AlphaVantageError('keys do not match the keys of the query', ValueError)
-
 
     def pass_test(self, json, query, decoded_function=None):
         '''
@@ -51,4 +47,7 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
     def _sector_performance(self, json_keys):
         return (json_keys[0] != 'Meta Data') or (len(json_keys) != 11)
 
-    
+
+
+
+
