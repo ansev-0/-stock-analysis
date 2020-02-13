@@ -65,6 +65,7 @@ class ReaderAlphaVantage():
             while count_attemps < self.attemps:
                 try:
                     response = self.request.get(params=query)
+                    print(response.url)
                 except requests.exceptions.RequestException as error:
                     dict_errors[key_dict] = [query, error, response.status_code]
                     count_attemps = self.attemps
@@ -81,11 +82,13 @@ class ReaderAlphaVantage():
                             dict_errors[key_dict] = [query, json.copy(), response.status_code]
                         else:
                             #try again
+                            
                             time.sleep(self.delays[count_attemps-1])
                     else:
                         #connect succesfull, save useful data
                         dict_valids[key_dict] = format_output(json=json,
                                                               function=query['function'],
                                                               **kwards)
+                        
                         break
         return dict_valids, dict_errors
