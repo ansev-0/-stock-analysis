@@ -50,8 +50,9 @@ class BuildDataFrame:
                     format_datetime=None,
                     ascending=True,
                     datatype=float,
-                    enumerate_axis=False
-                    ):
+                    enumerate_axis=False,
+                    **kwards
+                   ):
         dataframe = pd.DataFrame.from_dict(data, orient='index').astype(datatype)
         if not enumerate_axis:
             dataframe.columns = remove_enumerate_axis(dataframe.columns)
@@ -65,8 +66,9 @@ class BuildDataFrame:
                                  to_timedelta=[True, True],
                                  enumerate_axis=False,
                                  symbol_index=True,
-                                 formats=None
-                                 ):
+                                 format_datetime=None,
+                                 **kwards
+                                ):
         dataframe = pd.DataFrame(data)
         if symbol_index:
             dataframe = dataframe.set_index('1. symbol')
@@ -74,7 +76,7 @@ class BuildDataFrame:
         cols_time = ['5. marketOpen', '6. marketClose']
         if np.array(to_timedelta).any():
             dataframe[cols_time] = columns_to_datetime(dataframe=dataframe[cols_time],
-                                                       formats=formats,
+                                                       formats=format_datetime,
                                                        convert=to_timedelta)
         if not enumerate_axis:
             dataframe.columns = remove_enumerate_axis(dataframe.columns)
@@ -85,40 +87,58 @@ class BuildDataFrame:
                                  include_symbol=True,
                                  enumerate_axis=False,
                                  to_datetime=True,
-                                 orient='columns'
+                                 format_datetime=None,
+                                 orient='columns',
+                                 **kwards
                                  ):
         if not include_symbol:
             data['Global Quote'] = dict(filter(lambda x: x[0] != '01. symbol',
                                                data['Global Quote'].items()))
         return self._dataframe_1d(data=data,
                                   to_datetime=to_datetime,
+                                  format_datetime = format_datetime,
                                   enumerate_axis=enumerate_axis,
                                   orient=orient,
-                                  cell_datetime=['07. latest trading day', 'Global Quote'])
+                                  cell_datetime=('07. latest trading day', 'Global Quote'))
 
-    def cryptocurrencis(self, data, orient='columns', to_datetime=True, enumerate_axis=False):
+    def cryptocurrencis(self,
+                        data,
+                        to_datetime=True,
+                        format_datetime=None,
+                        enumerate_axis=False,
+                        orient='columns',
+                        **kwards
+                       ):
         #This function could be directly introduced in self._map_builder['SECTOR']['FRAME']
         #It has been created to add functionalitiesin the future
         return self._dataframe_1d(data=data,
                                   to_datetime=to_datetime,
+                                  format_datetime = format_datetime,
                                   enumerate_axis=enumerate_axis,
                                   orient=orient,
-                                  cell_datetime=['6. Last Refreshed',
-                                                 'Realtime Currency Exchange Rate'])
+                                  cell_datetime=('6. Last Refreshed',
+                                                 'Realtime Currency Exchange Rate'))
 
-    def sector_performance(self, data):
+    def sector_performance(self, data,**kwards):
         #This function could be directly introduced in self._map_builder['SECTOR']['FRAME']
         #It has been created to add functionalitiesin the future.
         return pd.DataFrame(data)
 
 
-    def _dataframe_1d(self, data, cell_datetime, to_datetime, enumerate_axis, orient):
+    def _dataframe_1d(self,
+                      data,
+                      cell_datetime,
+                      to_datetime,
+                      format_datetime,
+                      enumerate_axis,
+                      orient,
+                      **kwards
+                     ):
 
         dataframe = pd.DataFrame(data)
         if to_datetime:
-            dataframe.loc[cell_datetime[0],
-                          cell_datetime[1]] = pd.to_datetime(dataframe.loc[cell_datetime[0],
-                                                                           cell_datetime[1]])
+            dataframe.loc[cell_datetime] = pd.to_datetime(dataframe.loc[cell_datetime],
+                                                             format = format_datetime)
         if not enumerate_axis:
             dataframe.index = remove_enumerate_axis(dataframe.index)
 

@@ -3,4 +3,6 @@ def inlist(var):
         return [var]
     return var
 
-def join_values_filtered_by_keys(d,keys): return '_'.join([v  for k,v in d.items() if k in keys])
+def join_values_filtered_by_keys(d,keys): 
+    keys = inlist(keys)
+    return '_'.join([v  for k,v in d.items() if k in keys])
