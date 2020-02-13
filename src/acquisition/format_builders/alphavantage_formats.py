@@ -8,36 +8,34 @@ class FormatBuilderAlphavantage:
 
     def __init__(self):
         self._to_frame = BuildDataFrame()
-        self._map_builder = {'TIME': {'FRAME': self._to_frame.time_series,
-                                      'DICT_DATA': lambda json: json[list(json)[1]]},
-                             'GLOBAL': {'FRAME': self._to_frame.stock_time_series_symbol,
-                                        'DICT_DATA': lambda json: json},
-                             'SYMBOL': {'FRAME': self._to_frame.stock_time_series_symbol,
-                                        'DICT_DATA': lambda json: json['bestMatches']},
-                             'CURRENCY': {'FRAME': self._to_frame.cryptocurrencis,
-                                          'DICT_DATA': lambda json: json},
-                             'FX': {'FRAME': self._to_frame.time_series,
-                                    'DICT_DATA': lambda json: json[list(json)[1]]},
-                             'DIGITAL': {'FRAME': self._to_frame.time_series,
-                                         'DICT_DATA': lambda json: json[list(json)[1]]},
-                             'SECTOR': {'FRAME': self._to_frame.sector_performance,
-                                        'DICT_DATA': lambda json:
-                                                     dict(filter(lambda x: x[0] != 'Meta Data',
-                                                                 json.items()))}                  
-                            }
-
-    def build_frame(self, json, function, decoded_function=None, **kwards):
-        map_function = switch_None(decoded_function, function)
-        functions = map_dict_from_underscore(dict_to_map=self._map_builder,
-                                             function=map_function,
+        self._map_builder_frame = {'TIME': {'FRAME': self._to_frame.time_series,
+                                            'DICT_DATA': lambda json: json[list(json)[1]]},
+                                   'GLOBAL': {'FRAME': self._to_frame.stock_time_series_symbol,
+                                              'DICT_DATA': lambda json: json},
+                                   'SYMBOL': {'FRAME': self._to_frame.stock_time_series_symbol,
+                                              'DICT_DATA': lambda json: json['bestMatches']},
+                                   'CURRENCY': {'FRAME': self._to_frame.cryptocurrencis,
+                                                'DICT_DATA': lambda json: json},
+                                   'FX': {'FRAME': self._to_frame.time_series,
+                                          'DICT_DATA': lambda json: json[list(json)[1]]},
+                                   'DIGITAL': {'FRAME': self._to_frame.time_series,
+                                               'DICT_DATA': lambda json: json[list(json)[1]]},
+                                   'SECTOR': {'FRAME': self._to_frame.sector_performance,
+                                              'DICT_DATA': lambda json:
+                                                           dict(filter(lambda x: x[0] != 'Meta Data',
+                                                                       json.items()))}                  
+                                  }
+      
+    def build_frame(self, json, function, **kwards):
+        functions = map_dict_from_underscore(dict_to_map=self._map_builder_frame,
+                                             function=function,
                                              n=0,
                                              default_key='TIME')
         return functions['FRAME'](data=functions['DICT_DATA'](json), **kwards)
 
-    def get_data_dict(self, json, function, decoded_function=None):
-        map_function = switch_None(decoded_function, function)
-        return map_dict_from_underscore(dict_to_map=self._map_builder,
-                                        function=map_function,
+    def get_data_dict(self, json, function):
+        return map_dict_from_underscore(dict_to_map=self._map_builder_frame,
+                                        function=function,
                                         n=0,
                                         default_key='TIME')['DICT_DATA'](json)
 
@@ -53,9 +51,9 @@ class BuildDataFrame:
                     enumerate_axis=False,
                     **kwards
                    ):
-        dataframe = pd.DataFrame.from_dict(data, orient='index').astype(datatype)
-        dataframe.columns = self.__set_correct_names_axis(dataframe.columns,enumerate_axis)
 
+        dataframe = pd.DataFrame.from_dict(data, orient='index').astype(datatype)
+        dataframe.columns = self.__set_correct_names_axis(dataframe.columns, enumerate_axis)
         if to_datetime:
             dataframe.index = pd.to_datetime(dataframe.index, format=format_datetime)
             dataframe = dataframe.sort_index(ascending=ascending)
@@ -78,7 +76,7 @@ class BuildDataFrame:
             dataframe[cols_time] = columns_to_datetime(dataframe=dataframe[cols_time],
                                                        formats=format_datetime,
                                                        convert=to_timedelta)
-        dataframe.columns = self.__set_correct_names_axis(dataframe.columns,enumerate_axis)
+        dataframe.columns = self.__set_correct_names_axis(dataframe.columns, enumerate_axis)
         return dataframe
 
     def stock_time_series_global(self,
@@ -108,7 +106,7 @@ class BuildDataFrame:
                         orient='columns',
                         **kwards
                        ):
-        #This function could be directly introduced in self._map_builder['SECTOR']['FRAME']
+        #This function could be directly introduced in self._map_builder_frame['SECTOR']['FRAME']
         #It has been created to add functionalitiesin the future
         return self._dataframe_1d(data=data,
                                   to_datetime=to_datetime,
@@ -119,7 +117,7 @@ class BuildDataFrame:
                                                  'Realtime Currency Exchange Rate'))
 
     def sector_performance(self, data,**kwards):
-        #This function could be directly introduced in self._map_builder['SECTOR']['FRAME']
+        #This function could be directly introduced in self._map_builder_frame['SECTOR']['FRAME']
         #It has been created to add functionalitiesin the future.
         return pd.DataFrame(data)
 
@@ -139,7 +137,7 @@ class BuildDataFrame:
             dataframe.loc[cell_datetime] = pd.to_datetime(dataframe.loc[cell_datetime],
                                                              format = format_datetime)
 
-        dataframe.index = self.__set_correct_names_axis(dataframe.index,enumerate_axis)
+        dataframe.index = self.__set_correct_names_axis(dataframe.index, enumerate_axis)
 
         if orient == 'index':
             dataframe = dataframe.T
