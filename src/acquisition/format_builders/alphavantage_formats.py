@@ -54,8 +54,8 @@ class BuildDataFrame:
                     **kwards
                    ):
         dataframe = pd.DataFrame.from_dict(data, orient='index').astype(datatype)
-        if not enumerate_axis:
-            dataframe.columns = remove_enumerate_axis(dataframe.columns)
+        dataframe.columns = self.__set_correct_names_axis(dataframe.columns,enumerate_axis)
+
         if to_datetime:
             dataframe.index = pd.to_datetime(dataframe.index, format=format_datetime)
             dataframe = dataframe.sort_index(ascending=ascending)
@@ -78,8 +78,7 @@ class BuildDataFrame:
             dataframe[cols_time] = columns_to_datetime(dataframe=dataframe[cols_time],
                                                        formats=format_datetime,
                                                        convert=to_timedelta)
-        if not enumerate_axis:
-            dataframe.columns = remove_enumerate_axis(dataframe.columns)
+        dataframe.columns = self.__set_correct_names_axis(dataframe.columns,enumerate_axis)
         return dataframe
 
     def stock_time_series_global(self,
@@ -139,9 +138,15 @@ class BuildDataFrame:
         if to_datetime:
             dataframe.loc[cell_datetime] = pd.to_datetime(dataframe.loc[cell_datetime],
                                                              format = format_datetime)
-        if not enumerate_axis:
-            dataframe.index = remove_enumerate_axis(dataframe.index)
+
+        dataframe.index = self.__set_correct_names_axis(dataframe.index,enumerate_axis)
 
         if orient == 'index':
             dataframe = dataframe.T
         return dataframe
+
+    @ staticmethod
+    def __set_correct_names_axis(axis,enumerate_axis):
+        if not enumerate_axis:
+            return remove_enumerate_axis(axis)
+        return axis
