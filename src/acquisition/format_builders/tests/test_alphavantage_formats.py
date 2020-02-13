@@ -11,6 +11,7 @@ from src.tools import interface_json_files
 #Current path
 SCRIPT_PATH = os.path.realpath(os.path.dirname(sys.argv[0]))
 
+
 class CheckDataFrame(unittest.TestCase):
     def setUp(self):
         self.dataframe = pd.DataFrame()
