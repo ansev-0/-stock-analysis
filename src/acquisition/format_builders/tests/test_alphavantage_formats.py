@@ -8,7 +8,7 @@ from src.acquisition.format_builders import alphavantage_formats
 from src.tools.builders import inlist
 from src.tools import interface_json_files
 
-#Current directory
+#Current path
 SCRIPT_PATH = os.path.realpath(os.path.dirname(sys.argv[0]))
 
 class CheckDataFrame(unittest.TestCase):
