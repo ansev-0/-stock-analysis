@@ -39,7 +39,7 @@ class AlphaVantage:
                 #try again
                 time.sleep(self.delays[count_attemps-1])
             else:
-                #connect succesfull, save useful data
+                #connect successfull, save useful data
                 return json
 
     @classmethod
