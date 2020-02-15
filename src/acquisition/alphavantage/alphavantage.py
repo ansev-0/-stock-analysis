@@ -22,7 +22,6 @@ class AlphaVantage:
         self.attemps = len(self.delays) + 1
 
     def __read(self, query):
-
         count_attemps = 0
         while count_attemps < self.attemps:
             try:
@@ -44,8 +43,10 @@ class AlphaVantage:
 
     @classmethod
     def _get_data(cls, func):
+
         def read_url(self, *args, **kwards):
              func_params = dict(zip(map(str.lower, func.__code__.co_varnames[1:]), func(self, **kwards)))
              query = dict(func_params, **self.default_params)
              return self.__read(query=query)
+             
         return read_url
