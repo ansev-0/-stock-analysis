@@ -35,7 +35,6 @@ class AlphaVantage:
                 self.__check_response.pass_test(json, query)
             except AlphaVantageError:
                 if count_attemps == self.attemps:
-                    #add error to dict_errors
                     return [query, json.copy(), response.status_code]
                 #try again
                 time.sleep(self.delays[count_attemps-1])
