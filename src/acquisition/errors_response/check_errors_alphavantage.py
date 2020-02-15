@@ -17,15 +17,14 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
                           }
 
 
-    def pass_test(self, json, query, decoded_function=None):
+    def pass_test(self, json, query):
         '''
         This function maps the json format test function
         and raises an exception if it returns True
         '''
         json_keys = list(json)
-        map_function = switch_None(decoded_function, query['function'])
         if map_dict_from_underscore(dict_to_map=self._map_test,
-                                    function=map_function,
+                                    function=query['function'],
                                     n=0,
                                     default_key='TIME')(json_keys):
 
