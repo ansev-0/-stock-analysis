@@ -9,13 +9,13 @@ from src.tools.mappers import switch_None
 class AlphaVantage:
 
     _AV_URL = "https://www.alphavantage.co/query?"
-    def __init__(self, apikey, delays=None):
+    def __init__(self, apikey, delays=None, **kwards):
         self.apikey = apikey
         self.default_params = {'datatype' : 'json',
                                'apikey' : self.apikey}
         self.config(delays)
         self.__check_response = errors_response.ErrorsResponseApiAlphavantage()
-        self.request = request_api.RequestsApi(base_url=self._AV_URL)
+        self.request = request_api.RequestsApi(base_url=self._AV_URL, **kwards)
 
     def config(self, delays = None):
         self.delays = switch_None(delays, [60,20])
@@ -48,5 +48,5 @@ class AlphaVantage:
              func_params = dict(zip(map(str.lower, func.__code__.co_varnames[1:]), func(self, **kwards)))
              query = dict(func_params, **self.default_params)
              return self.__read(query=query)
-             
+
         return read_url

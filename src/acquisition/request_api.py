@@ -8,25 +8,25 @@ class RequestsApi:
                 kwargs[arg] = self.__deep_merge(getattr(self.session, arg), kwargs[arg])
             setattr(self.session, arg, kwargs[arg])
 
-    def request(self, method, url=None, **kwargs):
+    def request(self, method, url='', **kwargs):
         return self.session.request(method, self.base_url+url, **kwargs)
 
-    def head(self, url=None, **kwargs):
+    def head(self, url='', **kwargs):
         return self.session.head(self.base_url+url, **kwargs)
 
-    def get(self, url=None, **kwargs):
+    def get(self, url='', **kwargs):
         return self.session.get(self.base_url+url, **kwargs)
 
-    def post(self, url=None, **kwargs):
+    def post(self, url='', **kwargs):
         return self.session.post(self.base_url+url, **kwargs)
 
-    def put(self, url=None, **kwargs):
+    def put(self, url='', **kwargs):
         return self.session.put(self.base_url+url, **kwargs)
 
-    def patch(self, url=None, **kwargs):
+    def patch(self, url='', **kwargs):
         return self.session.patch(self.base_url+url, **kwargs)
 
-    def delete(self, url=None, **kwargs):
+    def delete(self, url='', **kwargs):
         return self.session.delete(self.base_url+url, **kwargs)
 
     @staticmethod
