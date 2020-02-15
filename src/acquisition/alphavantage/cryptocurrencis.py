@@ -22,4 +22,3 @@ class Cryptocurrencis(AlphaVantage):
         FUNCTION = 'DIGITAL_CURRENCY_MONTHLY'
         return symbol, market, FUNCTION
 
-Cryptocurrencis(apikey = 'O39L8VIVYYJYUN3P').get_exchange_rate(from_currency='USD', to_currency='BTC')
