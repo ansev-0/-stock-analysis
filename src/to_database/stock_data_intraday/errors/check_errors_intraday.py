@@ -17,7 +17,7 @@ class CheckToDataBaseIntraday(CheckToDataBase):
     
     def __get_supported_frequencies(self, document_id):
         return self.__collection.find_one(filter = {'_id' : document_id},
-                                          projection = {'frecuencies_in_database' : True})
+                                          projection = {'frecuencies' : True})
 
 
 
