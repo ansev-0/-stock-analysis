@@ -8,9 +8,12 @@ class CheckErrorsSaveInDataBase(CheckToDataBaseIntraday):
 
     def __init__(self):
         super().__init__()
-        self.frecuencies_intraday_in_database = self.__get_supported_frequencies(document_id=self.__ID_DOCUMENT)
+        self.frecuencies_intraday_in_database = (
+            self.__get_supported_frequencies(document_id=self.__ID_DOCUMENT)
+        )
 
-    def check_parameter_create(self, create):
+    @staticmethod
+    def check_parameter_create(create):
         if create  not in ['create', 'not create']:
             raise ToDataBaseError('Invalid parameter: if_not_in_base', ValueError)
 

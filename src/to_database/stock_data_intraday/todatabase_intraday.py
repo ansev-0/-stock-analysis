@@ -4,7 +4,7 @@ class ToDataBaseIntraday(DataBase):
 
     __COMMON_NAME = 'stock_data_intraday_'
 
-    def __init__(self, frecuency, new_database = 'create'):
+    def __init__(self, frecuency, new_database='create'):
         self.frecuency = frecuency
         self.check_save_base = CheckErrorsSaveInDataBase()
         self.check_save_base.check_parameter_create(create=new_database)
@@ -13,9 +13,9 @@ class ToDataBaseIntraday(DataBase):
         super().__init__(database_name=self.__COMMON_NAME + self.frecuency)
 
     def update_company_collection(self, list_dicts_to_update, company):
-
-        collection = self.db[company]
+        collection = self.database[company]
         for dict_to_update in list_dicts_to_update:
-            collection.update_one({'_id':dict_to_update['_id']},
-                                  {'$set':dict_to_update['data']},
-                                  upsert = True)
+            collection.update_one({'_id' : dict_to_update['_id']},
+                                  {'$set' : dict_to_update['data']},
+                                  upsert=True)
+                                  
