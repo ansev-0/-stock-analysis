@@ -7,4 +7,5 @@ dist/
 /src/*/__pycache__/
 /build/
 /src/*/*/tests/prueba.py
+/workspace.code-workspace
 
