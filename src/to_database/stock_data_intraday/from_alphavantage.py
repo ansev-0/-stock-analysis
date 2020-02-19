@@ -57,7 +57,6 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         to the format necessary to update the database using :
 
         update_company_collection
-
         '''
 
         previous_date = None
