@@ -1,13 +1,4 @@
-#import glob
-#import os
-#import sys
 from setuptools import setup,find_namespace_packages
-
-# A temporary path so we can access above the Python project root and fetch scripts and jars we need
-#TEMP_PATH = "deps"
-#PROJECT_HOME = os.path.abspath("../")
-
-
 setup(
         name='financialworks',
         version='0.0.1',
