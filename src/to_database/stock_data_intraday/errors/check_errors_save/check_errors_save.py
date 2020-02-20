@@ -3,14 +3,12 @@ from src.exceptions.to_database_exceptions import ToDataBaseError
 
 class CheckErrorsSaveInDataBase(CheckToDataBaseIntraday):
 
-    frecuencies_intraday_in_database = []
-    __ID_DOCUMENT = 'database'
+    parameters = []
+    __ID_DOCUMENT = 'status_summary'
 
     def __init__(self):
-        super().__init__()
-        self.frecuencies_intraday_in_database = (
-            self.__get_supported_frequencies(document_id=self.__ID_DOCUMENT)
-        )
+        super().__init__(self, name='database features')
+        self.update_supported_parameters()
 
     @staticmethod
     def check_parameter_create(create):
@@ -18,7 +16,7 @@ class CheckErrorsSaveInDataBase(CheckToDataBaseIntraday):
             raise ToDataBaseError('Invalid parameter: if_not_in_base', ValueError)
 
     def check_frecuency_in_database(self, frecuency):
-        if not self.__frecuency_supported(frecuency=frecuency, 
-                                          list_frecuencies=self.frecuencies_intraday_in_database):
+        if frecuency not in self.parameters['frecuency']:
             raise ToDataBaseError('Frecuency not in DataBase', ValueError)
         
+

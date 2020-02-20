@@ -1,10 +1,33 @@
 import pandas as pd
+from collections import defaultdict
 from src.to_database.stock_data_intraday.todatabase_intraday import ToDataBaseIntraday
 from src.acquisition.alphavantage import timeseries
-from src.to_database.stock_data_intraday.errors.check_from_alphavantage \
+from src.to_database.stock_data_intraday.errors.check_errors_api.check_from_alphavantage \
     import CheckErrorsFromAlphaVantage
 
 class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
+    '''
+    This class is an interface to save the intraday data of the Alphavantage API
+
+    Parameters
+    ----------
+    frecuency: str.
+        frequency of the data to read,
+        it must be supported by the API, consult: 
+        https://www.alphavantage.co/documentation/#intraday
+
+    apikey: str.
+        key of API Alphavantage.
+
+    new_database: str
+        valid parameters = 'create' and 'not create'
+        if there is no database for the specified frequency, action to be taken.
+
+    outputsize: str.
+        valid parameters = 'compact' and 'full'
+        compact returns only the latest 100 data points in the intraday time series;
+        full returns the full-length intraday time series. 
+    '''
     def __init__(self, frecuency, apikey, outputsize='full', new_database='create', **kwards):
 
         #Get outputsize
@@ -41,7 +64,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         key_data = list(response)[1]
         data = response[key_data]
         #check frecuency in key
-        self.__check_alphavantage.check_frecuency_in_key_data(key_data, self.frecuency)
+        self.__check_alphavantage.check_frecuency_in_key_data(key_data, self.__frecuency)
         #Update collection
         #Get correct format
         list_dicts_to_update = self.__create_dicts_with_same_id(data)
@@ -59,19 +82,18 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         update_company_collection
         '''
 
-        previous_date = None
-        list_dicts = []
+        cumulative_dict = defaultdict(dict)
+        for date, values in data.items():
+            cumulative_dict[date[:10]].update({date : {name[3:] : value for name, value in values.items()}})
 
-        for key, value in data.items():
-            date = key[:10]
-            value = {k1[3:] : v1 for k1, v1 in value.items()}
-            if date != previous_date:
-                list_dicts.append({'_id':pd.to_datetime(date), 'data':{key : value}})
-                previous_date = date
-            else:
-                list_dicts[-1]['data'].update({key : value})
+        return list(map(lambda items: {'_id' : pd.to_datetime(items[0]),
+                                       'data' : items[1]},
+                        cumulative_dict.items())
+                   )
 
-        return list_dicts
+
+
+
 
     def __read_from_alphavantage(self, company):
         '''
@@ -80,5 +102,5 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         and a list if there are errors.
         '''
         return self.__reader.get_intraday(symbol=company,
-                                          interval=self.frecuency,
+                                          interval=self.__frecuency,
                                           outputsize=self.outputsize)
