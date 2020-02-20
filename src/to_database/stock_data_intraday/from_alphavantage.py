@@ -34,8 +34,8 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         self.outputsize = outputsize
 
         #Check not error in frecunecy
-        self.__check_alphavantage = CheckErrorsFromAlphaVantage()
-        self.__check_alphavantage.check_frecuency_in_api(frecuency=frecuency)
+        self.__check_alphavantage = CheckErrorsFromAlphaVantage(frecuency = self.__frecuency)
+        self.__check_alphavantage.check_frecuency_in_api()
 
         #Create connection to the database
         super().__init__(frecuency=frecuency, new_database=new_database)
@@ -64,7 +64,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         key_data = list(response)[1]
         data = response[key_data]
         #check frecuency in key
-        self.__check_alphavantage.check_frecuency_in_key_data(key_data, self.__frecuency)
+        self.__check_alphavantage.check_frecuency_in_key_data(key_data)
         #Update collection
         #Get correct format
         list_dicts_to_update = self.__create_dicts_with_same_id(data)
@@ -84,7 +84,8 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
 
         cumulative_dict = defaultdict(dict)
         for date, values in data.items():
-            cumulative_dict[date[:10]].update({date : {name[3:] : value for name, value in values.items()}})
+            cumulative_dict[date[:10]].update({date : {name[3:] : value 
+                                                       for name, value in values.items()}})
 
         return list(map(lambda items: {'_id' : pd.to_datetime(items[0]),
                                        'data' : items[1]},
