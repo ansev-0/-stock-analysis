@@ -93,9 +93,6 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
                    )
 
 
-
-
-
     def __read_from_alphavantage(self, company):
         '''
         This function gets the API response,
