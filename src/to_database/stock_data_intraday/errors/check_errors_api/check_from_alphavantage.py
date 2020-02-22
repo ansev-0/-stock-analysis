@@ -8,7 +8,7 @@ class CheckErrorsFromAlphaVantage(AlphavantageFeatureGet):
     '''
 
     def __init__(self, frecuency):
-        super().__init__(self, collection = 'intraday')
+        super().__init__(collection = 'intraday')
         self.get_features()
         self.__frecuency = frecuency
 

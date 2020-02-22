@@ -3,9 +3,9 @@ from src.features_database.features_database import FeaturesDataBase
 class FeatureRecords(FeaturesDataBase):
 
     def push_features(self, data, **kwards):
-        self.__collection.update_one({'_id' : self.__document_id},
-                                     {'set' : data},
-                                     upsert=True,
-                                     **kwards)
+        self._collection.update_one({'_id' : self._document_id},
+                                    {'$set' : data},
+                                    upsert=True,
+                                    **kwards)
     def delete_features(self, **kwards):
-        self.__collection.delete_one({'_id' : self.__document_id}, **kwards)
+        self._collection.delete_one({'_id' : self._document_id}, **kwards)

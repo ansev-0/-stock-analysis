@@ -6,7 +6,7 @@ class CheckErrorsSaveInDataBase(DataBasesFeatureGet):
     parameters = []
     __ID_DOCUMENT = 'general_summary'
     def __init__(self, frecuency):
-        super().__init__(self, collection='intraday', document_id=self.__ID_DOCUMENT)
+        super().__init__(collection='intraday', document_id=self.__ID_DOCUMENT)
         self.get_features()
         self.__frecuency=frecuency
 

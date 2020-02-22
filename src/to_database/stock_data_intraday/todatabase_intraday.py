@@ -7,12 +7,12 @@ class ToDataBaseIntraday(DataBase):
     __COMMON_NAME = 'stock_data_intraday_'
 
     def __init__(self, frecuency, new_database='create'):
-        self.__frecuency = frecuency
-        self.check_save_base = CheckErrorsSaveInDataBase(frecuency=self.__frecuency)
+        self._frecuency = frecuency
+        self.check_save_base = CheckErrorsSaveInDataBase(frecuency=self._frecuency)
         self.check_save_base.check_parameter_create(create=new_database)
         if new_database == 'not create':
             self.check_save_base.check_frecuency_in_database()
-        super().__init__(database_name=self.__COMMON_NAME + self.__frecuency)
+        super().__init__(name_database=self.__COMMON_NAME + self._frecuency)
 
     def update_company_collection(self, list_dicts_to_update, company):
         collection = self.database[company]

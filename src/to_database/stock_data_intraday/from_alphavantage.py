@@ -31,14 +31,16 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
     def __init__(self, frecuency, apikey, outputsize='full', new_database='create', **kwards):
 
         #Get outputsize
-        self.outputsize = outputsize
-
-        #Check not error in frecunecy
-        self.__check_alphavantage = CheckErrorsFromAlphaVantage(frecuency = self.__frecuency)
-        self.__check_alphavantage.check_frecuency_in_api()
+        self._outputsize = outputsize
 
         #Create connection to the database
         super().__init__(frecuency=frecuency, new_database=new_database)
+
+        #Check not error in frecunecy
+        self.__check_alphavantage = CheckErrorsFromAlphaVantage(frecuency = self._frecuency)
+        self.__check_alphavantage.check_frecuency_in_api()
+
+
 
         # Create reader from AlphaVantage
         self.__reader = timeseries.TimeSeries(apikey=apikey, **kwards)
@@ -100,5 +102,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         and a list if there are errors.
         '''
         return self.__reader.get_intraday(symbol=company,
-                                          interval=self.__frecuency,
-                                          outputsize=self.outputsize)
+                                          interval=self._frecuency,
+                                          outputsize=self._outputsize)
+
+ToDataBaseIntradayAlphaVantage(frecuency='5min', apikey = 'demo').to_database('TWTR')
