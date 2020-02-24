@@ -55,9 +55,10 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         #Get response from reader Api Alphavantage
         response = self.__read_from_alphavantage(company=company)
 
-        if isinstance(response, list):
+        if isinstance(response, tuple):
+            self.report_incident(api='alphavantage', tuple_error=response)
             return response
-
+        
         #Get data
         # list(response) get keys of response dict,
         # the seconds key contains the data,
@@ -71,7 +72,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         #Get correct format
         list_dicts_to_update = self.__create_dicts_with_same_id(data)
         #Call to update
-        self.update_company_collection(list_dicts_to_update=list_dicts_to_update, company=company)
+        self.update_stock_data(list_dicts_to_update=list_dicts_to_update, company=company)
 
         return None
 
@@ -81,7 +82,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         This function adapts the format of the json received from the Alphavantage API
         to the format necessary to update the database using :
 
-        update_company_collection
+        update_stock_data
         '''
 
         cumulative_dict = defaultdict(dict)
@@ -105,4 +106,3 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
                                           interval=self._frecuency,
                                           outputsize=self._outputsize)
 
-                                          
