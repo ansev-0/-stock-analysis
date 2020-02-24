@@ -1,13 +1,13 @@
-from src.features_database.features_get.databases_get_features import DataBasesFeatureGet
+from src.features_database.features_get import FeatureGet
 from src.exceptions.to_database_exceptions import ToDataBaseError
 
-class CheckErrorsSaveInDataBase(DataBasesFeatureGet):
+class CheckErrorsSaveInDataBase:
 
     parameters = []
     __ID_DOCUMENT = 'general_summary'
     def __init__(self, frecuency):
-        super().__init__(collection='intraday', document_id=self.__ID_DOCUMENT)
-        self.get_features()
+        self.features_get=FeatureGet.databases(collection='intraday', document_id=self.__ID_DOCUMENT)
+        self.features_get.get_features()
         self.__frecuency=frecuency
 
     @staticmethod
@@ -16,7 +16,7 @@ class CheckErrorsSaveInDataBase(DataBasesFeatureGet):
             raise ToDataBaseError('Invalid parameter: if_not_in_base', ValueError)
 
     def check_frecuency_in_database(self):
-        if self.__frecuency not in self.features['frecuency']:
+        if self.__frecuency not in self.features_get.features['frecuency']:
             raise ToDataBaseError('Frecuency not in DataBase', ValueError)
         
 

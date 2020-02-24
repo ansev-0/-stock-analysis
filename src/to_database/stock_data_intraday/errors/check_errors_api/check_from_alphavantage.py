@@ -1,19 +1,19 @@
 from src.exceptions.to_database_exceptions import ToDataBaseAlphaVantageError
 from src.exceptions.acquisition_exceptions import AlphaVantageError
-from src.features_database.features_get.alphavantage_get_features import AlphavantageFeatureGet
+from src.features_database.features_get import FeatureGet
 
-class CheckErrorsFromAlphaVantage(AlphavantageFeatureGet):
+class CheckErrorsFromAlphaVantage:
     '''
     This class is used to check errors related to ToDataBaseIntradayAlphaVantage.
     '''
 
     def __init__(self, frecuency):
-        super().__init__(collection = 'intraday')
-        self.get_features()
+        self.features_get = FeatureGet.api_alphavantage(collection='intraday')
+        self.features_get.get_features()
         self.__frecuency = frecuency
 
     def check_frecuency_in_api(self):
-        if self.__frecuency not  in self.features['frecuency']:
+        if self.__frecuency not  in self.features_get.features['frecuency']:
 
             raise ToDataBaseAlphaVantageError(
                 f'Frequency not supported, frequencies supported are:'/

@@ -13,3 +13,15 @@ class FeaturesDataBase(DataBase):
         if name not in self.__SUPPORTED_DATABASE:
             raise ValueError(f'the databases supported by this class are:\
                              {self.__SUPPORTED_DATABASE}')
+
+    @classmethod
+    def databases(cls, collection, document_id):
+        return cls(name_database='database_features',
+                   collection=collection,
+                   document_id=document_id)
+
+    @classmethod
+    def api_alphavantage(cls, collection):
+        return cls(name_database='api_features',
+                   collection=collection,
+                   document_id='alphavantage')
