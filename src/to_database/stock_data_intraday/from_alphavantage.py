@@ -104,3 +104,5 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         return self.__reader.get_intraday(symbol=company,
                                           interval=self._frecuency,
                                           outputsize=self._outputsize)
+
+                                          
