@@ -25,3 +25,4 @@ class FeaturesDataBase(DataBase):
         return cls(name_database='api_features',
                    collection=collection,
                    document_id='alphavantage')
+                   
