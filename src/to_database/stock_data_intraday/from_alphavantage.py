@@ -104,5 +104,3 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         return self.__reader.get_intraday(symbol=company,
                                           interval=self._frecuency,
                                           outputsize=self._outputsize)
-
-ToDataBaseIntradayAlphaVantage(frecuency='5min', apikey = 'demo').to_database('TWTR')
