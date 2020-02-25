@@ -136,3 +136,12 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
     @classmethod
     def compact_30min(cls, apikey, **kwards):
         return cls(frecuency='30min', apikey=apikey, outputsize='compact', **kwards)
+
+
+    @classmethod
+    def full_60min(cls, apikey, **kwards):
+        return cls(frecuency='60min', apikey=apikey, outputsize='full', **kwards)
+
+    @classmethod
+    def compact_60min(cls, apikey, **kwards):
+        return cls(frecuency='60min', apikey=apikey, outputsize='compact', **kwards)
