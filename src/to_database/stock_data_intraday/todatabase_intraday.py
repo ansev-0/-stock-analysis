@@ -24,6 +24,7 @@ class ToDataBaseIntraday(DataBase):
                                   {'$set' : dict_to_update['data']},
                                   upsert=True,
                                   **kwards)
+                                  
     def report_incident(self, api, tuple_error):
         self.incidents.report(api=api,
                               **dict(zip(self.incidents.report.__code__.co_varnames[-2:],

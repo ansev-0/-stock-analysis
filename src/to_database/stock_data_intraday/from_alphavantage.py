@@ -1,5 +1,5 @@
-import pandas as pd
 from collections import defaultdict
+import pandas as pd
 from src.to_database.stock_data_intraday.todatabase_intraday import ToDataBaseIntraday
 from src.acquisition.alphavantage import timeseries
 from src.to_database.stock_data_intraday.errors.check_errors_api.check_from_alphavantage \
@@ -13,7 +13,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
     ----------
     frecuency: str.
         frequency of the data to read,
-        it must be supported by the API, consult: 
+        it must be supported by the API, consult:
         https://www.alphavantage.co/documentation/#intraday
 
     apikey: str.
@@ -26,7 +26,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
     outputsize: str.
         valid parameters = 'compact' and 'full'
         compact returns only the latest 100 data points in the intraday time series;
-        full returns the full-length intraday time series. 
+        full returns the full-length intraday time series.
     '''
     def __init__(self, frecuency, apikey, outputsize='full', new_database='create', **kwards):
 
@@ -36,11 +36,9 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         #Create connection to the database
         super().__init__(frecuency=frecuency, new_database=new_database)
 
-        #Check not error in frecunecy
-        self.__check_alphavantage = CheckErrorsFromAlphaVantage(frecuency = self._frecuency)
+        #Check not error in frecuency
+        self.__check_alphavantage = CheckErrorsFromAlphaVantage(frecuency=self._frecuency)
         self.__check_alphavantage.check_frecuency_in_api()
-
-
 
         # Create reader from AlphaVantage
         self.__reader = timeseries.TimeSeries(apikey=apikey, **kwards)
@@ -58,7 +56,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         if isinstance(response, tuple):
             self.report_incident(api='alphavantage', tuple_error=response)
             return response
-        
+
         #Get data
         # list(response) get keys of response dict,
         # the seconds key contains the data,
@@ -87,7 +85,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
 
         cumulative_dict = defaultdict(dict)
         for date, values in data.items():
-            cumulative_dict[date[:10]].update({date : {name[3:] : value 
+            cumulative_dict[date[:10]].update({date : {name[3:] : value
                                                        for name, value in values.items()}})
 
         return list(map(lambda items: {'_id' : pd.to_datetime(items[0]),
@@ -106,3 +104,35 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
                                           interval=self._frecuency,
                                           outputsize=self._outputsize)
 
+    @classmethod
+    def full_1min(cls, apikey, **kwards):
+        return cls(frecuency='1min', apikey=apikey, outputsize='full', **kwards)
+
+    @classmethod
+    def compact_1min(cls, apikey, **kwards):
+        return cls(frecuency='1min', apikey=apikey, outputsize='compact', **kwards)
+
+    @classmethod
+    def full_5min(cls, apikey, **kwards):
+        return cls(frecuency='5min', apikey=apikey, outputsize='full', **kwards)
+
+    @classmethod
+    def compact_5min(cls, apikey, **kwards):
+        return cls(frecuency='5min', apikey=apikey, outputsize='compact', **kwards)
+
+    @classmethod
+    def full_15min(cls, apikey, **kwards):
+        return cls(frecuency='15min', apikey=apikey, outputsize='full', **kwards)
+
+    @classmethod
+    def compact_15min(cls, apikey, **kwards):
+        return cls(frecuency='15min', apikey=apikey, outputsize='compact', **kwards)
+
+
+    @classmethod
+    def full_30min(cls, apikey, **kwards):
+        return cls(frecuency='30min', apikey=apikey, outputsize='full', **kwards)
+
+    @classmethod
+    def compact_30min(cls, apikey, **kwards):
+        return cls(frecuency='30min', apikey=apikey, outputsize='compact', **kwards)
