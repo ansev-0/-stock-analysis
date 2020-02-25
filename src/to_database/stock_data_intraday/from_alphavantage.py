@@ -2,6 +2,7 @@ from collections import defaultdict
 import pandas as pd
 from src.to_database.stock_data_intraday.todatabase_intraday import ToDataBaseIntraday
 from src.acquisition.alphavantage import timeseries
+from src.to_database.save_many import SaveMany
 from src.to_database.stock_data_intraday.errors.check_errors_api.check_from_alphavantage \
     import CheckErrorsFromAlphaVantage
 
@@ -143,3 +144,11 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
     @classmethod
     def compact_60min(cls, apikey, **kwards):
         return cls(frecuency='60min', apikey=apikey, outputsize='compact', **kwards)
+
+
+class ToDataBaseIntradayAlphaVantageMany(ToDataBaseIntradayAlphaVantage):
+    __save_many=SaveMany()
+    def to_database_many(self, list_company, return_errors=True):
+        if return_errors:
+            return self.__save_many.save_and_return_errors(self.to_database, list_company)
+        return self.__save_many.save(self.to_database, list_company)
