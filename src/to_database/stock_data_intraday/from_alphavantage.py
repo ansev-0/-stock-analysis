@@ -147,8 +147,12 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
 
 
 class ToDataBaseIntradayAlphaVantageMany(ToDataBaseIntradayAlphaVantage):
+
     __save_many=SaveMany()
-    def to_database_many(self, list_company, return_errors=True):
-        if return_errors:
-            return self.__save_many.save_and_return_errors(self.to_database, list_company)
+    
+    def to_database_getting_errors(self, list_company):
+        return self.__save_many.save_and_return_errors(self.to_database, list_company)
+
+    def to_database_ignoring_errors(self, list_company):
         return self.__save_many.save(self.to_database, list_company)
+        
