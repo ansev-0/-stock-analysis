@@ -11,6 +11,9 @@ class AcquisitionIncidents(DataBase):
     
     def delete_incident(self, api, query):
         return self.database[api].delete_one({'query' : query})
+        
+    def delete_all_incidents(self, api):
+        return self.database[api].delete_many({})
 
     def get_incident(self, api, query):
         return self.database[api].find_one({'query' : query})
