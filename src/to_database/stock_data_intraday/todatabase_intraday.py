@@ -1,6 +1,6 @@
 from src.database.database import DataBase
-from src.to_database.stock_data_intraday.errors.check_errors_save.check_errors_save \
-    import CheckErrorsSaveInDataBase
+from src.to_database.stock_data_intraday.errors.check_to_database \
+    import CheckErrorsToDataBase
 
 
 class ToDataBaseIntraday(DataBase):
@@ -9,9 +9,8 @@ class ToDataBaseIntraday(DataBase):
 
     def __init__(self, frecuency, new_database='create'):
         self._frecuency = frecuency
-        self.check_save_base = CheckErrorsSaveInDataBase(frecuency=self._frecuency)
+        self.check_save_base = CheckErrorsToDataBase(frecuency=self._frecuency)
         self.check_save_base.check_parameter_create(create=new_database)
-
 
         if new_database == 'not create':
             self.check_save_base.check_frecuency_in_database()

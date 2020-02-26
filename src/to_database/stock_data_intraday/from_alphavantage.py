@@ -55,9 +55,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         response = self.__read_from_alphavantage(company=company)
 
         if isinstance(response, tuple):
-            #self.report_incident(api='alphavantage', tuple_error=response)
             return response
-
         #Get data
         # list(response) get keys of response dict,
         # the seconds key contains the data,

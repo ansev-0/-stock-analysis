@@ -1,7 +1,7 @@
 from src.features_database.features_get import FeatureGet
 from src.exceptions.to_database_exceptions import ToDataBaseError
 
-class CheckErrorsSaveInDataBase:
+class CheckErrorsToDataBase:
 
     parameters = []
     __ID_DOCUMENT = 'general_summary'
