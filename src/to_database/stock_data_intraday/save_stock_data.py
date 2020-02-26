@@ -5,7 +5,6 @@ from src.to_database.stock_data_intraday.errors.check_errors \
 from src.acquisition_incidents.incidents import AcquisitionIncidents
 from src.database.database import DataBase
 
-#'O39L8VIVYYJYUN3P'
 class SaveStockData(DataBase):
 
     def __init__(self, api, apikey, class_save, frecuency, **kwards):
@@ -71,7 +70,6 @@ class SaveStockData(DataBase):
                 return None
         return self.__report_many_incidents(new_errors)
 
-SaveStockData.from_alphavantage(frecuency='1min', apikey='O39L8VIVYYJYUN3P').save_reporting_errors(attemps=3, stock_name=['TWTR','AAPL'])
 
 
 
