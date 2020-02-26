@@ -24,6 +24,11 @@ class CheckErrorsSaveStockDataIntraday:
                 raise ToDataBaseError(f'Invalid class, the class must have: {self.__REQUIRED_METHODS} methods', error)
 
 
+    def check_list_stocks_name(self, list_stock_name):
+        if not isinstance(list_stock_name, list):
+            return ToDataBaseError('You must pass a list of stocks names', TypeError)
+
+
     def __get_apis(self):
         collection_intraday=self.database_api_features.database[self.__COLLECTION_API_FEATURES]
         return list(map(lambda x: x['_id'], collection_intraday.find({}, projection='_id')))

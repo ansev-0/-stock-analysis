@@ -55,7 +55,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
         response = self.__read_from_alphavantage(company=company)
 
         if isinstance(response, tuple):
-            self.report_incident(api='alphavantage', tuple_error=response)
+            #self.report_incident(api='alphavantage', tuple_error=response)
             return response
 
         #Get data
@@ -144,6 +144,10 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
     @classmethod
     def compact_60min(cls, apikey, **kwards):
         return cls(frecuency='60min', apikey=apikey, outputsize='compact', **kwards)
+
+
+
+##############################################
 
 
 class ToDataBaseIntradayAlphaVantageMany(ToDataBaseIntradayAlphaVantage):
