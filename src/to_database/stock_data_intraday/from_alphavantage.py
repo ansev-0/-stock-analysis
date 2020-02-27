@@ -145,9 +145,6 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
 
 
 
-##############################################
-
-
 class ToDataBaseIntradayAlphaVantageMany(ToDataBaseIntradayAlphaVantage):
 
     __save_many=SaveMany()
