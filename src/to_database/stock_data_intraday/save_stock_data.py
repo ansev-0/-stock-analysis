@@ -101,7 +101,7 @@ class SaveStockData:
 
 
 
-class ApiSaveStockData(SaveStockData):
+class ControllerSaveStockData(SaveStockData):
 
     def set_acquisition_orders(self, list_orders):
         self.check_errors.check_list_stocks_name(list_orders)
