@@ -18,3 +18,6 @@ class AcquisitionIncidents(DataBase):
     def get_incident(self, api, query):
         return self.database[api].find_one({'query' : query})
 
+    def get_all_incidents(self, api):
+        return list(self.database[api].find({}))
+

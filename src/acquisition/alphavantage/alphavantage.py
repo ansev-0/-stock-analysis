@@ -27,7 +27,7 @@ class AlphaVantage:
             try:
                 response = self.request.get(params=query)
             except requests.exceptions.RequestException as error:
-                return self.__build_tuple_error(query=response.params,
+                return self.__build_tuple_error(query=query,
                                                 status_code=response.status_code,
                                                 error=error)
             json = response.json()
@@ -36,7 +36,7 @@ class AlphaVantage:
                 self.__check_response.pass_test(json, query)
             except AlphaVantageError:
                 if count_attemps == self.attemps:
-                    return self.__build_tuple_error(query=response.params,
+                    return self.__build_tuple_error(query=query,
                                                     status_code=response.status_code,
                                                     error=json.copy())
                     
