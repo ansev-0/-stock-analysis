@@ -92,7 +92,7 @@ class SaveStockData:
         count_attemps = 1
         while count_attemps < attemps:
             count_attemps += 1
-            new_errors = self.to_database.to_database_reporting_errors(list(new_errors))
+            new_errors = self.to_database.to_database_getting_errors(list(new_errors))
             if not new_errors:
                 return None
         self.__report_many_incidents(new_errors)
