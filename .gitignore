@@ -8,4 +8,5 @@ dist/
 /build/
 /src/*/*/tests/prueba.py
 /workspace.code-workspace
+/src/daily_acquisition.py
 
