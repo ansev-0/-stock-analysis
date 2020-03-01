@@ -1,4 +1,4 @@
-class AlphaVantageStatus:
+class AlphaVantageShowStatus:
 
     @staticmethod
     def notify_try_connect(query):
@@ -13,7 +13,7 @@ class AlphaVantageStatus:
         print('Invalid format received: \n', error)
     @staticmethod
     def notify_sleeping(delay):
-        print(f'Waiting {delay} for new attemp ')
+        print(f'Waiting {delay} seconds for new attemp\n')
 
     @staticmethod
     def notify_json_received_succesfully():

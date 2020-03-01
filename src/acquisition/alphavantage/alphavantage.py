@@ -5,7 +5,7 @@ from src.acquisition.errors_response import check_errors_alphavantage as errors_
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.builders import inlist
 from src.tools.mappers import switch_None
-from src.acquisition.show_status.show_status import AlphaVantageStatus
+from src.acquisition.show_status.status_alphavantage import AlphaVantageShowStatus
 
 class AlphaVantage:
 
@@ -17,7 +17,7 @@ class AlphaVantage:
         self.config(delays)
         self.__check_response = errors_response.ErrorsResponseApiAlphavantage()
         self.request = request_api.RequestsApi(base_url=self._AV_URL, **kwards)
-        self.show_status = AlphaVantageStatus()
+        self.show_status = AlphaVantageShowStatus()
 
     def config(self, delays = None):
         self.delays = switch_None(delays, [60,20])

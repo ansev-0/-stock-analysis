@@ -1,4 +1,5 @@
 from src.database.database import DataBase
+from src.to_database.show_status.status_todatabase_intraday import ToDataBaseIntradayShowStatus
 from src.to_database.stock_data_intraday.errors.check_to_database \
     import CheckErrorsToDataBase
 
@@ -11,6 +12,7 @@ class ToDataBaseIntraday(DataBase):
         self._frecuency = frecuency
         self.check_save_base = CheckErrorsToDataBase(frecuency=self._frecuency)
         self.check_save_base.check_parameter_create(create=new_database)
+        self.show_status = ToDataBaseIntradayShowStatus()
 
         if new_database == 'not create':
             self.check_save_base.check_frecuency_in_database()
@@ -18,10 +20,12 @@ class ToDataBaseIntraday(DataBase):
 
     def update_stock_data(self, list_dicts_to_update, company, **kwards):
         collection = self.database[company]
+        self.show_status.notify_try_update_database(company)
         for dict_to_update in list_dicts_to_update:
             collection.update_one({'_id' : dict_to_update['_id']},
                                   {'$set' : dict_to_update['data']},
                                   upsert=True,
                                   **kwards)
+        self.show_status.notify_database_updated()
 
 
