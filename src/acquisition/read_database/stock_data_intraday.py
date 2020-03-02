@@ -61,7 +61,7 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
     @staticmethod
     def __build_dataframe(dict_stock, start, end, format_index=None, **kwards):
         return build_dataframe_from_timeseries_dict(dataframe=dict_stock,
-                                                    format_index=format_index,
+                                                    format_output=format_index,
                                                     datetime_index=True,
                                                     ascending=True).loc[start:end]
 
@@ -71,4 +71,4 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
         dataframe.index = dataframe.index.astype(str)
         return dataframe.to_dict(orient=orient)
 
-print(GetStockDataIntraday1minFromDataBase().get(stock='TWTR', start='12-27-2019 09:35:00', end='01-12-2020 13:45:00'))
+print(GetStockDataIntraday1minFromDataBase().get(stock='TWTR', start='12-27-2019 09:35:00', end='01-13-2020 13:45:00'))
