@@ -112,7 +112,6 @@ class ControllerSaveStockData(SaveStockData):
         self.check_errors.check_list_stocks_name(list_orders)
         return self.acquistion_orders.set_acquisition_api_orders(api=self.api,
                                                                  list_orders=list_orders)
-
     def delete_acquistion_orders(self):
         return self.acquistion_orders.delete_acquisition_api_orders(api=self.api)
 
