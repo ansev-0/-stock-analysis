@@ -1,7 +1,7 @@
 from src.database.database import DataBase
-from src.read_databse.errors.check_stock_data_intraday \
+from src.read_database.errors.check_stock_data_intraday \
      import CheckErrorsGetStockDataIntraday1minFromDataBase
-from src.builders_formats.dataframe import build_dataframe_from_timeseries_dict
+from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 from functools import reduce
 import pandas as pd
 class GetStockDataIntraday1minFromDataBase(DataBase):
