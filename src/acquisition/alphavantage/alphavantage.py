@@ -5,6 +5,7 @@ from src.acquisition.errors_response import check_errors_alphavantage as errors_
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.builders import inlist
 from src.tools.mappers import switch_None
+from src.acquisition.show_status.status_alphavantage import AlphaVantageShowStatus
 
 class AlphaVantage:
 
@@ -16,6 +17,7 @@ class AlphaVantage:
         self.config(delays)
         self.__check_response = errors_response.ErrorsResponseApiAlphavantage()
         self.request = request_api.RequestsApi(base_url=self._AV_URL, **kwards)
+        self.show_status = AlphaVantageShowStatus()
 
     def config(self, delays = None):
         self.delays = switch_None(delays, [60,20])
@@ -25,8 +27,10 @@ class AlphaVantage:
         count_attemps = 0
         while count_attemps < self.attemps:
             try:
+                self.show_status.notify_try_connect(query)
                 response = self.request.get(params=query)
             except requests.exceptions.RequestException as error:
+                self.show_status.notify_request_exception(error)
                 return self.__build_tuple_error(query=query,
                                                 status_code=response.status_code,
                                                 error=error)
@@ -34,16 +38,21 @@ class AlphaVantage:
             count_attemps += 1 #attemp n
             try:
                 self.__check_response.pass_test(json, query)
-            except AlphaVantageError:
+            except AlphaVantageError as error:
+                self.show_status.notify_error_format(error)
                 if count_attemps == self.attemps:
                     return self.__build_tuple_error(query=query,
                                                     status_code=response.status_code,
                                                     error=json.copy())
                     
                 #try again
-                time.sleep(self.delays[count_attemps-1])
+                delay=self.delays[count_attemps-1]
+                self.show_status.notify_sleeping(delay)
+                time.sleep(delay)
+                
             else:
                 #connect successfull, save useful data
+                self.show_status.notify_json_received_succesfully()
                 return json
 
     @classmethod
