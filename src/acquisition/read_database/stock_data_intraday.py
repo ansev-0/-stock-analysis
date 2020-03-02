@@ -3,6 +3,7 @@ import pandas as pd
 from src.database.database import DataBase
 from src.read_database.errors.check_stock_data_intraday \
      import CheckErrorsGetStockDataIntraday1minFromDataBase
+from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 
 
 
@@ -59,11 +60,15 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
 
     @staticmethod
     def __build_dataframe(dict_stock, start, end, format_index=None, **kwards):
-        dataframe = pd.DataFrame.from_dict(dict_stock, orient='index').astype(float)
-        dataframe.index = pd.to_datetime(dataframe.index, format=format_index)
-        return dataframe.sort_index().loc[start:end]
+        return build_dataframe_from_timeseries_dict(dataframe=dict_stock,
+                                                    format_output=format_index,
+                                                    datetime_index=True,
+                                                    ascending=True).loc[start:end]
+
 
     @staticmethod
     def __get_dict_from_dataframe(dataframe, orient='index', **kwards):
         dataframe.index = dataframe.index.astype(str)
         return dataframe.to_dict(orient=orient)
+
+print(GetStockDataIntraday1minFromDataBase().get(stock='TWTR', start='12-27-2019 09:35:00', end='01-12-2020 13:45:00'))
