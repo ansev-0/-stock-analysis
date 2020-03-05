@@ -1,5 +1,6 @@
 import requests
 import time
+from functools import wraps
 from src import request_api
 from src.acquisition.errors_response import check_errors_alphavantage as errors_response
 from src.exceptions.acquisition_exceptions import AlphaVantageError
@@ -57,7 +58,7 @@ class AlphaVantage:
 
     @classmethod
     def _get_data(cls, func):
-
+        @wraps(func)
         def read_url(self, *args, **kwards):
              func_params = dict(zip(map(str.lower, func.__code__.co_varnames[1:]), func(self, **kwards)))
              query = dict(func_params, **self.default_params)
