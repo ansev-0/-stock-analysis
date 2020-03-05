@@ -6,6 +6,11 @@ from src.read_database.errors.check_stock_data_intraday \
 from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 
 class GetStockDataIntraday1minFromDataBase(DataBase):
+    '''
+
+    This class is used for reading the database stock_data_intraday_1min.
+
+    '''
 
     DATABASE_NAME = 'stock_data_intraday_1min'
     def __init__(self, format_output='dataframe'):
@@ -14,6 +19,7 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
         self.check_errors = CheckErrorsGetStockDataIntraday1minFromDataBase()
 
     def get(self, stock, start, end, **kwards):
+
         '''
 
         This function get stock data from stock_data_intraday_1min data base between two dates:
@@ -21,12 +27,12 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
 
         Parameters
         --------------
-
         stock: label(name) of stock data.
         start: str or pd.Timedelta.
         end str or pd.Timedelta.
 
         '''
+
         dataframe = (
             self.__build_dataframe(
                 dict_stock=self.__get_dict_from_database(stock,
