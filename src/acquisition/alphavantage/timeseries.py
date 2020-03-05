@@ -1,9 +1,14 @@
 from src.acquisition.alphavantage.alphavantage import AlphaVantage 
 
 class TimeSeries(AlphaVantage):
-    
+    '''
+
+    This class is used to get  stock data time series from Alphavantage API.
+    Api reference: https://www.alphavantage.co/documentation/#time-series-data.
+
+    '''
     @AlphaVantage._get_data
-    def get_intraday(self, symbol, interval, outputsize = 'compact'):
+    def get_intraday(self, symbol, interval, outputsize='compact'):
         FUNCTION = 'TIME_SERIES_INTRADAY'
         return symbol, interval, outputsize, FUNCTION
 

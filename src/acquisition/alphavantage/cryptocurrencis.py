@@ -1,6 +1,12 @@
 from src.acquisition.alphavantage.alphavantage import AlphaVantage 
 
 class Cryptocurrencis(AlphaVantage):
+    '''
+
+    This class is used to get Cryptocurrencis data from Alphavantage API.
+    Api reference: https://www.alphavantage.co/documentation/#digital-currency.
+
+    '''
 
     @AlphaVantage._get_data
     def get_exchange_rate(self, from_currency, to_currency):

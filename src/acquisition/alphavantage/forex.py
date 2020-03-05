@@ -1,6 +1,12 @@
-from src.acquisition.alphavantage.alphavantage import AlphaVantage 
+from src.acquisition.alphavantage.alphavantage import AlphaVantage
 
 class Forex(AlphaVantage):
+    '''
+
+    This class is used to get Forex data from Alphavantage API.
+    Api reference: https://www.alphavantage.co/documentation/#fx.
+
+    '''
 
     @AlphaVantage._get_data
     def get_exchange_rate(self, from_currency, to_currency):
@@ -8,12 +14,12 @@ class Forex(AlphaVantage):
         return from_currency, to_currency, FUNCTION
 
     @AlphaVantage._get_data
-    def get_intraday(self, from_symbol, to_symbol, interval, outputsize = 'compact'):
+    def get_intraday(self, from_symbol, to_symbol, interval, outputsize='compact'):
         FUNCTION = 'FX_INTRADAY'
         return from_symbol, to_symbol, interval, outputsize, FUNCTION
 
     @AlphaVantage._get_data
-    def get__daily(self, from_symbol, to_symbol, outputsize = 'compact'):
+    def get__daily(self, from_symbol, to_symbol, outputsize='compact'):
         FUNCTION = 'FX_DAILY'
         return from_symbol, to_symbol, outputsize, FUNCTION
 
