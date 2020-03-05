@@ -1,13 +1,19 @@
+from functools import wraps
 import requests
 import time
 from src import request_api
 from src.acquisition.errors_response import check_errors_alphavantage as errors_response
 from src.exceptions.acquisition_exceptions import AlphaVantageError
-from src.tools.builders import inlist
-from src.tools.mappers import switch_None
+from src.tools.mappers import switch_none
 from src.acquisition.show_status.status_alphavantage import AlphaVantageShowStatus
 
 class AlphaVantage:
+
+    '''
+    This class is used to get data from
+    https://www.alphavantage.co/
+
+    '''
 
     _AV_URL = "https://www.alphavantage.co/query?"
     def __init__(self, apikey, delays=None, **kwards):
@@ -19,8 +25,8 @@ class AlphaVantage:
         self.request = request_api.RequestsApi(base_url=self._AV_URL, **kwards)
         self.show_status = AlphaVantageShowStatus()
 
-    def config(self, delays = None):
-        self.delays = switch_None(delays, [60,20])
+    def config(self, delays=None):
+        self.delays = switch_none(delays, [60, 20])
         self.attemps = len(self.delays) + 1
 
     def __read(self, query):
@@ -46,10 +52,9 @@ class AlphaVantage:
                                                     error=json.copy())
                     
                 #try again
-                delay=self.delays[count_attemps-1]
+                delay = self.delays[count_attemps-1]
                 self.show_status.notify_sleeping(delay)
                 time.sleep(delay)
-                
             else:
                 #connect successfull, save useful data
                 self.show_status.notify_json_received_succesfully()
@@ -58,14 +63,15 @@ class AlphaVantage:
     @classmethod
     def _get_data(cls, func):
 
+        @wraps(func)
         def read_url(self, *args, **kwards):
-             func_params = dict(zip(map(str.lower, func.__code__.co_varnames[1:]), func(self, **kwards)))
-             query = dict(func_params, **self.default_params)
-             return self.__read(query=query)
+            func_params = dict(zip(map(str.lower, func.__code__.co_varnames[1:]),
+                                   func(self, **kwards)))
+            query = dict(func_params, **self.default_params)
+            return self.__read(query=query)
 
         return read_url
 
     @staticmethod
     def __build_tuple_error(query, status_code, error):
         return query, {'status code' : status_code, 'response': error}
-

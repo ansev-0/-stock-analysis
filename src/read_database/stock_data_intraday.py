@@ -13,8 +13,9 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
         self.func_transform_dataframe = self.__get_function_transform_dataframe(format_output)
         self.check_errors = CheckErrorsGetStockDataIntraday1minFromDataBase()
 
-    def get_stock(self, stock, start, end, **kwards):
+    def get(self, stock, start, end, **kwards):
         '''
+
         This function get stock data from stock_data_intraday_1min data base between two dates:
         start and end (inclusive).
 
@@ -24,6 +25,7 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
         stock: label(name) of stock data.
         start: str or pd.Timedelta.
         end str or pd.Timedelta.
+
         '''
         dataframe = (
             self.__build_dataframe(

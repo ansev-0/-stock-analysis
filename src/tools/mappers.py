@@ -6,7 +6,7 @@ def map_dict_from_underscore(dict_to_map,function,n,default_key):
     except KeyError:
         return  dict_to_map[default_key]
 
-def switch_None(var_None,var_else):
+def switch_none(var_None,var_else):
     
     if var_None is not None:
         return var_None
