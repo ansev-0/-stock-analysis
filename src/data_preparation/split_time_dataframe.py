@@ -1,6 +1,6 @@
 import pandas as pd
-from src.data_preparation.errors.check_time_series_dataframe import CheckSplitDataFrameByGroups
-from src.data_preparation.errors.check_time_series_dataframe import CheckSplitDataFrame
+from src.data_preparation.errors.check_split_time_dataframe import CheckSplitDataFrameByGroups
+from src.data_preparation.errors.check_split_time_dataframe import CheckSplitDataFrame
 from src.tools.check_components import eval_type_argument
 
 class SplitDataFrameByGroups:
@@ -17,8 +17,7 @@ class SplitDataFrameByGroups:
 
         if self.__format_output == list:
             return [group for by, group in groups]
-        else:
-            return dict(groups.__iter__())
+        return dict(groups.__iter__())
 
 class SplitDataFrame(SplitDataFrameByGroups):
 
