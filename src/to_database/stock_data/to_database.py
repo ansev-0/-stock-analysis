@@ -1,5 +1,5 @@
 from src.database.database import DataBase
-from src.to_database.stock_data.show_status.status_todatabase import ToDataBaseShowStatus
+from src.to_database.stock_data.show_status.status_to_database import ToDataBaseShowStatus
 from src.to_database.stock_data.errors.check_to_database import CheckErrorsToDataBase
 
 class ToDataBaseStockData:
