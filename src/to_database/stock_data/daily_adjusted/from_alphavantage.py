@@ -1,10 +1,9 @@
 from collections import defaultdict
 import pandas as pd
-from src.to_database.stock_data.daily_adjusted.save_one import ToDataBaseStockDataDailyAd
+from src.to_database.stock_data.daily_adjusted.save_one import ToDataBaseStockDataDailyAdj
 from src.acquisition.alphavantage import timeseries
 from src.to_database.stock_data.save_many import SaveMany
-from src.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
-    import CheckErrorsFromAlphaVantage
+
 
 class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
     '''
@@ -35,11 +34,8 @@ class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
         self._outputsize = outputsize
 
         #Create connection to the database
-        super().__init__(frecuency=frecuency, new_database=new_database)
+        super().__init__(new_database=new_database)
 
-        #Check not error in frecuency
-        self.__check_alphavantage = CheckErrorsFromAlphaVantage(frecuency=self._frecuency)
-        self.__check_alphavantage.check_frecuency_in_api()
 
         # Create reader from AlphaVantage
         self.__reader = timeseries.TimeSeries(apikey=apikey, **kwards)
@@ -63,8 +59,6 @@ class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
         #acquistion.errors_response.ErrorsResponseApiAlphavantage().
         key_data = list(response)[1]
         data = response[key_data]
-        #check frecuency in key
-        self.__check_alphavantage.check_frecuency_in_key_data(key_data)
         #Update collection
         #Get correct format
         list_dicts_to_update = self.__create_dicts_with_same_id(data)
@@ -84,7 +78,7 @@ class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
 
         cumulative_dict = defaultdict(dict)
         for date, values in data.items():
-            cumulative_dict[date[:10]].update({date : {name[3:] : value
+            cumulative_dict[date[:7]].update({date : {name[3:] : value
                                                        for name, value in values.items()}})
 
         return list(map(lambda items: {'_id' : pd.to_datetime(items[0]),
@@ -99,53 +93,19 @@ class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
         returns a dictionary if the answer does not contain errors,
         and a list if there are errors.
         '''
-        return self.__reader.get_intraday(symbol=company,
-                                          interval=self._frecuency,
-                                          outputsize=self._outputsize)
+        return self.__reader.get_daily_adjusted(symbol=company,
+                                                outputsize=self._outputsize)
 
     @classmethod
-    def full_1min(cls, apikey, **kwards):
-        return cls(frecuency='1min', apikey=apikey, outputsize='full', **kwards)
+    def full(cls, apikey, **kwards):
+        return cls(apikey=apikey, outputsize='full', **kwards)
 
     @classmethod
-    def compact_1min(cls, apikey, **kwards):
-        return cls(frecuency='1min', apikey=apikey, outputsize='compact', **kwards)
-
-    @classmethod
-    def full_5min(cls, apikey, **kwards):
-        return cls(frecuency='5min', apikey=apikey, outputsize='full', **kwards)
-
-    @classmethod
-    def compact_5min(cls, apikey, **kwards):
-        return cls(frecuency='5min', apikey=apikey, outputsize='compact', **kwards)
-
-    @classmethod
-    def full_15min(cls, apikey, **kwards):
-        return cls(frecuency='15min', apikey=apikey, outputsize='full', **kwards)
-
-    @classmethod
-    def compact_15min(cls, apikey, **kwards):
-        return cls(frecuency='15min', apikey=apikey, outputsize='compact', **kwards)
-
-    @classmethod
-    def full_30min(cls, apikey, **kwards):
-        return cls(frecuency='30min', apikey=apikey, outputsize='full', **kwards)
-
-    @classmethod
-    def compact_30min(cls, apikey, **kwards):
-        return cls(frecuency='30min', apikey=apikey, outputsize='compact', **kwards)
-
-    @classmethod
-    def full_60min(cls, apikey, **kwards):
-        return cls(frecuency='60min', apikey=apikey, outputsize='full', **kwards)
-
-    @classmethod
-    def compact_60min(cls, apikey, **kwards):
-        return cls(frecuency='60min', apikey=apikey, outputsize='compact', **kwards)
+    def compact(cls, apikey, **kwards):
+        return cls(apikey=apikey, outputsize='compact', **kwards)
 
 
-
-class ToDataBaseIntradayAlphaVantageMany(ToDataBaseIntradayAlphaVantage):
+class ToDataBaseDailyAdjAlphaVantageMany(ToDataBaseDailyAdjAlphaVantage):
 
     __save_many=SaveMany()
     
@@ -154,3 +114,4 @@ class ToDataBaseIntradayAlphaVantageMany(ToDataBaseIntradayAlphaVantage):
 
     def to_database_ignoring_errors(self, list_company):
         return self.__save_many.save(self.to_database, list_company)
+
