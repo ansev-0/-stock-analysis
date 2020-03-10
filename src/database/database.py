@@ -3,6 +3,17 @@ from pymongo import MongoClient
 class DataBase:
     '''
     This class creates the connection with the dababase specified
+    It is required to establish the client.
     '''
-    def __init__(self, database_name):
-        self.database = MongoClient()[database_name]
+
+    @classmethod
+    def set_client(cls, client):
+        cls.client = client
+    
+    def connect(self, database_name):
+        try:
+            self.database = self.client[database_name]
+        except Exception as error:
+            print(f'It was not possible to create database connection{database_name}\n', error)
+
+
