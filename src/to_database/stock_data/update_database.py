@@ -1,10 +1,10 @@
 from src.database.database import DataBase
-from src.to_database.stock_data.show_status.status_to_database import ToDataBaseShowStatus
-from src.to_database.stock_data.errors.check_to_database import CheckErrorsToDataBase
+from src.to_database.stock_data.show_status.status_update_database import UpdateDataBaseShowStatus
+from src.to_database.stock_data.errors.check_update_database import CheckErrorsUpdateDataBase
 
-class ToDataBaseStockData:
+class UpdateStockData:
     def __init__(self, database_name, new_database='create'):
-        self.check_errors = CheckErrorsToDataBase()
+        self.check_errors = CheckErrorsUpdateDataBase()
         #check parameter new_database is correct
         self.check_errors.check_parameter_create(new_database)
         #create connection
@@ -14,9 +14,9 @@ class ToDataBaseStockData:
         self.__database.connect(database_name=database_name)
         
         #Create object to notify events
-        self.show_status = ToDataBaseShowStatus(database_name)
+        self.show_status = UpdateDataBaseShowStatus(database_name)
         
-    def update_stock_data(self, list_dicts_to_update, company, **kwards):
+    def update(self, list_dicts_to_update, company, **kwards):
         collection = self.__database.database[company]
         self.show_status.notify_try_update_database(company=company, database = self.__database.database)
         for dict_to_update in list_dicts_to_update:

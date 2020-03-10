@@ -1,11 +1,12 @@
 from collections import defaultdict
 import pandas as pd
-from src.to_database.stock_data.daily_adjusted.save_one import ToDataBaseStockDataDailyAdj
+from src.to_database.stock_data.daily_adjusted.update_daily_adjusted \
+     import UpdateDailyAdj
 from src.acquisition.alphavantage import timeseries
 from src.to_database.stock_data.save_many import SaveMany
 
 
-class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
+class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
     '''
     This class is an interface to save the daily adjusted data of the Alphavantage API
 
@@ -63,7 +64,7 @@ class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
         #Get correct format
         list_dicts_to_update = self.__create_dicts_with_same_id(data)
         #Call to update
-        self.update_stock_data(list_dicts_to_update=list_dicts_to_update, company=company)
+        self.update(list_dicts_to_update=list_dicts_to_update, company=company)
 
         return None
 
@@ -73,7 +74,7 @@ class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
         This function adapts the format of the json received from the Alphavantage API
         to the format necessary to update the database using :
 
-        update_stock_data
+        update
         '''
 
         cumulative_dict = defaultdict(dict)
@@ -105,7 +106,7 @@ class ToDataBaseDailyAdjAlphaVantage(ToDataBaseStockDataDailyAdj):
         return cls(apikey=apikey, outputsize='compact', **kwards)
 
 
-class ToDataBaseDailyAdjAlphaVantageMany(ToDataBaseDailyAdjAlphaVantage):
+class UpdateDailyAdjAlphaVantageMany(UpdateDailyAdjAlphaVantage):
 
     __save_many=SaveMany()
     

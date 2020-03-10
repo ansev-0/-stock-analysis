@@ -1,7 +1,7 @@
 from src.exceptions.to_database_exceptions import ToDataBaseError
 from src.database.database import DataBase
 
-class CheckErrorsToDataBase:
+class CheckErrorsUpdateDataBase:
 
     __database = DataBase()
     @staticmethod

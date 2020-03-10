@@ -1,7 +1,7 @@
 from src.database.database import DataBase
 from src.exceptions.to_database_exceptions import ToDataBaseError
 
-class CheckErrorsSaveStockDataIntraday:
+class CheckErrorsSaveIntradayFromApi:
 
     COLLECTION_API_FEATURES = 'intraday'
     REQUIRED_METHODS = ['to_database_getting_errors', 'to_database_ignoring_errors']

@@ -1,12 +1,13 @@
 from collections import defaultdict
 import pandas as pd
-from src.to_database.stock_data.intraday.save_one import ToDataBaseStockDataIntraday
+from src.to_database.stock_data.intraday.update_intraday \
+     import UpdateIntraday
 from src.acquisition.alphavantage import timeseries
 from src.to_database.stock_data.save_many import SaveMany
 from src.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
     import CheckErrorsFromAlphaVantage
 
-class ToDataBaseIntradayAlphaVantage(ToDataBaseStockDataIntraday):
+class UpdateIntradayAlphaVantage(UpdateIntraday):
     '''
     This class is an interface to save the intraday data of the Alphavantage API
 
@@ -69,7 +70,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseStockDataIntraday):
         #Get correct format
         list_dicts_to_update = self.__create_dicts_with_same_id(data)
         #Call to update
-        self.update_stock_data(list_dicts_to_update=list_dicts_to_update, company=company)
+        self.update(list_dicts_to_update=list_dicts_to_update, company=company)
 
         return None
 
@@ -79,7 +80,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseStockDataIntraday):
         This function adapts the format of the json received from the Alphavantage API
         to the format necessary to update the database using :
 
-        update_stock_data
+        update
         '''
 
         cumulative_dict = defaultdict(dict)
@@ -145,7 +146,7 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseStockDataIntraday):
 
 
 
-class ToDataBaseIntradayAlphaVantageMany(ToDataBaseIntradayAlphaVantage):
+class UpdateIntradayAlphaVantageMany(UpdateIntradayAlphaVantage):
 
     __save_many=SaveMany()
     

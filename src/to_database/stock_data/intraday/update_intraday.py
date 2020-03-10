@@ -1,6 +1,6 @@
-from src.to_database.stock_data.to_database import ToDataBaseStockData
+from src.to_database.stock_data.update_database import UpdateStockData
 
-class ToDataBaseStockDataIntraday(ToDataBaseStockData):
+class UpdateIntraday(UpdateStockData):
 
     def __init__(self, frecuency, new_database='create'):
         self._frecuency=frecuency

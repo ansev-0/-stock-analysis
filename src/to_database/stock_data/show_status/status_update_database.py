@@ -1,4 +1,4 @@
-class ToDataBaseShowStatus:
+class UpdateDataBaseShowStatus:
 
     def __init__(self, database_name):
         self.database_name = database_name
