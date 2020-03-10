@@ -14,7 +14,7 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
 
     DATABASE_NAME = 'stock_data_intraday_1min'
     def __init__(self, format_output='dataframe'):
-        super().__init__(name_database=self.DATABASE_NAME)
+        super().__init__(database_name=self.DATABASE_NAME)
         self.func_transform_dataframe = self.__get_function_transform_dataframe(format_output)
         self.check_errors = CheckErrorsGetStockDataIntraday1minFromDataBase()
 

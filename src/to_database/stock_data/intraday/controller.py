@@ -1,9 +1,9 @@
-from src.to_database.stock_data_intraday import from_alphavantage
-from src.to_database.stock_data_intraday.errors.check_save_stock_data \
+from src.to_database.stock_data.intraday import from_alphavantage
+from src.to_database.stock_data.intraday.errors.check_save_stock_data \
     import CheckErrorsSaveStockDataIntraday
 from src.acquisition_incidents.incidents import AcquisitionIncidents
 from src.acquisition_orders.acquisition_orders import AcquisitionOrders
-from src.to_database.show_status.status_save_stock_data import SaveStockDataShowStatus
+from src.to_database.stock_data.show_status.status_save_stock_data import SaveStockDataShowStatus
 
 class SaveStockData:
     api_mapper={'alphavantage' : from_alphavantage.ToDataBaseIntradayAlphaVantageMany}
@@ -90,7 +90,6 @@ class SaveStockData:
                                                         tuple_error))
                                                )
 
-
     def __check_and_report_errors(self, attemps, errors):
         new_errors = errors
         count_attemps = 1
@@ -102,8 +101,6 @@ class SaveStockData:
                 return None
         self.__report_many_incidents(new_errors)
         return new_errors
-
-
 
 
 class ControllerSaveStockData(SaveStockData):

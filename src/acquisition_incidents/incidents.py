@@ -2,7 +2,7 @@ from src.database.database import DataBase
 
 class AcquisitionIncidents(DataBase):
     def __init__(self):
-        super().__init__(name_database='acquisition_incidents')
+        super().__init__(database_name='acquisition_incidents')
         
     def report(self, api, query, error_returned):
         return self.database[api].update_one({'query' : query},

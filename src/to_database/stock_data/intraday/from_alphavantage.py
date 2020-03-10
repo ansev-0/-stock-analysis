@@ -1,12 +1,12 @@
 from collections import defaultdict
 import pandas as pd
-from src.to_database.stock_data_intraday.todatabase_intraday import ToDataBaseIntraday
+from src.to_database.stock_data.intraday.save_one import ToDataBaseStockDataIntraday
 from src.acquisition.alphavantage import timeseries
-from src.to_database.save_many import SaveMany
-from src.to_database.stock_data_intraday.errors.check_errors_api.check_from_alphavantage \
+from src.to_database.stock_data.save_many import SaveMany
+from src.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
     import CheckErrorsFromAlphaVantage
 
-class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
+class ToDataBaseIntradayAlphaVantage(ToDataBaseStockDataIntraday):
     '''
     This class is an interface to save the intraday data of the Alphavantage API
 
@@ -145,14 +145,13 @@ class ToDataBaseIntradayAlphaVantage(ToDataBaseIntraday):
 
 
 
-
 class ToDataBaseIntradayAlphaVantageMany(ToDataBaseIntradayAlphaVantage):
 
-    save_many=SaveMany()
+    __save_many=SaveMany()
     
     def to_database_getting_errors(self, list_company):
-        return self.save_many.save_and_return_errors(self.to_database, list_company)
+        return self.__save_many.save_and_return_errors(self.to_database, list_company)
 
     def to_database_ignoring_errors(self, list_company):
-        return self.save_many.save(self.to_database, list_company)
+        return self.__save_many.save(self.to_database, list_company)
         

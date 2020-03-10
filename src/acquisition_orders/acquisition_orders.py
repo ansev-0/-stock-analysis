@@ -3,7 +3,7 @@ from src.database.database import DataBase
 class AcquisitionOrders(DataBase):
 
     def __init__(self, collection):
-        super().__init__(name_database='acquisition_orders')
+        super().__init__(database_name='acquisition_orders')
         self.collection=self.database[collection]
 
     def set_acquisition_api_orders(self, api, list_orders, **kwards):

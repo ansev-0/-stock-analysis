@@ -7,7 +7,7 @@ class CheckErrorsSaveStockDataIntraday:
     REQUIRED_METHODS = ['to_database_getting_errors', 'to_database_ignoring_errors']
 
     def __init__(self, api):
-        self.database_api_features = DataBase(name_database='api_features')
+        self.database_api_features = DataBase(database_name='api_features')
         self.api=api
 
     def check_api_supported(self):

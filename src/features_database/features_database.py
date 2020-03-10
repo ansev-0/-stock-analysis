@@ -3,9 +3,9 @@ from src.database.database import DataBase
 class FeaturesDataBase(DataBase):
     __SUPPORTED_DATABASE = ['database_features', 'api_features']
 
-    def __init__(self, name_database, collection, document_id):
-        self.check_supported(name_database)
-        super().__init__(name_database=name_database)
+    def __init__(self, database_name, collection, document_id):
+        self.check_supported(database_name)
+        super().__init__(database_name=database_name)
         self._collection = self.database[collection]
         self._document_id = document_id
 
@@ -16,13 +16,13 @@ class FeaturesDataBase(DataBase):
 
     @classmethod
     def databases(cls, collection, document_id):
-        return cls(name_database='database_features',
+        return cls(database_name='database_features',
                    collection=collection,
                    document_id=document_id)
 
     @classmethod
     def api_alphavantage(cls, collection):
-        return cls(name_database='api_features',
+        return cls(database_name='api_features',
                    collection=collection,
                    document_id='alphavantage')
                    
