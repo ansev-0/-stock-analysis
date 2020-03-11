@@ -8,7 +8,7 @@ class CheckErrorsFromAlphaVantage:
     '''
 
     def __init__(self, frecuency):
-        self.features_get = FeatureGet.api_alphavantage(collection='intraday')
+        self.features_get = FeatureGet.api_alphavantage(collection='stock_data_intraday')
         self.features_get.get_features()
         self.__frecuency = frecuency
 

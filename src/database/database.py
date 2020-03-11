@@ -14,6 +14,6 @@ class DataBase:
         try:
             self.database = self.client[database_name]
         except Exception as error:
-            print(f'It was not possible to create database connection{database_name}\n', error)
+            print(f'It was not possible to create database connection {database_name}\n', error)
 
 

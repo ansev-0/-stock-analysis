@@ -1,4 +1,4 @@
-from src.to_database.stock_data.intraday.controller import ControllerSaveIntradayFromApi
+from src.to_database.stock_data.intraday.save_from_api import SaveIntradayFromApi
 from src.tools.inputs import Input
 from pymongo import MongoClient
 from src.database.database import DataBase
@@ -188,7 +188,7 @@ class MainMenu(Menu):
         
 
         config=self.controller_config()
-        self.controller = ControllerSaveIntradayFromApi(**config)
+        self.controller = SaveIntradayFromApi(**config)
         self.acquisition_orders_menu = AcquisitionOrdersMenu(controller=self.controller)
         self.save_stock_data_menu = SaveStockDataMenu(controller=self.controller)
         self.incidents_menu = IncidentsMenu(controller=self.controller)
@@ -200,6 +200,7 @@ class MainMenu(Menu):
         super().__init__(options_menu=self.options_menu, switch_functions=self.switch_functions)
 
     def controller_config(self):
+
         api=input('Please enter api:\n')
         apikey=input('Please enter apikey:\n')
         frecuency=input('Please enter frecuency:\n')
@@ -213,7 +214,7 @@ class MainMenu(Menu):
 DataBase.set_client(client=MongoClient())
 MainMenu().run()
 
-#controller=ControllerSaveIntradayFromApi.from_alphavantage(frecuency='1min', apikey='O39L8VIVYYJYUN3P')
+#controller=SaveIntradayFromApi.from_alphavantage(frecuency='1min', apikey='O39L8VIVYYJYUN3P')
 #incidents=controller.get_all_incidents()
 #print('Current incidents: \n', incidents)
 #controller.save_reporting_errors(attemps=2)

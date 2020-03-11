@@ -12,10 +12,6 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
 
     Parameters
     ----------
-    frecuency: str.
-        frequency of the data to read,
-        it must be supported by the API, consult:
-        https://www.alphavantage.co/documentation/#dailyadj
 
     apikey: str.
         key of API Alphavantage.
