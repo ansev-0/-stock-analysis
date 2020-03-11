@@ -5,14 +5,12 @@ class CheckErrorsSaveStockDataFromApi(CheckErrorsSaveFromApi):
 
     REQUIRED_METHODS = ['to_database_getting_errors', 'to_database_ignoring_errors']
     
-    def check_methods_supported(self, class_save):
+    def check_methods_supported(self, object_save):
         for method in self.REQUIRED_METHODS:
-            try:
-                getattr(class_save, method)
-            except AttributeError as error:
+            if not hasattr(object_save, method):
                 raise ToDataBaseError(f'Invalid class, the class must have:\
                                       {self.REQUIRED_METHODS} methods',
-                                      error)
+                                      AttributeError)
                                       
     @staticmethod
     def check_list_stocks_name(list_stock_name):

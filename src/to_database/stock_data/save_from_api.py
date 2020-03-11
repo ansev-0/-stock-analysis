@@ -3,16 +3,22 @@ from src.acquisition_orders.acquisition_orders import AcquisitionOrders
 from src.to_database.stock_data.show_status.status_save_stock_data import SaveStockDataShowStatus
 from src.to_database.stock_data.errors.check_save_from_api \
     import CheckErrorsSaveStockDataFromApi
+from src.to_database.stock_data.intraday import from_alphavantage as intraday_alphavantage
+from src.to_database.stock_data.daily_adjusted import from_alphavantage as dailyadj_alphavantage
+from pymongo import MongoClient
+from src.database.database import DataBase
 
 class SaveStockDataFromApi:
 
-    def __init__(self, api, collection, data_collector, **kwards):
+    def __init__(self, api, collection, data_collector):
         self.api = api
         self.check_errors = CheckErrorsSaveStockDataFromApi(api=api, collection=collection)
         #check api supported
         self.check_errors.check_api_supported()
         #Get object to save 
         self.to_database = data_collector
+        #Check object has methods to save
+        self.check_errors.check_methods_supported(self.to_database)
         #create connect with orders
         self.acquistion_orders = AcquisitionOrders(collection=collection)
         #Create object to report incidents saving data
@@ -63,7 +69,6 @@ class SaveStockDataFromApi:
     def delete_incident(self, query):
         return self.aquisition_incidents.delete_incident(api=self.api, query=query)
 
-    
     def __get_orders(self, stock_names):
 
         '''
@@ -96,7 +101,6 @@ class SaveStockDataFromApi:
                                                         tuple_error))
                                                 )
 
-
     def __check_and_report_errors(self, attemps, errors):
         new_errors = errors
         count_attemps = 1
@@ -108,3 +112,28 @@ class SaveStockDataFromApi:
                 return None
         self.__report_many_incidents(new_errors)
         return new_errors
+
+    @classmethod
+    def intraday_alphavantage(cls, frecuency, apikey, **kwards):
+        class_collector = cls.__get_intraday_collector('alphavantage')
+        return cls(api='alphavantage',
+                   data_collector=class_collector(frecuency=frecuency,
+                                                  apikey=apikey, **kwards),
+                   collection='stock_data_intraday')
+    @classmethod
+    def dailyadj_alphavantage(cls, apikey, **kwards):
+        class_collector = cls.__get_dailyadj_collector('alphavantage')
+        return cls(api='alphavantage',
+                   data_collector=class_collector(apikey=apikey, **kwards),
+                   collection='stock_data_dailyadj')
+
+    @classmethod
+    def __get_intraday_collector(cls, api):
+        return {'alphavantage' : intraday_alphavantage.UpdateIntradayAlphaVantageMany}[api]
+    @classmethod
+    def __get_dailyadj_collector(cls, api):
+        return {'alphavantage' : dailyadj_alphavantage.UpdateDailyAdjAlphaVantageMany}[api]
+
+DataBase.set_client(client=MongoClient())        
+object_save = SaveStockDataFromApi.intraday_alphavantage(frecuency='1min', apikey='O39L8VIVYYJYUN3P', outputsize='compact')
+object_save.save_reporting_errors(attemps=2)
