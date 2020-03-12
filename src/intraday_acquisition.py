@@ -1,4 +1,4 @@
-from src.to_database.stock_data.intraday.save_from_api import SaveIntradayFromApi
+from src.to_database.stock_data.save_from_api import SaveStockDataFromApi
 from src.tools.inputs import Input
 from pymongo import MongoClient
 from src.database.database import DataBase
@@ -186,9 +186,8 @@ class MainMenu(Menu):
 
     def __init__(self):
         
-
-        config=self.controller_config()
-        self.controller = SaveIntradayFromApi(**config)
+        self.__class_controller=self.__get_class_controller()
+        self.controller_config()
         self.acquisition_orders_menu = AcquisitionOrdersMenu(controller=self.controller)
         self.save_stock_data_menu = SaveStockDataMenu(controller=self.controller)
         self.incidents_menu = IncidentsMenu(controller=self.controller)
@@ -200,21 +199,50 @@ class MainMenu(Menu):
         super().__init__(options_menu=self.options_menu, switch_functions=self.switch_functions)
 
     def controller_config(self):
+        controller_config = dict(**self.__get_class_parameters(), **self.__get_others_params())
+        self.controller = self.__class_controller(**dict({'api' : self.__api}, **controller_config))
 
-        api=input('Please enter api:\n')
-        apikey=input('Please enter apikey:\n')
-        frecuency=input('Please enter frecuency:\n')
+    def __get_others_params(self):
         print('You can enter a dict of others params. \n')
         try:
-            other_params = Input().get_dict()
+            return Input().get_dict()
         except Exception:
-            other_params = {}
-        return dict({'api' : api, 'frecuency' : frecuency , 'apikey' : apikey}, **other_params)
+            return {}
 
+    def __get_class_parameters(self):
+        apikey=input('Please enter apikey:\n')
+        others_class_params={}
+        if 'intraday' in self.__class_controller.__name__:
+            others_class_params['frecuency'] = input('Please enter frecuency:\n')
+        
+        return dict({'apikey' : apikey}, **others_class_params)
+
+    def __get_class_controller(self):
+        mapper = {'intraday' : {'alphavantage' : SaveStockDataFromApi.intraday_alphavantage},
+                  'daily_adjusted' : {'alphavantage' : SaveStockDataFromApi.dailyadj_alphavantage}}
+        
+        stock_data_type = input('Please enter stock data type:\n')
+        try:
+
+            api_mapper = mapper[stock_data_type]
+        except Exception:
+            raise ValueError('Invalid stock data type')
+        else:
+            api=input('Please enter api:\n')
+            try:
+                class_save=api_mapper[api]
+            except Exception:
+                raise ValueError('Invalid api')
+            else:
+                self.__api = api
+                self.__stock_data_type = stock_data_type
+                return class_save
+
+    
 DataBase.set_client(client=MongoClient())
 MainMenu().run()
 
-#controller=SaveIntradayFromApi.from_alphavantage(frecuency='1min', apikey='O39L8VIVYYJYUN3P')
+#controller=SaveStockDataFromApi.from_alphavantage(frecuency='1min', apikey='O39L8VIVYYJYUN3P')
 #incidents=controller.get_all_incidents()
 #print('Current incidents: \n', incidents)
 #controller.save_reporting_errors(attemps=2)

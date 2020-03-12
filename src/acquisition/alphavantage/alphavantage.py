@@ -37,9 +37,14 @@ class AlphaVantage:
                 response = self.request.get(params=query)
             except requests.exceptions.RequestException as error:
                 self.show_status.notify_request_exception(error)
-                return self.__build_tuple_error(query=query,
-                                                status_code=response.status_code,
-                                                error=error)
+                try:
+                    status_code = response.status_code
+                except Exception:
+                    status_code = None
+                finally:
+                    return self.__build_tuple_error(query=query,
+                                                    status_code=status_code,
+                                                    error=error)
             json = response.json()
             count_attemps += 1 #attemp n
             try:
@@ -56,7 +61,7 @@ class AlphaVantage:
                 self.show_status.notify_sleeping(delay)
                 time.sleep(delay)
             else:
-                #connect successfull, save useful data
+                #connect successful, save useful data
                 self.show_status.notify_json_received_succesfully()
                 return json
 

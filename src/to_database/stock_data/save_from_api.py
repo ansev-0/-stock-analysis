@@ -130,10 +130,8 @@ class SaveStockDataFromApi:
     @classmethod
     def __get_intraday_collector(cls, api):
         return {'alphavantage' : intraday_alphavantage.UpdateIntradayAlphaVantageMany}[api]
+
     @classmethod
     def __get_dailyadj_collector(cls, api):
         return {'alphavantage' : dailyadj_alphavantage.UpdateDailyAdjAlphaVantageMany}[api]
 
-DataBase.set_client(client=MongoClient())        
-object_save = SaveStockDataFromApi.intraday_alphavantage(frecuency='1min', apikey='O39L8VIVYYJYUN3P', outputsize='compact')
-object_save.save_reporting_errors(attemps=2)
