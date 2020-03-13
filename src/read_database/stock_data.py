@@ -79,7 +79,6 @@ class GetStockDataFromDataBase:
         dataframe.index = dataframe.index.astype(str)
         return dataframe.to_dict(orient=orient)
 
-
     @classmethod
     def intraday_dataframe(cls, freq):
         return cls.__dataframe(db_name=f'stock_data_intraday_{freq}')
@@ -95,7 +94,6 @@ class GetStockDataFromDataBase:
     @classmethod
     def dailyadj_dict(cls):
         return cls.__dict(db_name='stock_data_daily_adjusted')
-
 
     @classmethod
     def __dataframe(cls, **kwards):
