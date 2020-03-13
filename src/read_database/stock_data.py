@@ -3,7 +3,6 @@ import pandas as pd
 from src.database.database import DataBase
 from src.read_database.errors.check_stock_data import CheckErrorsGetStockDataFromDataBase
 from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
-from pymongo import MongoClient
 
 
 class GetStockDataFromDataBase:
