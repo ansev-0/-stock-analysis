@@ -1,29 +1,34 @@
 from functools import reduce
 import pandas as pd
 from src.database.database import DataBase
-from src.read_database.errors.check_stock_data_intraday \
-     import CheckErrorsGetStockDataIntraday1minFromDataBase
+from src.read_database.errors.check_stock_data import CheckErrorsGetStockDataFromDataBase
 from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
+from pymongo import MongoClient
 
-class GetStockDataIntraday1minFromDataBase(DataBase):
+
+class GetStockDataFromDataBase:
     '''
 
-    This class is used for reading the database stock_data_intraday_1min.
+    This class is used for reading stock_data databases.
 
     '''
 
-    DATABASE_NAME = 'stock_data_intraday_1min'
-    def __init__(self, format_output='dataframe'):
-        super().__init__(database_name=self.DATABASE_NAME)
+    DATABASE_NAME = 'stock_data_daily_adjusted'
+    def __init__(self, db_name, format_output='dataframe'):
+        self.__db_name = db_name
+        self.__database = DataBase()
+        self.__database.connect(self.__db_name)
         self.func_transform_dataframe = self.__get_function_transform_dataframe(format_output)
-        self.check_errors = CheckErrorsGetStockDataIntraday1minFromDataBase()
+        self.check_errors = CheckErrorsGetStockDataFromDataBase()
+
+
 
     def get(self, stock, start, end, **kwards):
 
         '''
 
         This function get stock data from stock_data_intraday_1min data base between two dates:
-        start and end (inclusive).
+        start and end (both inclusive).
 
         Parameters
         --------------
@@ -45,14 +50,16 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
 
     def __get_dict_from_database(self, stock, start, end):
         return reduce(lambda cum_dict, dict_new: dict(cum_dict, **dict_new),
-                      self.database[stock].find(filter={'_id' : {'$gte' : start,
-                                                                 '$lte' : end}},
-                                                projection={'_id' : 0}))
+                      self.__database.database[stock].find(filter={'_id' : {'$gte' : start,
+                                                                          '$lte' : end}},
+                                                         projection={'_id' : 0}))
 
     def __get_function_transform_dataframe(self, format_output):
         if format_output == 'dict':
             return self.__get_dict_from_dataframe
         return lambda dataframe, **kwards: dataframe
+
+    
 
     @staticmethod
     def __get_datetime_database(date):
@@ -71,3 +78,29 @@ class GetStockDataIntraday1minFromDataBase(DataBase):
     def __get_dict_from_dataframe(dataframe, orient='index', **kwards):
         dataframe.index = dataframe.index.astype(str)
         return dataframe.to_dict(orient=orient)
+
+
+    @classmethod
+    def intraday_dataframe(cls, freq):
+        return cls.__dataframe(db_name=f'stock_data_intraday_{freq}')
+
+    @classmethod
+    def dailyadj_dataframe(cls):
+        return cls.__dataframe(db_name='stock_data_daily_adjusted')
+
+    @classmethod
+    def intraday_dict(cls, freq):
+        return cls.__dict(db_name=f'stock_data_intraday_{freq}')
+
+    @classmethod
+    def dailyadj_dict(cls):
+        return cls.__dict(db_name='stock_data_daily_adjusted')
+
+
+    @classmethod
+    def __dataframe(cls, **kwards):
+        return cls(format_output='dataframe', **kwards)
+
+    @classmethod
+    def __dict(cls, **kwards):
+        return cls(format_output='dict', **kwards)
