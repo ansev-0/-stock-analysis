@@ -1,7 +1,7 @@
 from functools import reduce
 import pandas as pd
 from src.database.database import DataBase
-from src.read_database.errors.check_stock_data import CheckErrorsGetStockDataFromDataBase
+from src.read_database.errors.check_stock_data import CheckErrorsStockDataFromDataBase
 from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 
 
@@ -17,7 +17,7 @@ class StockDataFromDataBase:
         self.__database = DataBase()
         self.__database.connect(self.__db_name)
         self.func_transform_dataframe = self.__get_function_transform_dataframe(format_output)
-        self.check_errors = CheckErrorsGetStockDataFromDataBase()
+        self.check_errors = CheckErrorsStockDataFromDataBase()
 
 
 
