@@ -9,5 +9,5 @@ dist/
 /src/*/*/tests/prueba.py
 /workspace.code-workspace
 /src/daily_acquisition.py
-/src/intraday_acquisition.py
+/src/collector.py
 
