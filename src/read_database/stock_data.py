@@ -5,7 +5,7 @@ from src.read_database.errors.check_stock_data import CheckErrorsGetStockDataFro
 from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 
 
-class GetStockDataFromDataBase:
+class StockDataFromDataBase:
     '''
 
     This class is used for reading stock_data databases.
