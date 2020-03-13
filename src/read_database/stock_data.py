@@ -13,7 +13,6 @@ class GetStockDataFromDataBase:
 
     '''
 
-    DATABASE_NAME = 'stock_data_daily_adjusted'
     def __init__(self, db_name, format_output='dataframe'):
         self.__db_name = db_name
         self.__database = DataBase()
@@ -23,11 +22,11 @@ class GetStockDataFromDataBase:
 
 
 
-    def get(self, stock, start, end, **kwards):
+    def get(self, stock, start, end, **kwargs):
 
         '''
 
-        This function get stock data from stock_data_intraday_1min data base between two dates:
+        This function get stock data from stock data base between two dates:
         start and end (both inclusive).
 
         Parameters
@@ -45,8 +44,8 @@ class GetStockDataFromDataBase:
                                                          end=self.__get_datetime_database(end)),
                 start=start,
                 end=end,
-                **kwards))
-        return self.func_transform_dataframe(dataframe=dataframe, **kwards)
+                **kwargs))
+        return self.func_transform_dataframe(dataframe=dataframe, **kwargs)
 
     def __get_dict_from_database(self, stock, start, end):
         return reduce(lambda cum_dict, dict_new: dict(cum_dict, **dict_new),
@@ -57,7 +56,7 @@ class GetStockDataFromDataBase:
     def __get_function_transform_dataframe(self, format_output):
         if format_output == 'dict':
             return self.__get_dict_from_dataframe
-        return lambda dataframe, **kwards: dataframe
+        return lambda dataframe, **kwargs: dataframe
 
     
 
@@ -68,14 +67,14 @@ class GetStockDataFromDataBase:
         return pd.to_datetime(date[:10])
 
     @staticmethod
-    def __build_dataframe(dict_stock, start, end, format_index=None, **kwards):
+    def __build_dataframe(dict_stock, start, end, format_index=None, **kwargs):
         return build_dataframe_from_timeseries_dict(dataframe=dict_stock,
                                                     datetime_index=True,
                                                     format_index=format_index,
                                                     ascending=True).loc[start:end]
 
     @staticmethod
-    def __get_dict_from_dataframe(dataframe, orient='index', **kwards):
+    def __get_dict_from_dataframe(dataframe, orient='index', **kwargs):
         dataframe.index = dataframe.index.astype(str)
         return dataframe.to_dict(orient=orient)
 
@@ -96,9 +95,9 @@ class GetStockDataFromDataBase:
         return cls.__dict(db_name='stock_data_daily_adjusted')
 
     @classmethod
-    def __dataframe(cls, **kwards):
-        return cls(format_output='dataframe', **kwards)
+    def __dataframe(cls, **kwargs):
+        return cls(format_output='dataframe', **kwargs)
 
     @classmethod
-    def __dict(cls, **kwards):
-        return cls(format_output='dict', **kwards)
+    def __dict(cls, **kwargs):
+        return cls(format_output='dict', **kwargs)
