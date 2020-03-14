@@ -7,11 +7,11 @@ class AcquisitionOrders:
         self.__database.connect('acquisition_orders')
         self.collection=self.__database.database[collection]
 
-    def set_acquisition_api_orders(self, api, list_orders, **kwards):
+    def set_acquisition_api_orders(self, api, list_orders, **kwargs):
         return self.collection.update_one(filter={'_id' : api},
                                    update={'$set' : {'orders': list_orders}},
                                    upsert=True, 
-                                   **kwards)
+                                   **kwargs)
 
     def delete_acquisition_api_orders(self, api):
         return self.collection.delete_one(query={'_id' : api})

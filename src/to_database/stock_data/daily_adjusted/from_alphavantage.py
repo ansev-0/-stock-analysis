@@ -25,7 +25,7 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         compact returns only the latest 100 data points in the intraday time series;
         full returns the full-length intraday time series.
     '''
-    def __init__(self, apikey, outputsize='full', new_database='create', **kwards):
+    def __init__(self, apikey, outputsize='full', new_database='create', **kwargs):
 
         #Get outputsize
         self._outputsize = outputsize
@@ -35,7 +35,7 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
 
 
         # Create reader from AlphaVantage
-        self.__reader = timeseries.TimeSeries(apikey=apikey, **kwards)
+        self.__reader = timeseries.TimeSeries(apikey=apikey, **kwargs)
 
     def to_database(self, company):
         '''
@@ -94,12 +94,12 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
                                                 outputsize=self._outputsize)
 
     @classmethod
-    def full(cls, apikey, **kwards):
-        return cls(apikey=apikey, outputsize='full', **kwards)
+    def full(cls, apikey, **kwargs):
+        return cls(apikey=apikey, outputsize='full', **kwargs)
 
     @classmethod
-    def compact(cls, apikey, **kwards):
-        return cls(apikey=apikey, outputsize='compact', **kwards)
+    def compact(cls, apikey, **kwargs):
+        return cls(apikey=apikey, outputsize='compact', **kwargs)
 
 
 class UpdateDailyAdjAlphaVantageMany(UpdateDailyAdjAlphaVantage):

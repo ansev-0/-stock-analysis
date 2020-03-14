@@ -30,7 +30,7 @@ class UpdateIntradayAlphaVantage(UpdateIntraday):
         compact returns only the latest 100 data points in the intraday time series;
         full returns the full-length intraday time series.
     '''
-    def __init__(self, frecuency, apikey, outputsize='full', new_database='create', **kwards):
+    def __init__(self, frecuency, apikey, outputsize='full', new_database='create', **kwargs):
 
         #Get outputsize
         self._outputsize = outputsize
@@ -43,7 +43,7 @@ class UpdateIntradayAlphaVantage(UpdateIntraday):
         self.__check_alphavantage.check_frecuency_in_api()
 
         # Create reader from AlphaVantage
-        self.__reader = timeseries.TimeSeries(apikey=apikey, **kwards)
+        self.__reader = timeseries.TimeSeries(apikey=apikey, **kwargs)
 
     def to_database(self, company):
         '''
@@ -105,44 +105,44 @@ class UpdateIntradayAlphaVantage(UpdateIntraday):
                                           outputsize=self._outputsize)
 
     @classmethod
-    def full_1min(cls, apikey, **kwards):
-        return cls(frecuency='1min', apikey=apikey, outputsize='full', **kwards)
+    def full_1min(cls, apikey, **kwargs):
+        return cls(frecuency='1min', apikey=apikey, outputsize='full', **kwargs)
 
     @classmethod
-    def compact_1min(cls, apikey, **kwards):
-        return cls(frecuency='1min', apikey=apikey, outputsize='compact', **kwards)
+    def compact_1min(cls, apikey, **kwargs):
+        return cls(frecuency='1min', apikey=apikey, outputsize='compact', **kwargs)
 
     @classmethod
-    def full_5min(cls, apikey, **kwards):
-        return cls(frecuency='5min', apikey=apikey, outputsize='full', **kwards)
+    def full_5min(cls, apikey, **kwargs):
+        return cls(frecuency='5min', apikey=apikey, outputsize='full', **kwargs)
 
     @classmethod
-    def compact_5min(cls, apikey, **kwards):
-        return cls(frecuency='5min', apikey=apikey, outputsize='compact', **kwards)
+    def compact_5min(cls, apikey, **kwargs):
+        return cls(frecuency='5min', apikey=apikey, outputsize='compact', **kwargs)
 
     @classmethod
-    def full_15min(cls, apikey, **kwards):
-        return cls(frecuency='15min', apikey=apikey, outputsize='full', **kwards)
+    def full_15min(cls, apikey, **kwargs):
+        return cls(frecuency='15min', apikey=apikey, outputsize='full', **kwargs)
 
     @classmethod
-    def compact_15min(cls, apikey, **kwards):
-        return cls(frecuency='15min', apikey=apikey, outputsize='compact', **kwards)
+    def compact_15min(cls, apikey, **kwargs):
+        return cls(frecuency='15min', apikey=apikey, outputsize='compact', **kwargs)
 
     @classmethod
-    def full_30min(cls, apikey, **kwards):
-        return cls(frecuency='30min', apikey=apikey, outputsize='full', **kwards)
+    def full_30min(cls, apikey, **kwargs):
+        return cls(frecuency='30min', apikey=apikey, outputsize='full', **kwargs)
 
     @classmethod
-    def compact_30min(cls, apikey, **kwards):
-        return cls(frecuency='30min', apikey=apikey, outputsize='compact', **kwards)
+    def compact_30min(cls, apikey, **kwargs):
+        return cls(frecuency='30min', apikey=apikey, outputsize='compact', **kwargs)
 
     @classmethod
-    def full_60min(cls, apikey, **kwards):
-        return cls(frecuency='60min', apikey=apikey, outputsize='full', **kwards)
+    def full_60min(cls, apikey, **kwargs):
+        return cls(frecuency='60min', apikey=apikey, outputsize='full', **kwargs)
 
     @classmethod
-    def compact_60min(cls, apikey, **kwards):
-        return cls(frecuency='60min', apikey=apikey, outputsize='compact', **kwards)
+    def compact_60min(cls, apikey, **kwargs):
+        return cls(frecuency='60min', apikey=apikey, outputsize='compact', **kwargs)
 
 
 

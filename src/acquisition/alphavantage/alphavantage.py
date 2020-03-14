@@ -16,13 +16,13 @@ class AlphaVantage:
     '''
 
     _AV_URL = "https://www.alphavantage.co/query?"
-    def __init__(self, apikey, delays=None, **kwards):
+    def __init__(self, apikey, delays=None, **kwargs):
         self.apikey = apikey
         self.default_params = {'datatype' : 'json',
                                'apikey' : self.apikey}
         self.config(delays)
         self.__check_response = errors_response.ErrorsResponseApiAlphavantage()
-        self.request = request_api.RequestsApi(base_url=self._AV_URL, **kwards)
+        self.request = request_api.RequestsApi(base_url=self._AV_URL, **kwargs)
         self.show_status = AlphaVantageShowStatus()
 
     def config(self, delays=None):
@@ -69,9 +69,9 @@ class AlphaVantage:
     def _get_data(cls, func):
 
         @wraps(func)
-        def read_url(self, *args, **kwards):
+        def read_url(self, *args, **kwargs):
             func_params = dict(zip(map(str.lower, func.__code__.co_varnames[1:]),
-                                   func(self, **kwards)))
+                                   func(self, **kwargs)))
             query = dict(func_params, **self.default_params)
             return self.__read(query=query)
 

@@ -114,17 +114,17 @@ class SaveStockDataFromApi:
         return new_errors
 
     @classmethod
-    def intraday_alphavantage(cls, frecuency, apikey, **kwards):
+    def intraday_alphavantage(cls, frecuency, apikey, **kwargs):
         class_collector = cls.__get_intraday_collector('alphavantage')
         return cls(api='alphavantage',
                    data_collector=class_collector(frecuency=frecuency,
-                                                  apikey=apikey, **kwards),
+                                                  apikey=apikey, **kwargs),
                    collection='stock_data_intraday')
     @classmethod
-    def dailyadj_alphavantage(cls, apikey, **kwards):
+    def dailyadj_alphavantage(cls, apikey, **kwargs):
         class_collector = cls.__get_dailyadj_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(apikey=apikey, **kwards),
+                   data_collector=class_collector(apikey=apikey, **kwargs),
                    collection='stock_data_dailyadj')
 
     @classmethod

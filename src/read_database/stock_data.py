@@ -7,9 +7,7 @@ from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 
 class StockDataFromDataBase:
     '''
-
     This class is used for reading stock_data databases.
-
     '''
 
     def __init__(self, db_name, format_output='dataframe'):
