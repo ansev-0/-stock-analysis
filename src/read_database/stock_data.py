@@ -3,7 +3,7 @@ import pandas as pd
 from src.database.database import DataBase
 from src.read_database.errors.check_stock_data import CheckErrorsStockDataFromDataBase
 from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
-
+from src.tools.mappers import map_dict_from_underscore
 
 class StockDataFromDataBase:
     '''
@@ -16,7 +16,7 @@ class StockDataFromDataBase:
         self.__database.connect(self.__db_name)
         self.func_transform_dataframe = self.__get_function_transform_dataframe(format_output)
         self.check_errors = CheckErrorsStockDataFromDataBase()
-
+        self.datetime_index = DateTimeIndexDataBase()
 
 
     def get(self, stock, start, end, **kwargs):
@@ -57,11 +57,9 @@ class StockDataFromDataBase:
 
     
 
-    @staticmethod
-    def __get_datetime_database(date):
-        if isinstance(date, pd.Timedelta):
-            return pd.to_datetime(date.date())
-        return pd.to_datetime(date[:10])
+    
+    def __get_datetime_database(self, date):
+        return self.datetime_index.get(date, self.__db_name)
 
     @staticmethod
     def __build_dataframe(dict_stock, start, end, format_index=None, **kwargs):
@@ -98,3 +96,17 @@ class StockDataFromDataBase:
     @classmethod
     def __dict(cls, **kwargs):
         return cls(format_output='dict', **kwargs)
+
+
+
+class DateTimeIndexDataBase:
+    __MAPPER_CUT_DATE = {'intraday' : lambda date: date.date(),
+                         'daily' : lambda date: str(date)[:7]}
+
+    def get(self, date, db_name):
+        if  not isinstance(date, pd.Timedelta):
+            date = pd.to_datetime(date)
+        date = pd.to_datetime(map_dict_from_underscore(
+            self.__MAPPER_CUT_DATE, db_name, 2, default_key=None)(date))
+        return date
+

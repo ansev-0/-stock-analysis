@@ -1,4 +1,4 @@
-def map_dict_from_underscore(dict_to_map,function,n,default_key):
+def map_dict_from_underscore(dict_to_map, function, n, default_key):
 
     key_map = function.split('_')[n]
     try:

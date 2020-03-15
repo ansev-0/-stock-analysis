@@ -83,7 +83,6 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
                         cumulative_dict.items())
                    )
 
-
     def __read_from_alphavantage(self, company):
         '''
         This function gets the API response,

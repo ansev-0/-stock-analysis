@@ -1,31 +1,24 @@
+from src.data_preparation.arima import TransformSerie
+from statsmodels.tsa.arima_model import ARIMA
 import pmdarima.arima as arima
-from src.tools.reduce_tools import repeated
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-import pandas as pd
-import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
 
 class ArimaModel:
-    def __init__(self, serie):
-        self.serie=serie
+    def __init__(self, train_data, test_data):
+        self.__transform = TransformSerie(train_data)
+        self.__test_data = test_data
+
 
     def auto_arima(self, **kwargs):
-        return arima.auto_arima(self.serie, **kwargs)
+        return arima.auto_arima(self.__transform.serie, **kwargs)
 
-    def diff(self, n, nans=True):
-        series_diff = repeated(pd.Series.diff, n)(self.serie)
-        if not nans: 
-            series_diff = series_diff.dropna()
-        return series_diff
+    def auto_arima_log(self,**kwargs):
+        return arima.auto_arima(self.__transform.log_serie(), **kwargs)
 
-    def plot_acf_diff(self, n, **kwargs):
-        plot_acf(self.diff(n, nans=False), **kwargs)
+    def sarimax(self, **kwargs):
+        return sm.tsa.statespace.SARIMAX(self.__transform.serie, **kwargs)
 
-    def plot_pacf_diff(self, n, **kwargs):
-        plot_pacf(self.diff(n, nans=False), **kwargs)
+    def sarimax_log(self, **kwargs):
+        return sm.tsa.statespace.SARIMAX(self.__transform.log_serie(), **kwargs)
 
-    def plot_acf(self, **kwargs):
-        plot_acf(self.serie, **kwargs)
-
-    def plot_pacf(self, **kwargs):
-        plot_pacf(self.serie, **kwargs)
-        
