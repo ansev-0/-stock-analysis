@@ -109,4 +109,3 @@ class DateTimeIndexDataBase:
         date = pd.to_datetime(map_dict_from_underscore(
             self.__MAPPER_CUT_DATE, db_name, 2, default_key=None)(date))
         return date
-
