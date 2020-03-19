@@ -19,7 +19,7 @@ class SplitDataFrameByGroups:
             return [group for by, group in groups]
         return dict(groups.__iter__())
 
-class SplitDataFrame(SplitDataFrameByGroups):
+class SplitDateTimeDataFrame(SplitDataFrameByGroups):
 
     def __init__(self, **kwards):
         self.check_errors = CheckSplitDataFrame()
