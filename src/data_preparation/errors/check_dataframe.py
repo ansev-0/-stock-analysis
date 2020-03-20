@@ -6,8 +6,7 @@ class CheckSplitDataFrameByGroups:
         if format_output not in [list, dict]:
             raise TypeError('Format output must be instance of dict or list')
 
-class CheckSplitDataFrame:
-    @staticmethod
+class CheckDateTimeIndex:
     def check_datetime_index(index):
         if not isinstance(index, pd.DatetimeIndex):
             raise TypeError('The index must be instance of pd.DatetimeIndex')

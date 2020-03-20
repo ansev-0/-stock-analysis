@@ -1,6 +1,7 @@
 import pandas as pd
-from src.data_preparation.errors.check_split_time_dataframe import CheckSplitDataFrameByGroups
-from src.data_preparation.errors.check_split_time_dataframe import CheckSplitDataFrame
+from src.data_preparation.errors.check_dataframe import CheckSplitDataFrameByGroups
+from src.data_preparation.errors.check_datetime_index import CheckDateTimeIndex
+from src.data_preparation.datetime_index import DateTimeIndexFeatures
 from src.tools.check_components import eval_type_argument
 
 class SplitDataFrameByGroups:
@@ -21,13 +22,7 @@ class SplitDataFrameByGroups:
 
 class SplitDateTimeDataFrame(SplitDataFrameByGroups):
 
-    def __init__(self, **kwards):
-        self.check_errors = CheckSplitDataFrame()
-        super().__init__(**kwards)
-
     def by_discontinuous_index(self, dataframe, freq_limit):
-        #Check DateTimeIndex
-        self.check_errors.check_datetime_index(index=dataframe.index)
         #Take blocks to use split function
         continuos_time_blocks = self.__get_blocks_continuous_periods(dataframe, freq_limit)
         #Get output
