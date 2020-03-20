@@ -13,3 +13,7 @@ def eval_type_argument(type_arg):
         raise ValueError('Invalid type argument')
     return type_arg
 
+
+def filter_valid_kwargs(kwargs, valid_keys):
+    return dict(filter(lambda kwarg: kwarg[0] in valid_keys, kwargs.items()))
+
