@@ -12,8 +12,8 @@ class Candlestick(go.Candlestick):
 class FigureCandlestickManyDataFrame(go.Figure):
     
     def __init__(self, dict_dataframe, dict_colors=None, **kwargs):
-        self.dict_colors = dict_colors
-        func_colors = self.__get_function_colors(dict_colors)
+        self.__dict_colors = dict_colors
+        func_colors = self.__get_function_colors()
         data = [Candlestick.from_dataframe(dataframe=dataframe, name = company,
                                                  **func_colors(company))
                       for company, dataframe in dict_dataframe.items()]
@@ -26,10 +26,9 @@ class FigureCandlestickManyDataFrame(go.Figure):
                                                    high=256,
                                                    size=(2,3))))))
 
-    def __get_function_colors(self, dict_colors):
-        
-        if dict_colors:
-            return lambda company: self.dict_colors[company]
+    def __get_function_colors(self):
+        if self.__dict_colors:
+            return lambda company: self.__dict_colors[company]
         return lambda *args : self._get_random_colors()
     
     
@@ -37,4 +36,5 @@ class FigureCandlestickManyDataFrame(go.Figure):
     def _mapper_rgb_randomint(x):
         rgb_code = ','.join(map(str, x))
         return f'rgb({rgb_code})'
+    
     
