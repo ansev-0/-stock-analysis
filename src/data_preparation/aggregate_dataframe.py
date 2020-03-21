@@ -9,6 +9,7 @@ class AggregateDataFrame:
     
     def __init__(self, serie):
         self.serie = serie
+
     @classmethod
     def _get_dataframe(cls, function, *args, **kwargs):
         
@@ -30,17 +31,40 @@ class WindowEwm(AggregateDataFrame):
             
             return  (function(self,
                               self.serie.ewm(**{param_type : agg_value},
-                                             **self.__valid_kwargs(kwargs)), 
+                                             **self.valid_kwargs(kwargs)), 
                                              *args, **kwargs)
                      .rename(f'ewm_{param_type}_{agg_value}_{function.__name__}'))
         return ewm
     
-    def __valid_kwargs(self, kwargs):
+    def valid_kwargs(self, kwargs):
         valid_keys =  [key for key in self.serie.ewm.__code__.co_varnames[1:] 
                        if key not in ['com', 'halflife', 'span']]
         return filter_valid_kwargs(kwargs=kwargs,
                                    valid_keys=valid_keys)
     
+
+
+    
+class WindowRolling(AggregateDataFrame):
+
+    @classmethod
+    def get_rolling(cls, function):
+
+        @wraps(function)
+        @AggregateDataFrame._get_dataframe
+        def rolling(self, agg_value, *args, **kwargs):
+            return  function(self, self.serie.rolling(window=agg_value,
+                                                      **self.valid_kwargs(kwargs)),
+                             *args, **kwargs).rename(f'rolling_\
+                {agg_value}_{function.__name__}')
+        return rolling
+    
+    def valid_kwargs(self, kwargs):
+        valid_keys =  [key for key in self.serie.rolling.__code__.co_varnames[1:] 
+                       if key not in ['window']]
+        return filter_valid_kwargs(kwargs=kwargs,
+                                   valid_keys=valid_keys)
+
 
 class AggregateWindowEwm(WindowEwm):
     
@@ -64,26 +88,6 @@ class AggregateWindowEwm(WindowEwm):
     def cov(self, x=None, *args, **kwargs):
         return x.corr(*args, **kwargs)
     
-    
-class WindowRolling(AggregateDataFrame):
-
-    @classmethod
-    def get_rolling(cls, function):
-
-        @wraps(function)
-        @AggregateDataFrame._get_dataframe
-        def rolling(self, agg_value, *args, **kwargs):
-            return  function(self, self.serie.rolling(window=agg_value,
-                                                      **self.valid_kwargs(kwargs)),
-                             *args, **kwargs).rename(f'rolling_\
-                {agg_value}_{function.__name__}')
-        return rolling
-    
-    def valid_kwargs(self, kwargs):
-        valid_keys =  [key for key in self.serie.rolling.__code__.co_varnames[1:] 
-                       if key not in ['window']]
-        return filter_valid_kwargs(kwargs=kwargs,
-                                   valid_keys=valid_keys)
 
 
 class AggregateWindowRolling(WindowRolling):

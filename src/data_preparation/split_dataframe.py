@@ -30,7 +30,14 @@ class SplitDateTimeDataFrame(SplitDataFrameByGroups):
         return self.split(dataframe=dataframe, by=pd.Grouper(freq=freq, **kwargs))
 
 
+    def split_by_underscore(self, dataframe, key_position, axis=0):
 
+        if axis:
+            axis_to_split=dataframe.columns
+        else:
+            axis_to_split=dataframe.index
+            
+        return self.split(dataframe=dataframe, axis=axis, by=axis_to_split.str.split('_')[key_position])
         
 
 
