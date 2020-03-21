@@ -59,7 +59,7 @@ class WindowRolling(AggregateDataFrame):
                                                       **valid_kwargs),
                              *args, **kwargs).rename(f'rolling_{win_type}\
                 {agg_value}_{function.__name__}')
-                
+
         return rolling
     
     def valid_kwargs(self, kwargs):
@@ -67,7 +67,7 @@ class WindowRolling(AggregateDataFrame):
                        if key not in ['window']]
         return filter_valid_kwargs(kwargs=kwargs,
                                    valid_keys=valid_keys)
-
+    @staticmethod
     def _win_type(valid_kwargs):
             try: 
                 return valid_kwargs['win_type']
