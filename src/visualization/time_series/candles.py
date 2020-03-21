@@ -28,7 +28,7 @@ class FigureCandlestickManyDataFrame(go.Figure):
 
     def __get_function_colors(self):
         if self.__dict_colors:
-            return lambda company: self.dict_colors[company]
+            return lambda company: self.__dict_colors[company]
         return lambda *args : self._get_random_colors()
     
     
