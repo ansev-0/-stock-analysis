@@ -7,7 +7,7 @@ class MinMaxScalerFitTransform:
              array = scaler.transform(array)
         return scaler, array
 
-    def dict_arrays(self, dict_array, feature_range=(-1, 1),  transform=None):
+    def dict_array(self, dict_array, feature_range=(-1, 1),  transform=None):
         if not transform:
             transform = list(dict_array)
 
