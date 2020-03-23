@@ -14,5 +14,4 @@ class BuilderIOStacked:
         return {by: group.to_numpy() 
                 for by, group in dataframe.groupby(by=np.where(
                     np.arange(len(dataframe.columns)) >= col_start_input,
-                    *self.keys))}
-
+                    *self.keys), axis=1)}
