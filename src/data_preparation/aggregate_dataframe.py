@@ -69,7 +69,7 @@ class WindowRolling(AggregateDataFrame):
                                    valid_keys=valid_keys)
     @staticmethod
     def _win_type(valid_kwargs):
-            try: 
+            try:
                 return valid_kwargs['win_type']
             except KeyError:
                 return ''
