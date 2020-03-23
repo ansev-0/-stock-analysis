@@ -37,3 +37,4 @@ class FigureCandlestickManyDataFrame(go.Figure):
         rgb_code = ','.join(map(str, x))
         return f'rgb({rgb_code})'
     
+    
