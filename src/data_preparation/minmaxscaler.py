@@ -3,7 +3,7 @@ from functools import reduce
 
 class MinMaxScalerFitTransform:
 
-    def __init__(self, feature_range):
+    def __init__(self, feature_range=(-1, 1)):
         self.feature_range = feature_range
 
     def array(self, array, transform=True):
