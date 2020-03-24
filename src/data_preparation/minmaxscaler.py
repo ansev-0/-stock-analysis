@@ -20,13 +20,19 @@ class MinMaxScalerFitTransform:
 class MinMaxScalerFitTransformMany(MinMaxScalerFitTransform):
 
 
-    def tuple_array(self, tuple_array, transform=True, flatten=True):
-        mapper = map(*self.__map_args(tuple_array, transform))
-        if flatten: 
-            return reduce(lambda cum_tuple, new_tuple: cum_tuple + new_tuple, mapper)
-        return tuple(mapper)
+    def tuple_array_flatten(self, tuple_array, transform=True):
+        return reduce(lambda cum_tuple, new_tuple: cum_tuple + new_tuple,
+                      self.__map(tuple_array, transform))
 
+    def tuple_array(self, tuple_array, transform=True):
+        return tuple(self.__map(tuple_array, transform))
 
+    def dict_array(self, dict_array, transform=True):
+        return dict(zip(dict_array.keys(),
+                        self.__map(dict_array.values(), transform)))
+
+    def __map(self, tuple_array, transform):
+        return map(*self.__map_args(tuple_array, transform))
 
     def __map_args(self, tuple_array, transform):
         if isinstance(transform, bool):
