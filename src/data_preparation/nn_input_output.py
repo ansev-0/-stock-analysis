@@ -10,7 +10,7 @@ class BuilderIOStacked:
         return pd.concat([serie.shift(i).rename(f'Serie_delay_{i}') 
                           for i in range(*range_delay)], axis=1).dropna()     
 
-    def input_output_from_dataframe_delays(self, dataframe, col_start_input):
+    def input_output_from_dataframe_delays(self, dataframe, col_start_input=1):
         return {by : group.to_numpy() 
                 for by, group in dataframe.groupby(by=np.where(
                     np.arange(len(dataframe.columns)) >= col_start_input,
