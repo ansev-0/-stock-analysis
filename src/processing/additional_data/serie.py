@@ -12,9 +12,10 @@ class CurrentDataSetAddFeatures():
         self.n_features = len(dataframe.columns)
         self.builder_io_stacked = BuilderIOStacked()
 
-        dataframe = pd.concat([self.__get_dataframe(serie, steps_delay) for _, serie in dataframe.items()], axis=1)
+        dataframe = pd.concat([self.__get_dataframe(serie, steps_delay) 
+                               for _, serie in dataframe.items()], axis=1)
         self.dataset = dataframe.to_numpy()
-        self._dataset_time_index = dataframe.index
+        self.dataset_time_index = dataframe.index
         self.__dataset_index  = 0
         
     def update_current_dataset(self, scaler):
@@ -26,11 +27,15 @@ class CurrentDataSetAddFeatures():
 
 
     def __get_current_data_2d(self):
-        return self.dataset[self.__dataset_index  : self.__batch_size + self.__dataset_index , :]
+        return self.dataset[self.__dataset_index  : 
+                            self.__batch_size + self.__dataset_index , :]
   
 
     def __get_dataframe(self, serie, sup_limit_range):
         return self.builder_io_stacked.dataframe_delays_from_serie(serie,
                                                                         (1, sup_limit_range + 1))
     def __reshape_features(self, array):
-        return array.reshape(array.shape[0], self.steps_delay, self.n_features)
+        return array.reshape(array.shape[0],
+                             self.steps_delay,
+                             self.n_features)
+                             
