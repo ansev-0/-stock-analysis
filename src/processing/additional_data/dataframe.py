@@ -22,8 +22,7 @@ class CurrentDataSetAddFeatures():
     def update_current_dataset(self, scaler):
         current_data_2d = self.__get_current_data_2d()
         self.current_dataset = self.__reshape_features(current_data_2d)
-        scaler = scaler.partial_fit(current_data_2d)
-        scaled_values = scaler.transfomr(current_data_2d)
+        scaled_values = scaler.fit_transform(current_data_2d)
         self.current_dataset_scaled = self.__reshape_features(scaled_values)
         self.__dataset_index += 1
 
