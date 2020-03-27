@@ -94,8 +94,3 @@ class CurrentDataSetWithTarget():
                    steps_delay=steps_delay, steps_predict=24,
                    feature_range=feature_range)
 
-
-
-
-        
-        
