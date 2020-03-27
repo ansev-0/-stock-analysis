@@ -1,20 +1,19 @@
+import numpy as np
 from src.data_preparation.minmaxscaler import MinMaxScalerFitTransformMany
 from src.data_preparation.nn_input_output import BuilderIOStacked
-import numpy as np
 
-class CurrentDataSetTarget():
 
-    def __init__(self, serie, batch_size, steps_delay, steps_predict=1, feature_range=(-1, 1)):
-        #steps before predict
-        self.steps_delay = steps_delay
-        # steps to predict
-        self.steps_predict = steps_predict
+class CurrentDataSetWithTarget():
+
+    def __init__(self, serie, batch_size, steps_delay, steps_predict, feature_range=(-1, 1)):
+        self.current_data = None
+        self.current_scaled_variables = None
         #range scaler
         self.__feature_range = feature_range
         #batch_size
         self.__batch_size = batch_size
         #builder
-        self.builder_io_stacked = BuilderIOStacked()
+        self.__builder_io_stacked = BuilderIOStacked()
         #Get dataframe delays
         dataframe = self.__get_dataframe(serie, steps_delay + steps_predict)
         #Get dict with data and target
@@ -24,7 +23,6 @@ class CurrentDataSetTarget():
         #init pointer
         self.__dataset_index = 0
 
-        
     def update_current_variables(self):
         # get data to use without scaling
         self.current_data = self.__get_current_data()
@@ -32,7 +30,6 @@ class CurrentDataSetTarget():
         self.current_scaled_variables = self.__get_current_scaled_variables()
         #add to next step
         self.__dataset_index += 1
-        return None
 
 
     def dataset_x(self):
@@ -60,10 +57,9 @@ class CurrentDataSetTarget():
     def current_y_scaled(self):
         return self.__get_current_scaled('y')[1]
 
-
     def __get_current_data(self):
         return {key :  value[self.__dataset_index : self.__batch_size + self.__dataset_index, :]
-                             for key, value in self.dataset.items()}
+                for key, value in self.dataset.items()}
 
     def __get_current_scaled_variables(self):
         fit_transform_scaler = MinMaxScalerFitTransformMany(self.__feature_range)
@@ -73,11 +69,33 @@ class CurrentDataSetTarget():
     def __get_current_scaled(self, key):
         return self.current_scaled_variables[key]
 
-
     def __get_dataframe(self, serie, sup_limit_range):
-        return self.builder_io_stacked.dataframe_delays_from_serie(serie,
-                                                                        (0, sup_limit_range))
+        return self.__builder_io_stacked.dataframe_delays_from_serie(serie,
+                                                                     (0, sup_limit_range))
     def __get_dataset(self, *args):
-        return self.builder_io_stacked.input_output_from_dataframe_delays(*args)
+        return self.__builder_io_stacked.input_output_from_dataframe_delays(*args)
+
+
+    @classmethod
+    def one_step(cls, serie,  batch_size, steps_delay, feature_range=(-1,1)):
+        return cls(serie=serie,  batch_size=batch_size,
+                   steps_delay=steps_delay, steps_predict=1,
+                   feature_range=feature_range)
+
+    @classmethod
+    def seven_steps(cls, serie,  batch_size, steps_delay, feature_range=(-1,1)):
+        return cls(serie=serie, batch_size=batch_size,
+                   steps_delay=steps_delay, steps_predict=7,
+                   feature_range=feature_range)
+
+    @classmethod
+    def twenty_four_steps(cls, serie,  batch_size, steps_delay, feature_range=(-1,1)):
+        return cls(serie=serie,  batch_size=batch_size,
+                   steps_delay=steps_delay, steps_predict=24,
+                   feature_range=feature_range)
+
+
+
+
         
         
