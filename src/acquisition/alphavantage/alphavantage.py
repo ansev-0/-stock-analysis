@@ -31,7 +31,8 @@ class AlphaVantage:
     def __read(self, query):
         count_attemps = 0
         while count_attemps < self.attemps:
-
+            error_response = None
+            status_code = None
             if count_attemps != 0:
                 #try again
                 delay = self.delays[count_attemps-1]
@@ -46,7 +47,7 @@ class AlphaVantage:
                 json = response.json()
                 
             except AttributeError:
-                error, status_code = response, None
+                error_response = response
             else: 
                 
                 try:
@@ -54,7 +55,7 @@ class AlphaVantage:
                 except AlphaVantageError as error:
                     self.show_status.notify_error_format(error)
                     status_code = response.status_code
-                    error = error
+                    error_response = error
 
 
                 else:
@@ -64,7 +65,7 @@ class AlphaVantage:
         else:
             return self.__build_tuple_error(query=query,
                                                 status_code=status_code,
-                                                error=error)
+                                                error=error_response)
 
     @classmethod
     def _get_data(cls, func):
