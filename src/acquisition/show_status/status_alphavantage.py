@@ -1,8 +1,8 @@
 class AlphaVantageShowStatus:
 
     @staticmethod
-    def notify_try_connect(query):
-        print(f'trying connect with API Alphavantage, query: \n {query}')
+    def notify_try_connect():
+        print(f'trying connect with API Alphavantage')
 
     @staticmethod
     def notify_request_exception(error):

@@ -52,7 +52,7 @@ class CurrentDataSetWithTarget():
 
 
     def current_x_scaled(self):
-        return self.__get_current_scaled('x')[1]
+        return np.expand_dims(self.__get_current_scaled('x')[1], 2)
 
     def current_y_scaled(self):
         return self.__get_current_scaled('y')[1]

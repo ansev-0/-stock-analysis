@@ -1,8 +1,7 @@
 from functools import wraps
-import requests
 import time
-from src import request_api
-from src.acquisition.errors_response import check_errors_alphavantage as errors_response
+from src.acquisition.reader import Reader
+from src.acquisition.errors_response.check_errors_alphavantage import ErrorsResponseApiAlphavantage
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import switch_none
 from src.acquisition.show_status.status_alphavantage import AlphaVantageShowStatus
@@ -21,8 +20,8 @@ class AlphaVantage:
         self.default_params = {'datatype' : 'json',
                                'apikey' : self.apikey}
         self.config(delays)
-        self.__check_response = errors_response.ErrorsResponseApiAlphavantage()
-        self.request = request_api.RequestsApi(base_url=self._AV_URL, **kwargs)
+        self.__check_response = ErrorsResponseApiAlphavantage()
+        self.reader = Reader(base_url=self._AV_URL, **kwargs)
         self.show_status = AlphaVantageShowStatus()
 
     def config(self, delays=None):
@@ -32,38 +31,40 @@ class AlphaVantage:
     def __read(self, query):
         count_attemps = 0
         while count_attemps < self.attemps:
-            try:
-                self.show_status.notify_try_connect(query)
-                response = self.request.get(params=query)
-            except requests.exceptions.RequestException as error:
-                self.show_status.notify_request_exception(error)
-                try:
-                    status_code = response.status_code
-                except Exception:
-                    status_code = None
-                finally:
-                    return self.__build_tuple_error(query=query,
-                                                    status_code=status_code,
-                                                    error=error)
-            json = response.json()
-            count_attemps += 1 #attemp n
-            try:
-                self.__check_response.pass_test(json, query)
-            except AlphaVantageError as error:
-                self.show_status.notify_error_format(error)
-                if count_attemps == self.attemps:
-                    return self.__build_tuple_error(query=query,
-                                                    status_code=response.status_code,
-                                                    error=json.copy())
-                    
+
+            if count_attemps != 0:
                 #try again
                 delay = self.delays[count_attemps-1]
                 self.show_status.notify_sleeping(delay)
                 time.sleep(delay)
-            else:
-                #connect successful, save useful data
-                self.show_status.notify_json_received_succesfully()
-                return json
+
+            count_attemps += 1 #attemp n
+            self.show_status.notify_try_connect()
+            response = self.reader.read(query)
+
+            try:
+                json = response.json()
+                
+            except AttributeError:
+                error, status_code = response, None
+            else: 
+                
+                try:
+                    self.__check_response.pass_test(json, query)
+                except AlphaVantageError as error:
+                    self.show_status.notify_error_format(error)
+                    status_code = response.status_code
+                    error = error
+
+
+                else:
+                    #connect successful, save useful data
+                    self.show_status.notify_json_received_succesfully()
+                    return json
+        else:
+            return self.__build_tuple_error(query=query,
+                                                status_code=status_code,
+                                                error=error)
 
     @classmethod
     def _get_data(cls, func):
