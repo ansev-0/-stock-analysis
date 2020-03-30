@@ -55,7 +55,7 @@ class AlphaVantage:
                 except AlphaVantageError as error:
                     self.show_status.notify_error_format(error)
                     status_code = response.status_code
-                    error_response = error
+                    error_response = json.copy()
 
 
                 else:
