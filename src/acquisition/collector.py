@@ -1,4 +1,4 @@
-from src.to_database.stock_data.save_from_api import SaveStockDataFromApi
+from src.acquisition.to_database.stock_data.save_from_api import SaveStockDataFromApi
 from src.tools.inputs import Input
 from pymongo import MongoClient
 from src.database.database import DataBase

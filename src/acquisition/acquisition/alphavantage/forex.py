@@ -1,4 +1,4 @@
-from src.acquisition.alphavantage.alphavantage import AlphaVantage
+from src.acquisition.acquisition.alphavantage.alphavantage import AlphaVantage 
 
 class Forex(AlphaVantage):
     '''

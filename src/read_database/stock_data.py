@@ -2,7 +2,7 @@ from functools import reduce
 import pandas as pd
 from src.database.database import DataBase
 from src.read_database.errors.check_stock_data import CheckErrorsStockDataFromDataBase
-from src.builder_formats.dataframe import build_dataframe_from_timeseries_dict
+from src.data_preparation.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 from src.tools.mappers import map_dict_from_underscore
 
 class StockDataFromDataBase:
