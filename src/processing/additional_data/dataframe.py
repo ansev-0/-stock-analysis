@@ -3,7 +3,7 @@ import pandas as pd
 from src.data_preparation.nn_input_output import BuilderIOStacked
 
 
-class CurrentDataSetAddFeatures():
+class DataSetStackedFeatures():
 
     def __init__(self, dataframe, batch_size, steps_delay):
         self.current_dataset = None

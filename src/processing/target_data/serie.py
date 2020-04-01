@@ -3,7 +3,7 @@ from src.data_preparation.minmaxscaler import MinMaxScalerFitTransformMany
 from src.data_preparation.nn_input_output import BuilderIOStacked
 
 
-class CurrentDataSetWithTarget():
+class DataSetStackedFeaturesWithTarget():
 
     def __init__(self, serie, batch_size, steps_delay, steps_predict, feature_range=(-1, 1)):
         self.current_data = None

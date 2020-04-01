@@ -1,10 +1,10 @@
 from functools import wraps
 import time
-from src.acquisition.reader import Reader
-from src.acquisition.errors_response.check_errors_alphavantage import ErrorsResponseApiAlphavantage
+from src.acquisition.acquisition.reader import Reader
+from src.acquisition.acquisition.errors.check_alphavantage import ErrorsResponseApiAlphavantage
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import switch_none
-from src.acquisition.show_status.status_alphavantage import AlphaVantageShowStatus
+from src.view.acquisition.acquisition.show_status.status_alphavantage import AlphaVantageShowStatus
 
 class AlphaVantage:
 
