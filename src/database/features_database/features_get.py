@@ -1,4 +1,4 @@
-from src.features_database.features_database import FeaturesDataBase
+from src.database.features_database.features_database import FeaturesDataBase
 
 class FeatureGet(FeaturesDataBase):
 

@@ -1,10 +1,10 @@
 from collections import defaultdict
 import pandas as pd
-from src.to_database.stock_data.intraday.update_intraday \
+from src.acquisition.to_database.stock_data.intraday.update_intraday \
      import UpdateIntraday
-from src.acquisition.alphavantage import timeseries
-from src.to_database.stock_data.save_many import SaveMany
-from src.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
+from src.acquisition.acquisition.alphavantage import timeseries
+from src.acquisition.to_database.stock_data.save_many import SaveMany
+from src.acquisition.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
     import CheckErrorsFromAlphaVantage
 
 class UpdateIntradayAlphaVantage(UpdateIntraday):

@@ -10,4 +10,5 @@ dist/
 /workspace.code-workspace
 /src/daily_acquisition.py
 /src/collector.py
+/src/.vscode/
 

@@ -1,6 +1,6 @@
 from src.database.database import DataBase
-from src.to_database.stock_data.show_status.status_update_database import UpdateDataBaseShowStatus
-from src.to_database.stock_data.errors.check_update_database import CheckErrorsUpdateDataBase
+from src.view.acquisition.to_database.stock_data.show_status.status_update_database import UpdateDataBaseShowStatus
+from src.acquisition.to_database.stock_data.errors.check_update_database import CheckErrorsUpdateDataBase
 
 class UpdateStockData:
     def __init__(self, database_name, new_database='create'):

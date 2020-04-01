@@ -1,6 +1,6 @@
 from src.exceptions.to_database_exceptions import ToDataBaseAlphaVantageError
 from src.exceptions.acquisition_exceptions import AlphaVantageError
-from src.features_database.features_get import FeatureGet
+from src.database.features_database.features_get import FeatureGet
 
 class CheckErrorsFromAlphaVantage:
     '''

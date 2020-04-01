@@ -1,5 +1,5 @@
 from src.request_api import RequestsApi
-from view.acquisition.reader import ReaderShowStatus
+from src.view.acquisition.reader import ReaderShowStatus
 import requests
 
 class Reader:

@@ -1,9 +1,9 @@
 from collections import defaultdict
 import pandas as pd
-from src.to_database.stock_data.daily_adjusted.update_daily_adjusted \
+from src.acquisition.to_database.stock_data.daily_adjusted.update_daily_adjusted \
      import UpdateDailyAdj
-from src.acquisition.alphavantage import timeseries
-from src.to_database.stock_data.save_many import SaveMany
+from src.acquisition.acquisition.alphavantage import timeseries
+from src.acquisition.to_database.stock_data.save_many import SaveMany
 
 
 class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):

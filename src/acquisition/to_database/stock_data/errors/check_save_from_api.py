@@ -1,4 +1,4 @@
-from src.to_database.errors.check_save_from_api import CheckErrorsSaveFromApi
+from src.acquisition.to_database.errors.check_save_from_api import CheckErrorsSaveFromApi
 from src.exceptions.to_database_exceptions import ToDataBaseError
 
 class CheckErrorsSaveStockDataFromApi(CheckErrorsSaveFromApi):
