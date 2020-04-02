@@ -5,10 +5,10 @@ from src.data_preparation.nn_input_output import BuilderIOStacked
 
 class DataSetStackedFeatures():
 
-    def __init__(self, dataframe, batch_size, steps_delay):
+    def __init__(self, dataframe, samples, steps_delay):
         self.current_dataset = None
         self.current_dataset_scaled = None
-        self.__batch_size = batch_size
+        self.__samples = samples
         self.__steps_delay = steps_delay
         self.__n_features = len(dataframe.columns)
         self.__builder_io_stacked = BuilderIOStacked()
@@ -26,7 +26,7 @@ class DataSetStackedFeatures():
 
     def __get_current_dataset(self):
         return self.dataset[self.__dataset_index  : 
-                            self.__batch_size + self.__dataset_index, :, :]
+                            self.__samples + self.__dataset_index, :, :]
   
 
     def __get_dataframe(self, serie, sup_limit_range):

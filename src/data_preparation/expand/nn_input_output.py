@@ -3,8 +3,8 @@ import numpy as np
 
 class BuilderIOStacked:
 
-    def __init__(self):
-        self.keys = ('x', 'y')
+    def __init__(self, keys=None):
+        self.set_keys(keys if keys else ('x', 'y'))
 
     def dataframe_delays_from_serie(self, serie, range_delay):
         return pd.concat([serie.shift(i).rename(f'Serie_delay_{i}') 
@@ -15,3 +15,7 @@ class BuilderIOStacked:
                 for by, group in dataframe.groupby(by=np.where(
                     np.arange(len(dataframe.columns)) >= col_start_input,
                     *self.keys), axis=1)}
+
+
+    def set_keys(self, keys):
+        self.keys = keys
