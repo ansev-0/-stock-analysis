@@ -9,3 +9,4 @@ dist/
 /workspace.code-workspace
 /src/.vscode/
 /src/acquisition/collector.py
+
