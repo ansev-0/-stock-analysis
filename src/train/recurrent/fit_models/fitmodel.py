@@ -11,7 +11,7 @@ class FitModelWithState:
         for epoch in range(1, epochs + 1):
             history = self.model.fit(self.x_train, self.y_train, **kwargs)
             output_func(history, history_list)
-            if (epoch is reset_epochs) or (epoch in reset_epochs):
+            if epoch  not in reset_epochs:
                 self.model.reset_states()
 
         if history_list:

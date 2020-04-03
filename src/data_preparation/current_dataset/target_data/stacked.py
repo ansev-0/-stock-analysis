@@ -1,17 +1,17 @@
 import numpy as np
-from src.data_preparation.minmaxscaler import MinMaxScalerFitTransformMany
-from src.data_preparation.nn_input_output import BuilderIOStacked
+from src.data_preparation.scale.minmaxscaler import MinMaxScalerFitTransformMany
+from src.data_preparation.expand.nn_input_output import BuilderIOStacked
 
 
-class DataSetStackedFeaturesWithTarget():
+class DataSetStackedIO:
 
-    def __init__(self, serie, batch_size, steps_delay, steps_predict, feature_range=(-1, 1)):
+    def __init__(self, serie, samples, steps_delay, steps_predict, feature_range=(-1, 1)):
         self.current_data = None
         self.current_scaled_variables = None
         #range scaler
         self.__feature_range = feature_range
-        #batch_size
-        self.__batch_size = batch_size
+        #samples
+        self.__samples = samples
         #builder
         self.__builder_io_stacked = BuilderIOStacked()
         #Get dataframe delays
@@ -58,7 +58,7 @@ class DataSetStackedFeaturesWithTarget():
         return self.__get_current_scaled('y')[1]
 
     def __get_current_data(self):
-        return {key :  value[self.__dataset_index : self.__batch_size + self.__dataset_index, :]
+        return {key :  value[self.__dataset_index : self.__samples + self.__dataset_index, :]
                 for key, value in self.dataset.items()}
 
     def __get_current_scaled_variables(self):
@@ -77,20 +77,20 @@ class DataSetStackedFeaturesWithTarget():
 
 
     @classmethod
-    def one_step(cls, serie,  batch_size, steps_delay, feature_range=(-1,1)):
-        return cls(serie=serie,  batch_size=batch_size,
+    def one_step(cls, serie,  samples, steps_delay, feature_range=(-1,1)):
+        return cls(serie=serie,  samples=samples,
                    steps_delay=steps_delay, steps_predict=1,
                    feature_range=feature_range)
 
     @classmethod
-    def seven_steps(cls, serie,  batch_size, steps_delay, feature_range=(-1,1)):
-        return cls(serie=serie, batch_size=batch_size,
+    def seven_steps(cls, serie,  samples, steps_delay, feature_range=(-1,1)):
+        return cls(serie=serie, samples=samples,
                    steps_delay=steps_delay, steps_predict=7,
                    feature_range=feature_range)
 
     @classmethod
-    def twenty_four_steps(cls, serie,  batch_size, steps_delay, feature_range=(-1,1)):
-        return cls(serie=serie,  batch_size=batch_size,
+    def twenty_four_steps(cls, serie,  samples, steps_delay, feature_range=(-1,1)):
+        return cls(serie=serie,  samples=samples,
                    steps_delay=steps_delay, steps_predict=24,
                    feature_range=feature_range)
 

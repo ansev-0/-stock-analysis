@@ -1,9 +1,9 @@
 import pandas as pd
 from src.data_preparation.errors.check_dataframe import CheckSplitDataFrameByGroups
 from src.data_preparation.errors.check_datetime_index import CheckDateTimeIndex
-from src.data_preparation.datetime_index import DateTimeIndexFeatures
+from src.data_preparation.map.datetime_index import DateTimeIndexFeatures
 from src.tools.check_components import eval_type_argument
-from src.data_preparation.datetime_index import DateTimeIndexFeatures
+
 
 class SplitDataFrameByGroups:
     

@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from src.data_preparation.nn_input_output import BuilderIOStacked
+from src.data_preparation.expand.nn_input_output import BuilderIOStacked
 
 
 class DataSetStackedFeatures():
