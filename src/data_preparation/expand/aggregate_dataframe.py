@@ -1,5 +1,5 @@
 from functools import wraps
-from src.tools.check_components import filter_valid_kwargs
+from src.tools.filter import filter_valid_kwargs
 import pandas as pd
 import numpy as np
 

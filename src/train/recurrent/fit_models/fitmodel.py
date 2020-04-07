@@ -1,34 +1,48 @@
-class FitModelWithState:
-    def __init__(self, model, x_train, y_train):
+from functools import wraps
+from src.train.recurrent.fit_models.errors.fitmodel import CheckFitModelWithState
+from src.tools.filter import filter_dict
+from src.tools.filter import filter_valid_kwargs
+class FitModelStateful:
+    def __init__(self, model):
         self.model = model
-        self.x_train = x_train
-        self.y_train = y_train
 
-    def fit(self, epochs, reset_epochs=None, history_keys=None, **kwargs):
+    @classmethod
+    def _fitmodel(cls, function):
 
-        history_list = []
-        output_func = self.__history_output_func(history_keys)
-        for epoch in range(1, epochs + 1):
-            history = self.model.fit(self.x_train, self.y_train, **kwargs)
-            output_func(history, history_list)
-            if epoch  not in reset_epochs:
-                self.model.reset_states()
+        @wraps(function)
+        def fit(self, x_train, y_train, epochs, reset_epochs, **kwargs):
+            list_history = []
+            for epoch in range(1, epochs + 1):
+                print(f'Fitting {epoch}/{epochs}')
+                modelfit = self.model.fit(x_train, y_train, **self.valid_kwargs(kwargs))
+                
+                list_history = function(self, modelfit, list_history, **kwargs)
+                if epoch  not in reset_epochs:
+                    self.model.reset_states()
+            return list_history
 
-        if history_list:
-            return history_list
+        return fit
+    
+    
+    def valid_kwargs(self, kwargs):
+        valid_keys =  [key for key in self.model.fit.__code__.co_varnames[1:] 
+                       if key not in ['window']]
+        return filter_valid_kwargs(kwargs=kwargs,
+                                   valid_keys=valid_keys)
+
+class FitModelWithState(FitModelStateful):
+    def __init__(self, model):
+        super().__init__(model)
+        #self.__check_errors = CheckFitModelWithState()
+
+    @FitModelStateful._fitmodel
+    def fit_keep_history(self, modelfit, list_history, history_keys=None, **kwargs):
+        #self.__check_errors(history_keys)
+        list_history.append(filter_dict(dictionary=modelfit.history,
+                                        kfilter=history_keys))
+        return list_history
+        
+
+    @FitModelStateful._fitmodel
+    def only_fit(self, *args):
         return None
-
-    @staticmethod
-    def __history_output_func(history_keys):
-        try:
-            iter(history_keys)
-            if len(history_keys) == 1:
-                return lambda history, list_history: list_history.append(
-                    dict(filter(lambda item: item[0] is history_keys,
-                                history.items())))
-      
-            return lambda history, list_history: list_history.append(
-                dict(filter(lambda item: item[0] in history_keys,
-                            history.items())))
-        except TypeError:
-            return lambda *args, **kwargs: None
