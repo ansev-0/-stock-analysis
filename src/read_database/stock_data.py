@@ -35,22 +35,23 @@ class StockDataFromDataBase:
         end str or pd.Timedelta.
 
         '''
-
-        dataframe = (
-            self.__build_dataframe(
-                dict_stock=self.__get_dict_from_database(stock,
-                                                         start=self.__get_datetime_database(start),
-                                                         end=self.__get_datetime_database(end)),
-                start=start,
-                end=end,
-                **kwargs))
-        return self.func_transform_dataframe(dataframe=dataframe, **kwargs)
+        dict_stock = self.__get_dict_from_database(stock,
+                                                   start=self.__get_datetime_database(start),
+                                                   end=self.__get_datetime_database(end))
+        if dict_stock:
+            dataframe = (
+                self.__build_dataframe(dict_stock=dict_stock, start=start, end=end, **kwargs))
+            return self.func_transform_dataframe(dataframe=dataframe, **kwargs)
+        return dict_stock
 
     def __get_dict_from_database(self, stock, start, end):
-        return reduce(lambda cum_dict, dict_new: dict(cum_dict, **dict_new),
-                      self.__database.database[stock].find(filter={'_id' : {'$gte' : start,
-                                                                          '$lte' : end}},
-                                                         projection={'_id' : 0}))
+        try:
+            return reduce(lambda cum_dict, dict_new: dict(cum_dict, **dict_new),
+                          self.__database.database[stock].find(filter={'_id' : {'$gte' : start,
+                                                                                '$lte' : end}},
+                                                               projection={'_id' : 0}))
+        except TypeError:
+            return None
 
     def __get_function_transform_dataframe(self, format_output):
         if format_output == 'dict':
@@ -116,15 +117,15 @@ class DateTimeIndexDataBase:
 
 class ManyStockDataFromDataBase(StockDataFromDataBase):
 
-    def get_many_fixed_dates(self, stock_labels, start, end, **kwargs):
+    def get_fixed_dates(self, stock_labels, start, end, **kwargs):
         return map(lambda stock: self.get(stock, start, end, **kwargs),
                    stock_labels)
     
-    def get_many_from_dict(self, list_kparams, **kwargs):
+    def get_from_dict(self, list_kparams, **kwargs):
         return map(lambda kparams: self.get(**kparams, **kwargs),
                    list_kparams)
 
-    def get_many(self, list_params, **kwargs):
+    def get(self, list_params, **kwargs):
         return map(lambda args: self.get(*args, **kwargs),
                    list_params)
 
@@ -138,7 +139,7 @@ class ManyStockDataFromManyDataBase:
     def get_fixed_dates(self, db_stock_dict, start, end, **kwargs):
 
         return self.__get(lambda reader, params, *args, **kwargs : \
-                          reader.get_many_fixed_dates(params, *args, **kwargs),
+                          reader.get_fixed_dates(params, *args, **kwargs),
                           db_stock_dict,
                           start,
                           end,
@@ -147,14 +148,14 @@ class ManyStockDataFromManyDataBase:
 
     def get_from_dict(self, dict_list_kparams, **kwargs):
         return self.__get(lambda reader, params, **kwargs : \
-                          reader.get_many_from_dict(params, **kwargs),
+                          reader.get_from_dict(params, **kwargs),
                           dict_list_kparams,
                           **kwargs)
             
 
     def get(self, dict_list_params, **kwargs):
         return self.__get(lambda reader, params, **kwargs : \
-                          reader.get_many(params, **kwargs),
+                          reader.get(params, **kwargs),
                           dict_list_params,
                           **kwargs)
 
@@ -172,4 +173,11 @@ class ManyStockDataFromManyDataBase:
                                            KeyError)
         return response_dict
 
+    @classmethod
+    def frame(cls, db_names):
+        return cls(db_names, format_output='dataframe')
+
+    @classmethod
+    def dictionary(cls, db_names):
+        return cls(db_names, format_output='dict')
     
