@@ -97,8 +97,6 @@ class AggregateWindowEwm(WindowEwm):
     def cov(self, x=None, *args, **kwargs):
         return x.corr(*args, **kwargs)
     
-
-
 class AggregateWindowRolling(WindowRolling):
     
     @WindowRolling.get_rolling

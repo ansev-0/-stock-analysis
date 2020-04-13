@@ -1,6 +1,6 @@
 from src.view.figures.time_series import candles
 from src.view.figures.time_series.candles import FigureCandlestickManyDataFrame
-from src.data_preparation_initial_diagnosis.errors.stock_data \
+from src.data_preparation.initial_diagnosis.errors.stock_data \
     import CheckStockDataDiagnosis, CheckManyStockDataDiagnosis
 import plotly.graph_objects as go
 import pandas as pd
@@ -35,8 +35,11 @@ class StockDataDiagnosis:
     def time_between_values(self):
         return self.dataframe.index.to_series().diff().value_counts()
 
-    def hist(self, columns=None, **kwargs):
-        return self._index_columns(columns)(self.dataframe).plot.hist(*kwargs)
+    def hist(self, columns=None, nan=False, **kwargs):
+        dataframe=self.dataframe
+        if not nan:
+            dataframe = self.dataframe.loc[self.dataframe.notnull().all(axis=1)]
+        return self._index_columns(columns)(dataframe).plot.hist(*kwargs)
 
     def plot(self, columns=None, **kwargs):
         return self._index_columns(columns)(self.dataframe).plot(**kwargs)
