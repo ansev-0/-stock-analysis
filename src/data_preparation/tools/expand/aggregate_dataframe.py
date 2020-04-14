@@ -1,5 +1,5 @@
 from functools import wraps
-from src.tools.check_components import filter_valid_kwargs
+from src.tools.filter import filter_valid_kwargs
 import pandas as pd
 import numpy as np
 
@@ -97,8 +97,6 @@ class AggregateWindowEwm(WindowEwm):
     def cov(self, x=None, *args, **kwargs):
         return x.corr(*args, **kwargs)
     
-
-
 class AggregateWindowRolling(WindowRolling):
     
     @WindowRolling.get_rolling

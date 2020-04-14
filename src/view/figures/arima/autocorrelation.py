@@ -1,4 +1,4 @@
-from src.data_preparation.arima import TransformSerie
+from src.data_preparation.map.arima.transform_serie import TransformSerie
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 import matplotlib.pyplot as plt
 

@@ -14,6 +14,4 @@ def eval_type_argument(type_arg):
     return type_arg
 
 
-def filter_valid_kwargs(kwargs, valid_keys):
-    return dict(filter(lambda kwarg: kwarg[0] in valid_keys, kwargs.items()))
 

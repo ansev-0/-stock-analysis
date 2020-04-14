@@ -1,5 +1,5 @@
 
-from src.data_preparation.errors.check_datetime_index import CheckDateTimeIndex
+from src.data_preparation.tools.errors.check_datetime_index import CheckDateTimeIndex
 import pandas as pd
 class DateTimeIndexFeatures:
     def __init__(self, datetimeindex):
