@@ -11,8 +11,7 @@ class Pipeline(metaclass=ABCMeta):
         cls._priority = cls._priorities.get(cls.__name__)
 
     def __new__(cls):
-
-        #only can create a new object if its class has a priority in databse.
+        #only can create a new object if its class has a priority in database.
         if cls._priority:
             #count all pipelines created
             cls._pipelines[cls.__name__] += 1

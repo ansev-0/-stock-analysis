@@ -28,14 +28,14 @@ class PipelineStockData(Pipeline):
     def process(cls, function):
 
         @wraps(function)
-        def process_data(self, return_summary=True, *args, **kwargs):
+        def process_data(self, show_summary=True, *args, **kwargs):
             (self._scalers, self._data,
              initial_index, final_index), additional_summary_information = function(self, *args, **kwargs)
 
             if not additional_summary_information:
                 additional_summary_information = {}
 
-            if return_summary:
+            if show_summary:
                 print(self._summary(priority = self.priority,
                                     initial_index=initial_index,
                                     final_index=final_index,

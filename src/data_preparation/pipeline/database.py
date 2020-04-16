@@ -17,6 +17,6 @@ class Priority(PipelineDataBase):
 
     def get(self, class_name):
         return self._collection_connection.find_one({'_id' : self._document},
-                                             projection={class_name: True})[class_name]
+                                                    projection={class_name: True})[class_name]
  
 
