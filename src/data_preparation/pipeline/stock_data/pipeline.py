@@ -22,13 +22,15 @@ class PipelineStockData(Pipeline):
                 additional_summary_information = {}
 
 
-            return self._summary_management(show_summary, dict_summary,
-                                            priority = self.priority,
-                                            initial_index=initial_index,
-                                            final_index=final_index,
-                                            scaler=self._scalers,
-                                            transform_functions=function.__doc__,
-                                            **additional_summary_information)
+            return self._summary_management(show_summary, dict_summary)\
+                (show_summary, dict_summary,
+                 priority = self.priority,
+                 initial_index=initial_index,
+                 final_index=final_index,
+                 scaler=self._scalers,
+                 transform_functions=function.__doc__,
+                 **additional_summary_information)
+
         return process_data
 
     @property
@@ -48,7 +50,7 @@ class PipelineStockData(Pipeline):
 
         if show_summary or dict_summary:
             return self._summary_actions
-        return lambda **kwargs: None
+        return lambda *args, **kwargs: None
 
     def _summary_actions(self, show_summary, dict_summary, **kwargs):
         self.summary(**kwargs)
