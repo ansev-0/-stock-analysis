@@ -10,6 +10,28 @@ class PipelineStockData(Pipeline):
         self._scalers = None
         self._data = None
 
+    @classmethod
+    def process(cls, function):
+
+        @wraps(function)
+        def process_data(self, show_summary=True, dict_summary=True, *args, **kwargs):
+            (self._scalers, self._data,
+             initial_index, final_index), additional_summary_information = function(self, *args, **kwargs)
+
+            if not additional_summary_information:
+                additional_summary_information = {}
+
+            if show_summary or dict_summary:
+
+                return self._summary_management(show_summary, dict_summary,
+                                                priority = self.priority,
+                                                initial_index=initial_index,
+                                                final_index=final_index,
+                                                scaler=self._scalers,
+                                                transform_functions=function.__doc__,
+                                                **additional_summary_information)
+        return process_data
+
     @property
     def data(self):
         return self._data
@@ -21,29 +43,27 @@ class PipelineStockData(Pipeline):
     def _summary(self, **kwargs):
         self.summary.enter_params(**kwargs)
         self.summary.build()
-        return self.summary.str_summary
 
 
-    @classmethod
-    def process(cls, function):
+    def _summary_management(self, show_summary, dict_summary):
 
-        @wraps(function)
-        def process_data(self, show_summary=True, *args, **kwargs):
-            (self._scalers, self._data,
-             initial_index, final_index), additional_summary_information = function(self, *args, **kwargs)
+        if show_summary or dict_summary:
+            return self._summary_actions
+        return lambda **kwargs: None
 
-            if not additional_summary_information:
-                additional_summary_information = {}
+    def _summary_actions(self, show_summary, dict_summary, **kwargs):
+        self.summary(**kwargs)
+        if show_summary:
+            print(self.summary.str_summary)
+        if dict_summary:
+            return self.summary.registry
+        return None
 
-            if show_summary:
-                print(self._summary(priority = self.priority,
-                                    initial_index=initial_index,
-                                    final_index=final_index,
-                                    scaler=self._scalers,
-                                    transform_functions=function.__doc__,
-                                    **additional_summary_information))
-            return None
 
-        return process_data
+
+
+            
+
+        
 
 
