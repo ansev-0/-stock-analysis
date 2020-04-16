@@ -47,6 +47,3 @@ class PipelineStockData(Pipeline):
         return process_data
 
 
-class B(PipelineStockData):
-    pass
-
