@@ -1,12 +1,11 @@
 from functools import wraps
-from abc import ABCMeta, abstractmethod, abstractproperty
-import numpy as np
+from abc import ABCMeta, abstractmethod
 
 class Summary(metaclass = ABCMeta):
 
     def __init__(self):
         self._registry = None
-        self._str_summary = None
+        self.reset_str_summary()
 
     @abstractmethod
     def enter_params(self):
@@ -24,7 +23,10 @@ class Summary(metaclass = ABCMeta):
     def show(self):
         print(self._str_summary)
 
-    
+
+    def reset_str_summary(self):
+        self._str_summary = None
+
     @classmethod
     def register(cls, function):
 
