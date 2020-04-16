@@ -1,5 +1,6 @@
 from src.data_preparation.pipeline.summary import Summary
 
+
 class SummaryStockData(Summary):
 
     
@@ -9,8 +10,5 @@ class SummaryStockData(Summary):
                      **kwargs):
         return (initial_index, final_index, scaler, transform_functions), kwargs
 
-    def build(self):
-        pass
 
 
-    

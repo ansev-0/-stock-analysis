@@ -1,5 +1,6 @@
 from functools import wraps
 from abc import ABCMeta, abstractmethod
+from src.tools.builder_formats.str_formats import basic_summary_from_dict
 
 class Summary(metaclass = ABCMeta):
 
@@ -7,13 +8,9 @@ class Summary(metaclass = ABCMeta):
         self.reset_registry()
         self.reset_str_summary()
 
-#abstract methods
+#abstractmethods
     @abstractmethod
     def enter_params(self):
-        pass
-
-    @abstractmethod
-    def build(self):
         pass
 
 #properties
@@ -31,7 +28,14 @@ class Summary(metaclass = ABCMeta):
     def reset_registry(self):
         self._registry = None
 
-#classmethod
+#instancemethods
+
+    def build(self):
+        if not self.registry:
+            return None
+        self._str_summary = basic_summary_from_dict(self.registry)
+
+#classmethods
     @classmethod
     def register(cls, function):
 
