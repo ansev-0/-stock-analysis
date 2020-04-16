@@ -21,15 +21,14 @@ class PipelineStockData(Pipeline):
             if not additional_summary_information:
                 additional_summary_information = {}
 
-            if show_summary or dict_summary:
 
-                return self._summary_management(show_summary, dict_summary,
-                                                priority = self.priority,
-                                                initial_index=initial_index,
-                                                final_index=final_index,
-                                                scaler=self._scalers,
-                                                transform_functions=function.__doc__,
-                                                **additional_summary_information)
+            return self._summary_management(show_summary, dict_summary,
+                                            priority = self.priority,
+                                            initial_index=initial_index,
+                                            final_index=final_index,
+                                            scaler=self._scalers,
+                                            transform_functions=function.__doc__,
+                                            **additional_summary_information)
         return process_data
 
     @property
