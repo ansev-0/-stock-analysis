@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 from collections import defaultdict
+
 class Pipeline(metaclass=ABCMeta):
 
     _pipelines = defaultdict(int)
@@ -12,6 +13,14 @@ class Pipeline(metaclass=ABCMeta):
     def summary(self):
         pass
 
+    @abstractmethod
+    def data_model(self):
+        pass
+    
+    @abstractmethod
+    def scalers(self):
+        pass
+
     @abstractproperty
     def _priority(self):
         pass
@@ -22,6 +31,4 @@ class Pipeline(metaclass=ABCMeta):
 
     @property
     def get_current_pipelines(self):
-        return self._pipelines
-
-
+        return dict(self._pipelines)
