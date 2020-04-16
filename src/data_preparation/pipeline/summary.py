@@ -4,9 +4,10 @@ from abc import ABCMeta, abstractmethod
 class Summary(metaclass = ABCMeta):
 
     def __init__(self):
-        self._registry = None
+        self.reset_registry()
         self.reset_str_summary()
 
+#abstract methods
     @abstractmethod
     def enter_params(self):
         pass
@@ -15,18 +16,22 @@ class Summary(metaclass = ABCMeta):
     def build(self):
         pass
 
+#properties
     @property
     def registry(self):
         return self._registry
 
     @property
-    def show(self):
-        print(self._str_summary)
-
+    def str_summary(self):
+        return self._str_summary
 
     def reset_str_summary(self):
         self._str_summary = None
 
+    def reset_registry(self):
+        self._registry = None
+
+#classmethod
     @classmethod
     def register(cls, function):
 
