@@ -4,7 +4,6 @@ from src.data_preparation.pipeline.stock_data.summary import SummaryStockData
 
 class PipelineStockData(Pipeline):
     
-
     def __init__(self):
         self.summary = SummaryStockData()
         self._scalers = None
@@ -15,12 +14,17 @@ class PipelineStockData(Pipeline):
 
         @wraps(function)
         def process_data(self, show_summary=True, dict_summary=True, *args, **kwargs):
-            (self._scalers, self._data,
-             initial_index, final_index), additional_summary_information = function(self, *args, **kwargs)
+
+            data, additional_summary_information = function(self, *args, **kwargs)
+
+            if len(data) == 3:
+                self._scalers, self._data, initial_index = data
+                final_index = initial_index
+            else:
+                self._scalers, self._data, initial_index, final_index = data
 
             if not additional_summary_information:
                 additional_summary_information = {}
-
 
             return self._summary_management(show_summary, dict_summary)\
                 (show_summary, dict_summary,
@@ -41,10 +45,9 @@ class PipelineStockData(Pipeline):
     def scalers(self):
         return self._scalers
 
-    def _summary(self, **kwargs):
+    def _write_summary(self, **kwargs):
         self.summary.enter_params(**kwargs)
         self.summary.build()
-
 
     def _summary_management(self, show_summary, dict_summary):
 
@@ -53,7 +56,8 @@ class PipelineStockData(Pipeline):
         return lambda *args, **kwargs: None
 
     def _summary_actions(self, show_summary, dict_summary, **kwargs):
-        self.summary(**kwargs)
+
+        self._write_summary(**kwargs)
         if show_summary:
             print(self.summary.str_summary)
         if dict_summary:

@@ -8,10 +8,12 @@ class Pipeline(metaclass=ABCMeta):
     _priorities = Priority()
 
     def __init_subclass__(cls):
+        print(cls.__name__)
         cls._priority = cls._priorities.get(cls.__name__)
 
+
     def __new__(cls):
-        #only can create a new object if its class has a priority in database.
+        # Object is only created if its class has a priority in database.
         if cls._priority:
             #count all pipelines created
             cls._pipelines[cls.__name__] += 1
@@ -19,7 +21,7 @@ class Pipeline(metaclass=ABCMeta):
         return None
 
     @abstractmethod
-    def _summary(self):
+    def _write_summary(self):
         pass
 
     @abstractmethod
