@@ -72,7 +72,7 @@ class PipelineBasicTransformOhlc(PipelineStockData):
                             index=dataframe.index,
                             columns=dataframe.columns)
 
-PipelineBasicTransformOhlc()
+
 
 
 
