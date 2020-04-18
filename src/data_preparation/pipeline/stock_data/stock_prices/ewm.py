@@ -3,8 +3,6 @@ from src.data_preparation.tools.expand.aggregate_dataframe import AggregateWindo
 from src.data_preparation.pipeline.stock_data.stock_prices.errors.window \
      import CheckErrors
 
-
-
 class PipelineEwmStockTimeSerie(PipelineStockData):
     _check_errors = CheckErrors(AggregateWindowEwm)
 

@@ -13,7 +13,7 @@ class PipelineStockData(Pipeline):
     def process(cls, function):
 
         @wraps(function)
-        def process_data(self, show_summary=True, dict_summary=True, *args, **kwargs):
+        def process_data(self, *args, show_summary=True, dict_summary=True, **kwargs):
 
             data, additional_summary_information = function(self, *args, **kwargs)
 
