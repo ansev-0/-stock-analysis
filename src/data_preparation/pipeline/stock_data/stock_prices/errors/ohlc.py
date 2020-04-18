@@ -10,6 +10,7 @@ class CheckErrors:
     def correct_columns(self, dataframe):
         if not (sorted(list(map(lambda label: label.lower(),
                                 dataframe.columns))) == ['close', 'high', 'low', 'open']):
-            raise PipelineError('DataFrame columns must be  open, high, low and close', ValueError)
+            raise PipelineError('DataFrame columns must be  open, high, low and close',
+                                ValueError)
             
 

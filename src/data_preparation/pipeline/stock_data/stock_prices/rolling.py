@@ -14,5 +14,7 @@ class PipelineRollingStockTimeSerie(PipelineStockData):
         '''
         agg_rolling = AggregateWindowRolling(serie)
         self._check_errors.function_implemented(function)
-        dataframe = getattr(agg_rolling, function)(agg_values=agg_values, *args, **kwargs).dropna()
+        dataframe = getattr(agg_rolling, function)\
+            (agg_values=agg_values, *args, **kwargs).dropna()
+            
         return ('not scaler', dataframe, serie.index, dataframe.index), None

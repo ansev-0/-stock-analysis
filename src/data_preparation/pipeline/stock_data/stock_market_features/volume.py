@@ -5,7 +5,7 @@ from src.data_preparation.tools.scale.minmaxscaler import MinMaxScalerFitTransfo
 class PipelineVolumeStockTimeSerie(PipelineStockData):
 
     @PipelineStockData.process
-    def minmax_scaler_volume(self, volume, feature_range=(-1, 1), *args, **kwargs):
+    def minmax_scaler_volume(self, volume, feature_range=(-1, 1)):
         '''
         This function scales Volume serie
         using the same MinMaxScaler scaler within the range set in feature_range
@@ -15,7 +15,7 @@ class PipelineVolumeStockTimeSerie(PipelineStockData):
         return (scaler, volume, index), None
 
     @PipelineStockData.process
-    def minmax_scaler_volume_with_margins(self, volume, percentage, feature_range=(-1, 1), *args, **kwargs):
+    def minmax_scaler_volume_with_margins(self, volume, percentage, feature_range=(-1, 1)):
         '''
         This function scales Volume serie
         using the same MinMaxScaler scaler within the range set in feature_range
