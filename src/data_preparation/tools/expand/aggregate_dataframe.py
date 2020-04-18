@@ -141,10 +141,10 @@ class AggregateWindowRolling(WindowRolling):
     
     
     @WindowRolling.get_rolling
-    def skew(self, x=None, **kwargs):
+    def skew(self, x=None, *args, **kwargs):
         return x.skew(**kwargs)
     
     @WindowRolling.get_rolling
-    def kurt(self, x=None, **kwargs):
+    def kurt(self, x=None, *args, **kwargs):
         return x.median(**kwargs)
     

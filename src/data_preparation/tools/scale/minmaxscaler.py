@@ -1,6 +1,7 @@
 from sklearn.preprocessing import MinMaxScaler
-import pandas as pd
 from functools import reduce
+import pandas as pd
+import numpy as np
 
 class MinMaxScalerFitTransform:
 
@@ -50,24 +51,7 @@ class MinMaxScalerFitTransformMany(MinMaxScalerFitTransform):
 
 
 
-class MinMaxScalerFitTransformWithMargins(MinMaxScalerFitTransform):
-    
-    def array_with_margins(self, array, percentage):
-        array_to_scale = np.vstack([array,
-                                    (np.max(array, axis=0)*(1+percentage)),
-                                    (np.min(array,axis=0)*(1-percentage))])
-        
-        scaler, array = self.array(array_to_scale)
-        return scaler, array[:-2,:]
-    
-    def dataframe_with_margins(self, dataframe, percentage, **kwargs):
-        scaler, array = self.array_with_margins(dataframe, percentage, **kwargs)
-        return scaler, pd.DataFrame(data=array, index=dataframe.index, columns=dataframe.columns)
 
-    def series_with_margins(self, serie, percentage, **kwargs):
-        scaler, array = self.array_with_margins(serie.values[:, None], percentage, **kwargs)
-        print(array)
-        return scaler, pd.Series(index = serie.index, name=serie.name, data=array.squeeze())
 
 
 

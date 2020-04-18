@@ -8,9 +8,7 @@ class Pipeline(metaclass=ABCMeta):
     _priorities = Priority()
 
     def __init_subclass__(cls):
-        print(cls.__name__)
         cls._priority = cls._priorities.get(cls.__name__)
-
 
     def __new__(cls):
         # Object is only created if its class has a priority in database.
