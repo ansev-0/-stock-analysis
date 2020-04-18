@@ -5,7 +5,7 @@ from src.data_preparation.tools.scale.minmaxscaler import MinMaxScalerFitTransfo
 class PipelineOriginalStockTimeSerie(PipelineStockData):
 
     @PipelineStockData.process
-    def minmax_scaler_dataframe(self, dataframe, feature_range=(-1, 1), *args, **kwargs):
+    def minmax_scaler_dataframe(self, dataframe, feature_range=(-1, 1)):
         '''
         This function scales all the values ​​in the DataFrame
         using the same MinMaxScaler scaler within the range set in feature_range
@@ -15,7 +15,7 @@ class PipelineOriginalStockTimeSerie(PipelineStockData):
         return (scaler, dataframe, index), None
 
     @PipelineStockData.process
-    def minmax_scaler_serie(self, serie, feature_range=(-1, 1), *args, **kwargs):
+    def minmax_scaler_serie(self, serie, feature_range=(-1, 1)):
         '''
         This function scales all the values ​​in the Serie
         using the same MinMaxScaler scaler within the range set in feature_range
@@ -26,7 +26,8 @@ class PipelineOriginalStockTimeSerie(PipelineStockData):
 
 
     @PipelineStockData.process
-    def minmax_scaler_dataframe_with_margins(self, dataframe, percentage, feature_range=(-1, 1), *args, **kwargs):
+    def minmax_scaler_dataframe_with_margins(self, dataframe, 
+                                             percentage, feature_range=(-1, 1)):
         '''
         This function scales all the values ​​in the DataFrame
         using the same MinMaxScaler scaler within the range set in feature_range
@@ -39,7 +40,8 @@ class PipelineOriginalStockTimeSerie(PipelineStockData):
                                             'min_values_scaled' : dataframe.min()}
 
     @PipelineStockData.process
-    def minmax_scaler_serie_with_margins(self, serie, percentage, feature_range=(-1, 1), *args, **kwargs):
+    def minmax_scaler_serie_with_margins(self, serie,
+                                         percentage, feature_range=(-1, 1)):
         '''
         This function scales all the values ​​in the Serie
         using the same MinMaxScaler scaler within the range set in feature_range
@@ -53,4 +55,6 @@ class PipelineOriginalStockTimeSerie(PipelineStockData):
 
     @staticmethod
     def _get_feature_range_with_margins(feature_range, percentage):
-        return tuple(min(feature_range) + percentage, max(feature_range) + percentage)
+        return tuple(min(feature_range) + percentage,
+                     max(feature_range) + percentage)
+                     
