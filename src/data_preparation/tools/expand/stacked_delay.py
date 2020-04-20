@@ -4,7 +4,7 @@ import numpy as np
 
 class StackedDelay:
 
-    def __init__(self, range_delays, zero_include=True):
+    def __init__(self, range_delays):
         self.range_delays = range_delays
         self._reversed_delays = tuple(reversed(self.range_delays))
 

@@ -23,10 +23,10 @@ class PipelineVolumeStockTimeSerie(PipelineStockData):
         index = volume.index
         scaler, volume = MinMaxScalerFitTransform(
             self._get_feature_range_with_margins(feature_range, percentage))\
-                .serie(volume, percentage)
+                .serie(volume)
         return (scaler, volume, index), {'max_value_scaled' : volume.max(),
                                         'min_value_scaled' : volume.min()}
 
     @staticmethod
     def _get_feature_range_with_margins(feature_range, percentage):
-        return tuple(min(feature_range) + percentage, max(feature_range) + percentage)
+        return (min(feature_range) + percentage, max(feature_range) - percentage)

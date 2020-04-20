@@ -9,7 +9,7 @@ class PipelineBasicTransformOhlc(PipelineStockData):
 
     @PipelineStockData.process
     def agg(self, dataframe, scaler, func):
-        print(dataframe)
+
         '''
         This function calculates aggregate functions of values ​​open high low and close.
         It also scale the result with input scaler.
@@ -51,10 +51,10 @@ class PipelineBasicTransformOhlc(PipelineStockData):
 
         result = getattr(dataframe, function)(*args, **kwargs, axis=1)
 
-        if isinstance(result, dataframe):
+        if isinstance(result, pd.DataFrame):
             result = self._scale_dataframe(result, scaler)
         else:
-            result = self._scale_serie(result, scaler)
+            result = self._scale_serie(result, scaler).rename(function)
 
         index = dataframe.index
         return ('input scaler', result, index), {'max_values_scaled' : result.max(),
@@ -62,7 +62,7 @@ class PipelineBasicTransformOhlc(PipelineStockData):
 
     @staticmethod
     def _scale_serie(serie, scaler):
-        return pd.Series(data=scaler.transform(serie.values[:, None]), index=serie.index)
+        return pd.Series(data=scaler.transform(serie.values[:, None]).squeeze(), index=serie.index)
 
 
     @staticmethod

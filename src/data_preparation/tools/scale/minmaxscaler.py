@@ -18,7 +18,7 @@ class MinMaxScalerFitTransform:
         scaler, array = self.array(dataframe, **kwargs)
         return scaler, pd.DataFrame(data=array, index=dataframe.index, columns=dataframe.columns)
 
-    def series(self, serie, **kwargs):
+    def serie(self, serie, **kwargs):
         scaler, array = self.array(serie.values[:, None], **kwargs)
         return scaler, pd.Series(index = serie.index, name=serie.name, data=array.squeeze())
 
