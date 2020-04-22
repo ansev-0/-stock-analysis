@@ -13,7 +13,7 @@ class StackedDelay:
         return np.stack(self._create_list_from_delays(shiftable), axis=1)
 
     def concat_dataframe(self, shiftable):
-        return pd.concat(self._create_list_from_delays(shiftable), axis=1)
+        return pd.concat(self._create_list_from_delays(shiftable), axis=1, sort=False)
 
     def remove_rows_with_nan(self, array):
         return array[self.range_delays.stop-1:]

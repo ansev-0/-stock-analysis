@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from src.data_preparation.tools.expand.stacked_delay import StackedDataFrameDelay, \
-     StackedSerieDelay
+    StackedSerieDelay
 
 class AdapterKerasTimeSeriesStacked:
     
@@ -40,7 +40,7 @@ class AdapterKerasTimeSeriesStacked:
 
     @staticmethod
     def _join_list_shiftable_pandas(list_to_join):
-        return pd.concat(list_to_join, axis=1, join='inner')
+        return pd.concat(list_to_join, axis=1, join='inner', sort=False)
 
 
     

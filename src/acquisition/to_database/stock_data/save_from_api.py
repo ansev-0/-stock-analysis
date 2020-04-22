@@ -23,7 +23,7 @@ class SaveStockDataFromApi:
         self.acquistion_orders = AcquisitionOrders(collection=collection)
         #Create object to report incidents saving data
         self.aquisition_incidents = AcquisitionIncidents()
-        #Create object to show status process
+        #Create object to show show_status process
         self.show_status=SaveStockDataShowStatus()
 
 

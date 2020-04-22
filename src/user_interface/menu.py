@@ -1,13 +1,18 @@
-class Menu:
+from abc import ABCMeta, abstractproperty
 
-    def __init__(self, options_menu, switch_functions):
-        self.options_menu = options_menu
-        self.switch_functions = switch_functions
+class Menu(metaclass=ABCMeta):
+
+    @abstractproperty
+    def options_menu(self):
+        pass
+
+    @abstractproperty
+    def switch_functions(self):
+        pass
 
     def ask_for_selection(self, message):
         print(self.options_menu)
         return input(message)
-
 
     def run(self):
         selection = self.ask_for_selection(message='Enter One: ')
