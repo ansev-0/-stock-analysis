@@ -2,12 +2,19 @@ import pandas as pd
 import numpy as np
 
 
-class StackedDelay:
+class StackedSequences:
 
     def __init__(self, range_delays):
         self.range_delays = range_delays
-        self._reversed_delays = tuple(reversed(self.range_delays))
 
+    @property
+    def range_delays(self):
+        return self._range_delays
+
+    @range_delays.setter
+    def range_delays(self, range_delays):
+        self._range_delays = range_delays
+        self._reversed_delays = tuple(reversed(self._range_delays))
     
     def array(self, shiftable):
         return np.stack(self._create_list_from_delays(shiftable), axis=1)
@@ -24,7 +31,7 @@ class StackedDelay:
 
 
 
-class StackedSerieDelay(StackedDelay):
+class StackedSequencesFromSeries(StackedSequences):
 
     def dataframe(self, serie):
         dataframe = self.concat_dataframe(serie)
@@ -43,7 +50,7 @@ class StackedSerieDelay(StackedDelay):
     def array3d_without_nan(self, serie):
         return np.expand_dims(self.array_without_nan(serie), 2)
 
-class StackedDataFrameDelay(StackedDelay):
+class StackedSequencesFromDataFrame(StackedSequences):
     
     def dataframe(self, dataframe):
         n_features = len(dataframe.columns)

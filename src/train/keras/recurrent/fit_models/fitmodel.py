@@ -1,7 +1,8 @@
 from functools import wraps
-from src.train.recurrent.fit_models.errors.fitmodel import CheckFitModelWithState
+from src.train.keras.recurrent.fit_models.errors.fitmodel import CheckFitModelWithState
 from src.tools.filter import filter_dict
 from src.tools.filter import filter_valid_kwargs
+
 class FitModelStateful:
     def __init__(self, model):
         self.model = model
