@@ -17,12 +17,15 @@ class AlphaVantage:
     _AV_URL = "https://www.alphavantage.co/query?"
     def __init__(self, apikey, delays=None, **kwargs):
         self.apikey = apikey
-        self.default_params = {'datatype' : 'json',
-                               'apikey' : self.apikey}
         self.config(delays)
         self.__check_response = ErrorsResponseApiAlphavantage()
-        self.reader = Reader(base_url=self._AV_URL, **kwargs)
+        self._reader = Reader(base_url=self._AV_URL, **kwargs)
         self.show_status = AlphaVantageShowStatus()
+
+    @property
+    def default_params(self):
+        return {'datatype' : 'json',
+                'apikey' : self.apikey}
 
     def config(self, delays=None):
         self.delays = switch_none(delays, [60, 20])
@@ -41,7 +44,7 @@ class AlphaVantage:
 
             count_attemps += 1 #attemp n
             self.show_status.notify_try_connect()
-            response = self.reader.read(query)
+            response = self._reader.read(query)
 
             try:
                 json = response.json()
