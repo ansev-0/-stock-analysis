@@ -4,7 +4,7 @@ from src.acquisition.acquisition.reader import Reader
 from src.acquisition.acquisition.errors.check_alphavantage import ErrorsResponseApiAlphavantage
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import switch_none
-from src.view.acquisition.acquisition.status_alphavantage import AlphaVantageShowStatus
+from src.view.acquisition.acquisition.status_api import ApiShowStatus
 
 class AlphaVantage:
 
@@ -20,7 +20,7 @@ class AlphaVantage:
         self.config(delays)
         self.__check_response = ErrorsResponseApiAlphavantage()
         self._reader = Reader(base_url=self._AV_URL, **kwargs)
-        self.show_status = AlphaVantageShowStatus()
+        self.show_status = ApiShowStatus()
 
     @property
     def default_params(self):
@@ -43,7 +43,7 @@ class AlphaVantage:
                 time.sleep(delay)
 
             count_attemps += 1 #attemp n
-            self.show_status.notify_try_connect()
+            self.show_status.notify_try_connect('Alphavantage')
             response = self._reader.read(query)
 
             try:

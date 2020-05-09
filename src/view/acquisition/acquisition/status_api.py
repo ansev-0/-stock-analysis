@@ -1,8 +1,8 @@
-class AlphaVantageShowStatus:
-
+class ApiShowStatus:
+    
     @staticmethod
-    def notify_try_connect():
-        print(f'trying connect with API Alphavantage')
+    def notify_try_connect(api_name):
+        print(f'trying connect with API {api_name}')
 
     @staticmethod
     def notify_request_exception(error):

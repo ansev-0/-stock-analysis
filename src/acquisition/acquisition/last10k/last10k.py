@@ -1,9 +1,11 @@
 from functools import wraps
 import time
+import requests
 from src.acquisition.acquisition.reader import Reader
 from src.acquisition.acquisition.last10k.apikey import ApiKey
 from src.tools.mappers import switch_none
-
+from src.view.acquisition.acquisition.status_api import ApiShowStatus 
+from src.exceptions.acquisition_exceptions import Last10kError
 
 class Last10K:
 
@@ -17,11 +19,42 @@ class Last10K:
     def __init__(self, apikey, delays=None, **kwargs):
         self.apikey = apikey
         self.config(delays)
+        self.show_status = ApiShowStatus()
         self._reader = Reader(**kwargs)
 
     def config(self, delays=None):
         self.delays = switch_none(delays, [60, 20])
         self.attemps = len(self.delays) + 1
+
+
+    def __read(self, query):
+
+        count_attemps = 0
+        while count_attemps < self.attemps:
+            error_response = None
+            status_code = None
+            if count_attemps != 0:
+                #try again
+                delay = self.delays[count_attemps-1]
+                self.show_status.notify_sleeping(delay)
+                time.sleep(delay)
+
+            count_attemps += 1 #attemp n
+            self.show_status.notify_try_connect('Last10k')
+            response = self._reader.read(query, auth=ApiKey(self.apikey))
+
+            status_code = response.status_code
+
+            if not status_code == requests.codes.ok:
+                error_response = response
+            else: 
+                self.show_status.notify_json_received_succesfully()
+                return response.json()
+        else:
+            return self.__build_tuple_error(query=query,
+                                                status_code=status_code,
+                                                error=error_response)
+
 
 
     @classmethod
@@ -30,58 +63,34 @@ class Last10K:
         @wraps(func)
         def read_url(self, company, *args, **kwargs):
 
-            query_params = func(self, *args, **kwargs)
-            params={}
+            params = func(self, *args, **kwargs)
+            query={}
 
-            if isinstance(query_params, tuple):
-                self._reader.base_url = self._LAST_10K_URL + '/'.join([company, query_params[0]])
-                params = query_params[1]
+            if isinstance(params, tuple):
+                self._reader.base_url = self._LAST_10K_URL + '/'.join([company, params[0]])
+                query = params[1]
 
-            elif isinstance(query_params, str):
-                self._reader.base_url = self._LAST_10K_URL + '/'.join([company, query_params])
+            elif isinstance(params, str):
+                self._reader.base_url = self._LAST_10K_URL + '/'.join([company, params])
 
-            elif not query_params:
+            elif not params:
                 self._reader.base_url = self._LAST_10K_URL + company
 
-            elif isinstance(query_params, dict):
+            elif isinstance(params, dict):
                 self._reader.base_url = self._LAST_10K_URL + company
-                params = query_params
+                query = params
+            else:
+                raise Last10kError('Unsupported parameter format', ValueError)
 
-                
-            return self._reader.read(auth=ApiKey(self.apikey), query=params)
+            return self.__read(query=query)
             
 
         return read_url
 
-    
 
-class BalanceSheet(Last10K):
-    @Last10K._get_data
-    def get(self, form_type, filing_order):
-        return 'balancesheet', {'formType' : form_type, 'filingOrder' : filing_order}
+    @staticmethod
+    def __build_tuple_error(query, status_code, error):
+        return query, {'status code' : status_code, 'response': error}
 
 
-reader = BalanceSheet('130e21c2408c4af6ba4ea38b2ff259aa')
-r = reader.get(company='twtr', form_type='10-K', filing_order=0)
-
-print(r.json())
-
-
-class DocumentAndEntitySummary(Last10K):
-    @Last10K._get_data
-    def get(self, form_type, filing_order):
-        return {'formType' : form_type, 'filingOrder' : filing_order}
-
-
-class CashFlows(Last10K):
-    @Last10K._get_data
-    def get(self, form_type, filing_order):
-        return 'cashflows', {'formType' : form_type, 'filingOrder' : filing_order}
-
-
-
-reader = CashFlows('130e21c2408c4af6ba4ea38b2ff259aa')
-r = reader.get(company='twtr', form_type='10-K', filing_order=0)
-
-print(r.json())
 
