@@ -23,11 +23,11 @@ class CausalWaveBlock:
         return self._n_layers
     
     
-    def __call__(self, inp, return_skips=True, return_residual=True):
+    def __call__(self, input_tensor, return_skips=True, return_residual=True):
         
         #wavenet
         branches = zip(self.tanh_branches, self.sigmoid_branches, self.outputs_dense)
-        x = self.preprocess_dense(inp)
+        x = self.preprocess_dense(input_tensor)
         res_x = x
         skips = []
 
@@ -46,7 +46,7 @@ class CausalWaveBlock:
                        if not_filter)
         
         #return params
-        if len(output)==1:
+        if len(output) == 1:
             return output[0]
         return output
 
