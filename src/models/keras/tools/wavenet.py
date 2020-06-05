@@ -34,7 +34,7 @@ class CausalWaveBlock:
         for tanh_brach, sigmoid_branch, output_dense in branches:
             
             tanh_result, sigm_result = tanh_brach(x), sigmoid_branch(x)
-            x = Multiply()(([tanh_result, sigm_result]))
+            x = Multiply()([tanh_result, sigm_result])
             x = output_dense(x)
             res_x = Add()([res_x, x])
             skips.append(x)
