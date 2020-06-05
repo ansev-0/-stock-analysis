@@ -30,7 +30,7 @@ class CausalWaveBlock:
         x = self.preprocess_dense(inp)
         res_x = x
         skips = []
-        
+
         for tanh_brach, sigmoid_branch, output_dense in branches:
             
             tanh_result, sigm_result = tanh_brach(x), sigmoid_branch(x)
@@ -38,7 +38,7 @@ class CausalWaveBlock:
             x = output_dense(x)
             res_x = Add()([res_x, x])
             skips.append(x)
-            
+
         #get params to return 
         output = tuple(param  for param, not_filter
                        in zip((res_x, skips), 
@@ -71,7 +71,7 @@ class CausalWaveBlock:
     def _causal_conv1d(self, activation, dilation_rate):
         return Conv1D(filters=self.filters,
                        kernel_size=self.kernel_size, 
-                       padding='same',
+                       padding='causal',
                        activation = activation,
                        dilation_rate=dilation_rate)
     
