@@ -18,7 +18,7 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
 
     new_database: str
         valid parameters = 'create' and 'not create'
-        if there is no database for the specified frequency, action to be taken.
+        if there is no database, action to be taken.
 
     outputsize: str.
         valid parameters = 'compact' and 'full'

@@ -55,8 +55,6 @@ class Last10K:
                                                 status_code=status_code,
                                                 error=error_response)
 
-
-
     @classmethod
     def _get_data(cls, func):
 
@@ -91,6 +89,3 @@ class Last10K:
     @staticmethod
     def __build_tuple_error(query, status_code, error):
         return query, {'status code' : status_code, 'response': error}
-
-
-

@@ -7,7 +7,7 @@ class CheckErrorsUpdateDataBase:
     @staticmethod
     def check_parameter_create(create):
         if create  not in ['create', 'not create']:
-            raise ToDataBaseError('Invalid parameter: if_not_in_base', ValueError)
+            raise ToDataBaseError('Invalid parameter: new_database', ValueError)
 
     def check_database_exists(self, database_name):
         list_database = self.__database.client.list_database_names()
