@@ -46,7 +46,7 @@ class CausalWaveBlock:
                        if not_filter)
         
         #return params
-        if len(output==1):
+        if len(output)==1:
             return output[0]
         return output
 
