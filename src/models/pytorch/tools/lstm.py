@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+from  torch.autograd  import  Variable
 
 class LSTMStateful(nn.Module):
     
@@ -39,12 +39,22 @@ class LSTMStateful(nn.Module):
     
     def reset_hidden_cell(self):
 
-        self._hidden_cell = torch.zeros(self.lstm.num_layers * (self.bidirectional + 1), 
-                                         self.batch_size, self.hidden_size)
+        self._hidden_cell = Variable(torch.zeros(self.lstm.num_layers * (self.bidirectional + 1), 
+                                                 self.batch_size, self.hidden_size))
+
         
     def reset_hidden_state(self):
-        self._hidden_state = torch.zeros(self.lstm.num_layers * (self.bidirectional + 1), 
-                                        self.batch_size, self.hidden_size)   
+        self._hidden_state = Variable(torch.zeros(self.lstm.num_layers * (self.bidirectional + 1), 
+                                                  self.batch_size, self.hidden_size))   
+
+
+    def detach_hidden_cell(self):
+
+        self._hidden_cell = self._hidden_cell.detach()
+
+        
+    def detach_hidden_state(self):
+        self._hidden_state = self._hidden_state.detach()
         
     def forward(self, input_seq):
         lstm_out, (self._hidden_cell, self._hidden_state) = self.lstm(input_seq, 

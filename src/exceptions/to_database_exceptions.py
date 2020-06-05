@@ -5,3 +5,6 @@ class ToDataBaseError(new_exception.NewException):
 
 class ToDataBaseAlphaVantageError(new_exception.NewException):
     pass
+
+class ToDataBaseLast10KError(new_exception.NewException):
+    pass
