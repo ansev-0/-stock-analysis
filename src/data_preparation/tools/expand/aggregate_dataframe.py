@@ -15,8 +15,7 @@ class AggregateDataFrame:
         
         @wraps(function)
         def agg_function(self, agg_values=None, *args, **kwargs):
-            return  pd.concat([self.serie] +
-                              [function(self, agg_value=val, *args , **kwargs)
+            return  pd.concat([function(self, agg_value=val, *args , **kwargs)
                                for val in agg_values], axis=1)
         return agg_function
 
@@ -141,10 +140,10 @@ class AggregateWindowRolling(WindowRolling):
     
     
     @WindowRolling.get_rolling
-    def skew(self, x=None, **kwargs):
+    def skew(self, x=None, *args, **kwargs):
         return x.skew(**kwargs)
     
     @WindowRolling.get_rolling
-    def kurt(self, x=None, **kwargs):
+    def kurt(self, x=None, *args, **kwargs):
         return x.median(**kwargs)
     

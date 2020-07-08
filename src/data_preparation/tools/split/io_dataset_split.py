@@ -40,6 +40,7 @@ class SplitIO:
 
     def __groups(self, dataframe, function_by):
         return dataframe.groupby(by=function_by(self.__get_by_array(dataframe)),
+                                sort=False,
                                  axis=1)
 
     def __get_by_array(self, dataframe):

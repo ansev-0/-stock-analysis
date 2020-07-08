@@ -1,4 +1,5 @@
 
+import numpy as np
 def check_equal_lengths(*args):
     if len(set(map(len, args)))>1: raise ValueError
 
@@ -13,5 +14,8 @@ def eval_type_argument(type_arg):
         raise ValueError('Invalid type argument')
     return type_arg
 
+def check_all_in(content, container):
+    return np.isin(content, container).all()
 
-
+def check_any_in(content, container):
+    return np.isin(content, container).any()

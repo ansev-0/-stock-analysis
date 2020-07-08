@@ -12,7 +12,7 @@ class CheckErrorsSaveFromApi:
 
     def check_api_supported(self):
         list_apis=self.__get_apis()
-        if self.api not in self.__get_apis():
+        if self.api not in list_apis:
             raise ToDataBaseError(f'Invalid API: {self.api}, the valid API are: {list_apis}',
                                   ValueError)
     def __get_apis(self):

@@ -13,7 +13,7 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
                           'CURRENCY': self._cryptocurrencis,
                           'FX': self._time_series,
                           'DIGITAL': self._time_series,
-                          'SECTOR': self._sector_performance,
+                          'SECTOR': self._sector_performance
                           }
 
 

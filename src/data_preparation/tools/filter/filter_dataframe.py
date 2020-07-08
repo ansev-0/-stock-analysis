@@ -1,3 +1,5 @@
+
+
 class DataFrameInspectNull:
     def __init__(self, dataframe):
         self.dataframe = dataframe
@@ -25,4 +27,9 @@ class FilterDataFrameNull(DataFrameInspectNull):
         if axis:
             return self.dataframe.loc[filter_mask, :]
         return self.dataframe.loc[:, filter_mask]
+
+
+
+def filter_open_market_hours(dataframe):
+    return dataframe.between_time('09:30', '16:00')
         

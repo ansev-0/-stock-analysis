@@ -4,7 +4,7 @@ from src.acquisition.acquisition.reader import Reader
 from src.acquisition.acquisition.errors.check_alphavantage import ErrorsResponseApiAlphavantage
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import switch_none
-from src.view.acquisition.acquisition.status_alphavantage import AlphaVantageShowStatus
+from src.view.acquisition.acquisition.status_api import ApiShowStatus
 
 class AlphaVantage:
 
@@ -17,12 +17,15 @@ class AlphaVantage:
     _AV_URL = "https://www.alphavantage.co/query?"
     def __init__(self, apikey, delays=None, **kwargs):
         self.apikey = apikey
-        self.default_params = {'datatype' : 'json',
-                               'apikey' : self.apikey}
         self.config(delays)
         self.__check_response = ErrorsResponseApiAlphavantage()
-        self.reader = Reader(base_url=self._AV_URL, **kwargs)
-        self.show_status = AlphaVantageShowStatus()
+        self._reader = Reader(base_url=self._AV_URL, **kwargs)
+        self.show_status = ApiShowStatus()
+
+    @property
+    def default_params(self):
+        return {'datatype' : 'json',
+                'apikey' : self.apikey}
 
     def config(self, delays=None):
         self.delays = switch_none(delays, [60, 20])
@@ -40,8 +43,8 @@ class AlphaVantage:
                 time.sleep(delay)
 
             count_attemps += 1 #attemp n
-            self.show_status.notify_try_connect()
-            response = self.reader.read(query)
+            self.show_status.notify_try_connect('Alphavantage')
+            response = self._reader.read(query)
 
             try:
                 json = response.json()

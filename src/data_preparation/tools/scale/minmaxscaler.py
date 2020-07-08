@@ -1,5 +1,7 @@
 from sklearn.preprocessing import MinMaxScaler
 from functools import reduce
+import pandas as pd
+import numpy as np
 
 class MinMaxScalerFitTransform:
 
@@ -11,6 +13,14 @@ class MinMaxScalerFitTransform:
         if transform:
              array = scaler.transform(array)
         return scaler, array
+
+    def dataframe(self, dataframe, **kwargs):
+        scaler, array = self.array(dataframe, **kwargs)
+        return scaler, pd.DataFrame(data=array, index=dataframe.index, columns=dataframe.columns)
+
+    def serie(self, serie, **kwargs):
+        scaler, array = self.array(serie.values[:, None], **kwargs)
+        return scaler, pd.Series(index = serie.index, name=serie.name, data=array.squeeze())
 
     def _fit_scaler(self, values):
         scaler = MinMaxScaler(feature_range=self.feature_range)
@@ -38,6 +48,10 @@ class MinMaxScalerFitTransformMany(MinMaxScalerFitTransform):
         if isinstance(transform, bool):
                 return lambda tup: self.array(tup, transform), tuple_array
         return lambda tup: self.array(*tup),  zip(tuple_array, transform)
+
+
+
+
 
 
 
