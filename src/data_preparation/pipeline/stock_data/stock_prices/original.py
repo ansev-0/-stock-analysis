@@ -59,4 +59,8 @@ class PipelineOriginalStockTimeSerie(PipelineStockData):
     @staticmethod
     def _get_feature_range_with_margins(feature_range, percentage):
         return (min(feature_range) + percentage, max(feature_range) - percentage)
+
+
+
+
                      

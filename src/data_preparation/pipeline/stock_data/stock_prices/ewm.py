@@ -8,10 +8,12 @@ class PipelineEwmStockTimeSerie(PipelineStockData):
 
     @PipelineStockData.process
     def agg(self, function, serie, agg_values, *args, **kwargs):
+
         '''
         This function creates an exponential smoothing of a series
         with different parameters and aggregates them into a new dataframe.
         '''
+        
         agg_ewm = AggregateWindowEwm(serie)
         self._check_errors.function_implemented(function)
         dataframe = getattr(agg_ewm, function)(agg_values=agg_values, *args, **kwargs)
