@@ -1,11 +1,12 @@
-from src.database.database import DataBase
+from src.database.database import DataBaseAdminAcquisition
 
-class AcquisitionOrders:
+class AcquisitionOrders(DataBaseAdminAcquisition):
 
     def __init__(self, collection):
-        self.__database = DataBase()
-        self.__database.connect('acquisition_orders')
-        self.collection=self.__database.database[collection]
+        #self.__database = DataBase()
+        #self.__database.connect('acquisition_orders')
+        super().__init__('acquisition_orders')
+        self.collection=self.database[collection]
 
     def set_acquisition_api_orders(self, api, list_orders, **kwargs):
         return self.collection.update_one(filter={'_id' : api},

@@ -24,7 +24,7 @@ class ResampleOhlcDataFrame:
         return self._get_agg_dataframe(dataframe, agg_dict)
 
     def _get_agg_dataframe(self, dataframe, dict_to_agg):
-        return dataframe.resample(self.freq).agg(dict_to_agg)
+        return dataframe.resample(self.freq, label='left', closed='right').agg(dict_to_agg)
 
     def _get_add_cols_dict(self, columns, add_cols):
 

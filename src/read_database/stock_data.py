@@ -1,21 +1,22 @@
 from functools import reduce
 import pandas as pd
-from src.database.database import DataBase
+from src.database.database import DataBaseAdminDataReader
 from src.read_database.errors.check_stock_data import CheckErrorsStockDataFromDataBase
 from src.tools.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 from src.tools.mappers import map_dict_from_underscore
 from src.exceptions.readbase_exceptions import GetFromDataBaseError
 
 
-class StockDataFromDataBase:
+class StockDataFromDataBase(DataBaseAdminDataReader):
     '''
     This class is used for reading stock_data databases.
     '''
 
     def __init__(self, db_name, format_output='dataframe'):
-        self.__db_name = db_name
-        self.__database = DataBase()
-        self.__database.connect(self.__db_name)
+        self._db_name = db_name
+        #self.__database = DataBase()
+        #self.__database.connect(self._db_name)
+        super().__init__(self, db_name)
         self.func_transform_dataframe = self.__get_function_transform_dataframe(format_output)
         self.check_errors = CheckErrorsStockDataFromDataBase()
         self.datetime_index = DateTimeIndexDataBase()
@@ -47,7 +48,7 @@ class StockDataFromDataBase:
     def __get_dict_from_database(self, stock, start, end):
         try:
             return reduce(lambda cum_dict, dict_new: dict(cum_dict, **dict_new),
-                          self.__database.database[stock].find(filter={'_id' : {'$gte' : start,
+                          self.database[stock].find(filter={'_id' : {'$gte' : start,
                                                                                 '$lte' : end}},
                                                                projection={'_id' : 0}))
         except TypeError:
@@ -62,7 +63,7 @@ class StockDataFromDataBase:
 
     
     def __get_datetime_database(self, date):
-        return self.datetime_index.get(date, self.__db_name)
+        return self.datetime_index.get(date, self._db_name)
 
     @staticmethod
     def __build_dataframe(dict_stock, start, end, format_index=None, **kwargs):
@@ -118,7 +119,7 @@ class DateTimeIndexDataBase:
 class ManyStockDataFromDataBase(StockDataFromDataBase):
 
     def get_fixed_dates(self, stock_labels, start, end, **kwargs):
-        return map(lambda stock: self.get(stock, start, end, **kwargs),
+        return map(lambda stock: self.get(stock=stock, start=start, end=end, **kwargs),
                    stock_labels)
     
     def get_from_dict(self, list_kparams, **kwargs):
@@ -132,7 +133,7 @@ class ManyStockDataFromDataBase(StockDataFromDataBase):
 class ManyStockDataFromManyDataBase:
 
     def __init__(self, db_names, format_output='dataframe'):
-        self.__db_names = db_names
+        self._db_names = db_names
         self._readers = self.__create_readers(db_names, format_output)
 
 
@@ -169,7 +170,7 @@ class ManyStockDataFromManyDataBase:
             try:
                 response_dict[db_name] = function(self._readers[db_name], params, *args, **kwargs)
             except KeyError:
-                raise GetFromDataBaseError(f'Database not supported, databases supported : {self.__db_name}',
+                raise GetFromDataBaseError(f'Database not supported, databases supported : {self._db_names}',
                                            KeyError)
         return response_dict
 

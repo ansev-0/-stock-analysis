@@ -1,13 +1,14 @@
-from src.database.database import DataBase
+from src.database.database import DataBaseAdminAcquisition
 
-class FeaturesDataBase:
+class FeaturesDataBase(DataBaseAdminAcquisition):
     __SUPPORTED_DATABASE = ['database_features', 'api_features']
 
     def __init__(self, database_name, collection, document_id):
         self.check_supported(database_name)
-        self.__database = DataBase()
-        self.__database.connect(database_name)
-        self._collection = self.__database.database[collection]
+        #self.__database = DataBase()
+        #self.__database.connect(database_name)
+        super().__init__(database_name)
+        self._collection = self.database[collection]
         self._document_id = document_id
 
     def check_supported(self, name):

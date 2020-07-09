@@ -31,5 +31,5 @@ class FilterDataFrameNull(DataFrameInspectNull):
 
 
 def filter_open_market_hours(dataframe):
-    return dataframe.between_time('09:30', '16:00')
+    return dataframe.between_time('09:30', '15:59')
         

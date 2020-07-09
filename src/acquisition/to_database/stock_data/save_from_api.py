@@ -5,8 +5,7 @@ from src.acquisition.to_database.stock_data.errors.check_save_from_api \
     import CheckErrorsSaveStockDataFromApi
 from src.acquisition.to_database.stock_data.intraday import from_alphavantage as intraday_alphavantage
 from src.acquisition.to_database.stock_data.daily_adjusted import from_alphavantage as dailyadj_alphavantage
-from pymongo import MongoClient
-from src.database.database import DataBase
+
 
 class SaveStockDataFromApi:
 
