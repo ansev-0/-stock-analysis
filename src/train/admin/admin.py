@@ -15,7 +15,9 @@ class DataBaseAdminTrainOrders(DataBaseAdminTrain):
     
 
 class DataBaseAdminTrainOrdersGenerator(DataBaseAdminTrainOrders):
-    
+
+    __set_init_status_pending = {'$set' : {'status' : 'pending'}}
+
     def __init__(self, train_type, active,  **kwargs):
         super().__init__(train_type) 
         self._train_parameters = {}
@@ -41,11 +43,15 @@ class DataBaseAdminTrainOrdersGenerator(DataBaseAdminTrainOrders):
         
     def set_pending_status_in_id_train(self, id_train):
         return self.collection.update_one({'_id' : id_train}, 
-                                          {'$set' : {'status' : 'pending'}})
+                                          self.__set_init_status_pending)
         
     def set_pending_status(self, filter_train):
         return self.collection.update_many(filter_train,
-                                           {'$set' : {'status' : 'pending'}})
+                                           self.__set_init_status_pending)
+
+    def set_pending_status_in_all_running(self):
+        return self.collection.update_many({'status' : 'running'},
+                                           self.__set_init_status_pending)
         
         
 class DataBaseAdminTrainOrdersGeneratorTimeSeries(DataBaseAdminTrainOrdersGenerator):
@@ -75,6 +81,9 @@ class DataBaseAdminTrainOrdersSearcher(DataBaseAdminTrainOrders):
             return list(self.__find({'status' : status}, **kwargs))
         except TypeError:
             return None
+
+    def search_one_by_status(self, status, **kwargs):
+        return self.__find_one({'status' : status})
         
     def search_one(self, *args,**kwargs):
         return self.__find_one(*args, **kwargs)
@@ -92,7 +101,7 @@ class DataBaseAdminTrainOrdersSearcher(DataBaseAdminTrainOrders):
     
 class DataBaseAdminTrainOrdersGet(DataBaseAdminTrainOrdersSearcher):
     
-    __dict_status = {'$set' : {'status' : 'running'}}
+    __set_init_status_running = {'$set' : {'status' : 'running'}}
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -104,11 +113,21 @@ class DataBaseAdminTrainOrdersGet(DataBaseAdminTrainOrdersSearcher):
     
     def get_by_status(self, status, **kwargs):
         order = self.search_by_status(status, **kwargs)
-        self.set_running_status_in_status(status)
+        if order:
+            self.set_running_status_in_status(status)
+        return order
+
+    def get_first_by_status(self, status, **kwargs):
+        order = self.search_one_by_status(status, **kwargs)
+        if order:
+            self.set_running_status_in_id_train(order['_id'])
+  
+
         return order
         
     def set_running_status_in_id_train(self, id_train):
-        return self.collection.update_one({'_id' : id_train}, self.__dict_status)
+        return self.collection.update_one({'_id' : id_train},
+                                          self.__set_init_status_running)
     
     def set_running_status_in_status(self, status):
         return self.__set_running_status_many({'status' : status})
@@ -118,7 +137,7 @@ class DataBaseAdminTrainOrdersGet(DataBaseAdminTrainOrdersSearcher):
     
     def __set_running_status_many(self, filter_train):
         return self.collection.update_many(filter_train,
-                                           self.__dict_status)
+                                           self.__set_init_status_running)
 
         
 class DataBaseAdminTrainOrdersUpdateResults(DataBaseAdminTrainOrders):
@@ -135,16 +154,16 @@ class DataBaseAdminTrainOrdersUpdateResults(DataBaseAdminTrainOrders):
     
 class DataBaseAdminTrainOrdersInterrupt(DataBaseAdminTrainOrders):
     
-    __dict_status_interrupt = {'$set' : {'status' : 'interrupt'}}
+    __set_init_status_interrupt = {'$set' : {'status' : 'interrupt'}}
 
     def set_interrupt_status_in_id_train(self, id_train):
-        return self.collection.update_one({'_id' : id_train}, self.__dict_status_interrupt)
+        return self.collection.update_one({'_id' : id_train}, self.__set_init_status_interrupt)
 
     def set_interrupt_all_in_running(self):
-        return self. __update_many({'status' : 'running'}, self.__dict_status_interrupt)
+        return self. __update_many({'status' : 'running'}, self.__set_init_status_interrupt)
     
     def set_interrupt_status(self, interrupt_filter):
-        return self. __update_many(interrupt_filter, self.__dict_status_interrupt)
+        return self. __update_many(interrupt_filter, self.__set_init_status_interrupt)
 
     def __update_many(self, *args, **kwargs):
         return self.collection.update_many(*args, **kwargs)

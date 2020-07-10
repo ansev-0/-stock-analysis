@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 from src.read_database.stock_data import StockDataFromDataBase as reader
-from src.database.database import DataBase
+
 from pymongo import MongoClient
 from src.data_preparation.tools.resample.ohlcv import ResampleOhlcDataFrame
 from src.data_preparation.tools.fill_missing_values.bygroups import FillByPeriods
@@ -11,7 +11,7 @@ from src.data_preparation.tools.filter.filter_dataframe import  filter_open_mark
 from src.data_preparation.tools.split.io_dataset_split import SplitIO
 from sklearn.preprocessing import StandardScaler
 
-DataBase().set_client(MongoClient('192.168.1.37', 27017))
+
 
 
 def prepare_dataframe(dataframe, freq, add_cols=None, dataframe_freq='T', delay_tolerance=None):
@@ -35,7 +35,7 @@ def prepare_dataframe(dataframe, freq, add_cols=None, dataframe_freq='T', delay_
 
 def get_data_from_base(company, init_date, last_date, reader=reader):
     reader = reader.intraday_dataframe('1min')
-    return reader.get(company, start = init_date, end=last_date)
+    return reader.get(stock=company, start = init_date, end=last_date)
 
 def get_stacked_sequences(serie, delay, not_include_target=True):
     return (StackedSequencesFromSeries(range_delays=range(int(not_include_target),

@@ -14,9 +14,8 @@ class StockDataFromDataBase(DataBaseAdminDataReader):
 
     def __init__(self, db_name, format_output='dataframe'):
         self._db_name = db_name
-        #self.__database = DataBase()
-        #self.__database.connect(self._db_name)
-        super().__init__(self, db_name)
+
+        super().__init__(db_name)
         self.func_transform_dataframe = self.__get_function_transform_dataframe(format_output)
         self.check_errors = CheckErrorsStockDataFromDataBase()
         self.datetime_index = DateTimeIndexDataBase()
