@@ -5,7 +5,6 @@ from datetime import datetime
 class DataBaseAdminTrainOrders(DataBaseAdminTrain):
     
     def __init__(self, train_type):
-        
         super().__init__('train_orders')
         self._train_type = train_type
         self.collection = self._database[train_type]
@@ -14,7 +13,6 @@ class DataBaseAdminTrainOrders(DataBaseAdminTrain):
     def train_type(self):
         return self._train_type
     
-
 
 class DataBaseAdminTrainOrdersGenerator(DataBaseAdminTrainOrders):
     
@@ -50,14 +48,13 @@ class DataBaseAdminTrainOrdersGenerator(DataBaseAdminTrainOrders):
                                            {'$set' : {'status' : 'pending'}})
         
         
-    
 class DataBaseAdminTrainOrdersGeneratorTimeSeries(DataBaseAdminTrainOrdersGenerator):
     
     def __init__(self, train_start, train_end, delays, **kwargs):
         super().__init__(**kwargs)
-        self.train_parameters[train_start] = train_start
-        self.train_parameters[train_end] = train_end
-        self.train_parameters[delays] = delays
+        self.train_parameters['train_start'] = train_start
+        self.train_parameters['train_end'] = train_end
+        self.train_parameters['delays'] = delays
         
         
 
@@ -68,7 +65,6 @@ class DataBaseAdminTrainOrdersGeneratorTimeSeriesOptimizer(DataBaseAdminTrainOrd
             self.train_parameters['optmizer_params'] = optimizer_params
             
             
-
 class DataBaseAdminTrainOrdersSearcher(DataBaseAdminTrainOrders):
     
     def search_by_id_train(self, id_train, **kwargs):
@@ -96,7 +92,8 @@ class DataBaseAdminTrainOrdersSearcher(DataBaseAdminTrainOrders):
     
 class DataBaseAdminTrainOrdersGet(DataBaseAdminTrainOrdersSearcher):
     
-    __dict_status = {'status' : 'running'}
+    __dict_status = {'$set' : {'status' : 'running'}}
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
     
@@ -111,8 +108,7 @@ class DataBaseAdminTrainOrdersGet(DataBaseAdminTrainOrdersSearcher):
         return order
         
     def set_running_status_in_id_train(self, id_train):
-        return self.collection.update_one({'_id' : id_train},
-                                          {'$set' : self.__dict_status})
+        return self.collection.update_one({'_id' : id_train}, self.__dict_status)
     
     def set_running_status_in_status(self, status):
         return self.__set_running_status_many({'status' : status})
@@ -122,11 +118,9 @@ class DataBaseAdminTrainOrdersGet(DataBaseAdminTrainOrdersSearcher):
     
     def __set_running_status_many(self, filter_train):
         return self.collection.update_many(filter_train,
-                                           {'$set' : self.__dict_status})
+                                           self.__dict_status)
 
         
-    
-    
 class DataBaseAdminTrainOrdersUpdateResults(DataBaseAdminTrainOrders):
     
     def update_result(self, id_train, results):
@@ -141,14 +135,19 @@ class DataBaseAdminTrainOrdersUpdateResults(DataBaseAdminTrainOrders):
     
 class DataBaseAdminTrainOrdersInterrupt(DataBaseAdminTrainOrders):
     
-    __dict_status = {'status' : 'interrupt'}
+    __dict_status_interrupt = {'$set' : {'status' : 'interrupt'}}
+
     def set_interrupt_status_in_id_train(self, id_train):
-        pass
+        return self.collection.update_one({'_id' : id_train}, self.__dict_status_interrupt)
+
     def set_interrupt_all_in_running(self):
-        self.collection.update_many({'status' : 'running'}, {'set' : self.__dict_status})
+        return self. __update_many({'status' : 'running'}, self.__dict_status_interrupt)
     
-    def set_interrup_status(self, interrupt_filter):
-        self.collection.update_many(interrupt_filter, {'set' : self.__dict_status})
+    def set_interrupt_status(self, interrupt_filter):
+        return self. __update_many(interrupt_filter, self.__dict_status_interrupt)
+
+    def __update_many(self, *args, **kwargs):
+        return self.collection.update_many(*args, **kwargs)
     
         
         
