@@ -39,7 +39,7 @@ class DataBaseAdminTrainOrdersGenerator(DataBaseAdminTrainOrders):
         return datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     
     def push_order(self):
-        self.collection.insert_one(self.train_parameters)
+        return self.collection.insert_one(self.train_parameters)
         
     def set_pending_status_in_id_train(self, id_train):
         return self.collection.update_one({'_id' : id_train}, 
@@ -125,8 +125,13 @@ class DataBaseAdminTrainOrdersGet(DataBaseAdminTrainOrdersSearcher):
         order = self.search_one_by_status(status, **kwargs)
         if order:
             self.set_running_status_in_id_train(order['_id'])
-  
 
+        return order
+
+    def get_first_pending(self):
+        order = self.search_one_by_status('pending')
+        if order:
+            self.set_running_status_in_id_train(order['_id'])
         return order
         
     def set_running_status_in_id_train(self, id_train):

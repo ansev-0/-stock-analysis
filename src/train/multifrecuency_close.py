@@ -9,7 +9,8 @@ def train_model(model, x_train, y_train, epochs, name_model):
                                monitor='val_loss', mode='min')
     reduce_lr_loss = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
                                        patience=10, verbose=1, min_delta=1e-4, mode='min')
-    
+                                       
+    model.compile(Adam(), loss='mse')
     results_1 = model.fit(x_train, y_train,
                           validation_split=0.2,
                           epochs=epochs, 
