@@ -66,8 +66,9 @@ def run():
         print('Data for train obtained')
         #get model
         model = stacked_lstm(delay)
+
         name_model = f'30_multifrecuency_{company}_{delay}_{str_frecuencies}.h5'
-        model.name = name_model
+        model.name = name_model[:-3]
         #train model
         model, result_1, result_2 = train_model(model=model,
                                                 x_train=X_train,
