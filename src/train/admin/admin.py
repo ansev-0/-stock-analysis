@@ -52,6 +52,10 @@ class DataBaseAdminTrainOrdersGenerator(DataBaseAdminTrainOrders):
     def set_pending_status_in_all_running(self):
         return self.collection.update_many({'status' : 'running'},
                                            self.__set_init_status_pending)
+
+    def set_pending_status_in_all_done(self):
+        return self.collection.update_many({'status' : 'done'},
+                                           self.__set_init_status_pending)
         
         
 class DataBaseAdminTrainOrdersGeneratorTimeSeries(DataBaseAdminTrainOrdersGenerator):
