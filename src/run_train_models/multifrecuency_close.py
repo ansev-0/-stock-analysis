@@ -13,6 +13,8 @@ from src.models.keras.seq_to_one.multifrecuency_close import stacked_lstm
 FRECUENCY_TARGET = '30T'
 OTHERS_FRECUENCIES = ['1T', '5T', '10T', '15T']
 
+str_frecuencies = '_'.join(sorted([FRECUENCY_TARGET] + OTHERS_FRECUENCIES))
+
 def rapid_balance(df_comp):
     
     incr_pred = df_comp['test'].sub(df_comp['real'].shift())
@@ -32,7 +34,7 @@ def run():
     
     adminget_orders = admin.DataBaseAdminTrainOrdersGet(train_type='multifrecuency')
     admin_update_results = admin.DataBaseAdminTrainOrdersUpdateResults(train_type='multifrecuency')
-    
+
     #get first order
     order = adminget_orders.get_first_pending()
     print('Order : \n', order)
@@ -51,20 +53,20 @@ def run():
         print(f'Working with {delay} delays')
         
         #data prep
-        (X_train, Y_train, X_test,
-        _, scaler, df_real) = generate_train_and_test_data(company,
-                                                           start,
-                                                           end,
-                                                           delay,
-                                                           OTHERS_FRECUENCIES,
-                                                           FRECUENCY_TARGET,
-                                                           13)
+        (X_train, Y_train,
+         X_test,_, 
+         scaler, df_real) = generate_train_and_test_data(company,
+                                                         start,
+                                                         end,
+                                                         delay,
+                                                         OTHERS_FRECUENCIES,
+                                                         FRECUENCY_TARGET,
+                                                         13)
         
         print('Data for train obtained')
-    
         #get model
         model = stacked_lstm(delay)
-        name_model = f'30_multifrecuency_{company}_{delay}_30_15_10_5_1.h5'
+        name_model = f'30_multifrecuency_{company}_{delay}_{str_frecuencies}.h5'
         model.name = name_model
         #train model
         model, result_1, result_2 = train_model(model=model,
