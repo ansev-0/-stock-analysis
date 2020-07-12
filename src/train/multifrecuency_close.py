@@ -28,8 +28,11 @@ def train_model(model, x_train, y_train, epochs, name_model):
     best_model = load_model(name_model)
     best_model.compile(Adam(learning_rate=0.00005), loss='mse')
 
-    results_2 = best_model.fit(x_train, y_train, epochs=200, 
-                               callbacks=[earlyStopping, mcp_save, reduce_lr_loss])
+    results_2 = best_model.fit(x_train, y_train,
+                               epochs=250, 
+                               callbacks=[earlyStopping,
+                                          mcp_save, 
+                                          reduce_lr_loss])
     best_model = load_model(name_model)
     
     return best_model, results_1.history, results_2.history

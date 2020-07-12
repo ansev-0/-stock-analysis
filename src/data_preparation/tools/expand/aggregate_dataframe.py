@@ -56,8 +56,7 @@ class WindowRolling(AggregateDataFrame):
             win_type = self._win_type(valid_kwargs)
             return  function(self, self.serie.rolling(window=agg_value,
                                                       **valid_kwargs),
-                             *args, **kwargs).rename(f'rolling_{win_type}\
-                {agg_value}_{function.__name__}')
+                             *args, **kwargs).rename(f'rolling_{win_type}_{agg_value}_{function.__name__}')
 
         return rolling
     

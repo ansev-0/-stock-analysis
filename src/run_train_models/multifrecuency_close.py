@@ -8,10 +8,10 @@ from src.view.check_results.check_frame import show_predictions_by_days
 from src.train.multifrecuency_close import train_model
 from src.data_preparation.tools.map.type import history_to_float
 from src.validation.dataframe_result import DataFrameAcurracyForecasting
-from src.models.keras.seq_to_one.multifrecuency_close import stacked_lstm
+from src.models.keras.seq_to_one.multifrecuency_close import cnn_lstm
 
 FRECUENCY_TARGET = '30T'
-OTHERS_FRECUENCIES = ['1T', '5T', '10T', '15T']
+OTHERS_FRECUENCIES = ['15T', '10T', '5T', '1T']
 
 str_frecuencies = '_'.join(sorted([FRECUENCY_TARGET] + OTHERS_FRECUENCIES))
 
@@ -65,9 +65,9 @@ def run():
         
         print('Data for train obtained')
         #get model
-        model = stacked_lstm(delay)
+        model = cnn_lstm(delay, 8, 12)
 
-        name_model = f'30_multifrecuency_{company}_{delay}_{str_frecuencies}.h5'
+        name_model = f'30_multifrecuency_cnn_{company}_{delay}_{str_frecuencies}.h5'
         model.name = name_model[:-3]
         #train model
         model, result_1, result_2 = train_model(model=model,
@@ -77,8 +77,8 @@ def run():
                                                 epochs=250)
         #save result of train
         dict_results['name_model'] = name_model
-        dict_results['train_without_val'] = json.dumps(history_to_float(result_1))
-        dict_results['train_with_val'] = json.dumps(history_to_float(result_2))
+        dict_results['train_without_val'] = json.dumps(history_to_float(result_2))
+        dict_results['train_with_val'] = json.dumps(history_to_float(result_1))
         
         # predictions
         predictions = model.predict(X_test)
@@ -96,7 +96,7 @@ def run():
         balance, hit_serie, mean = rapid_balance(df_comp)
         dict_results['balance'] = str(balance)
         dict_results['mean_hit'] = str(mean)
-        dict_results['hit'] = str(hit_serie.to_json())
+        dict_results['hit'] = hit_serie.to_json()
         
         
         #update results and status
