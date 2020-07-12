@@ -90,7 +90,7 @@ def run():
         dict_results['df_comp'] = df_comp.to_json()
         
         #show predictions
-        show_predictions_by_days(df_comp)
+        #show_predictions_by_days(df_comp)
         
         #get balance and hit
         balance, hit_serie, mean = rapid_balance(df_comp)
