@@ -9,6 +9,6 @@ dist/
 /workspace.code-workspace
 /src/.vscode/
 /src/acquisition/collector.py
-/.h5
-.h5
+/*.h5
 /src/*.h5
+
