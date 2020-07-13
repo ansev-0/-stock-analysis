@@ -11,3 +11,4 @@ dist/
 /src/acquisition/collector.py
 /*.h5
 /src/*.h5
+
