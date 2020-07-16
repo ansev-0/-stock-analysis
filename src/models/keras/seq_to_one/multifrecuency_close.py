@@ -95,29 +95,29 @@ def stacked_lstm(delays):
 
 
 
-def cnn_lstm(delays, rolling_features, ewm_features):
+def cnn_lstm(rolling_features, ewm_features):
     
     #define input
-    tensor_input_30min = Input(shape=(delays, 1))
-    tensor_input_30min_rolling = Input(shape=(delays, rolling_features))
-    tensor_input_30min_ewm = Input(shape=(delays, ewm_features))
+    tensor_input_30min = Input(shape=(None, 1))
+    tensor_input_30min_rolling = Input(shape=(None, rolling_features))
+    tensor_input_30min_ewm = Input(shape=(None, ewm_features))
 
-    tensor_input_15min = Input(shape=(delays, 1))
-    tensor_input_10min = Input(shape=(delays, 1))
-    tensor_input_5min = Input(shape=(delays, 1))
-    tensor_input_1min = Input(shape=(delays, 1))
+    tensor_input_15min = Input(shape=(None, 1))
+    tensor_input_10min = Input(shape=(None, 1))
+    tensor_input_5min = Input(shape=(None, 1))
+    tensor_input_1min = Input(shape=(None, 1))
 
 
 
-    tensor_input_15min_rolling = Input(shape=(delays, rolling_features))
-    tensor_input_10min_rolling = Input(shape=(delays, rolling_features))
-    tensor_input_5min_rolling = Input(shape=(delays, rolling_features))
-    tensor_input_1min_rolling = Input(shape=(delays, rolling_features))
+    tensor_input_15min_rolling = Input(shape=(None, rolling_features))
+    tensor_input_10min_rolling = Input(shape=(None, rolling_features))
+    tensor_input_5min_rolling = Input(shape=(None, rolling_features))
+    tensor_input_1min_rolling = Input(shape=(None, rolling_features))
 
-    tensor_input_15min_ewm = Input(shape=(delays, ewm_features))
-    tensor_input_10min_ewm = Input(shape=(delays, ewm_features))
-    tensor_input_5min_ewm = Input(shape=(delays, ewm_features))
-    tensor_input_1min_ewm = Input(shape=(delays, ewm_features))
+    tensor_input_15min_ewm = Input(shape=(None, ewm_features))
+    tensor_input_10min_ewm = Input(shape=(None, ewm_features))
+    tensor_input_5min_ewm = Input(shape=(None, ewm_features))
+    tensor_input_1min_ewm = Input(shape=(None, ewm_features))
 
 
     #cnn features
