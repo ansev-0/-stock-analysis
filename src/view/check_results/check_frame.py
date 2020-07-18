@@ -26,4 +26,4 @@ def show_predictions_by_days(df_comp):
 
         fig.legend(fontsize=20)
         plt.yticks(size=15)
-        plt.show(block=False)
+        plt.show()

@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from src.data_preparation.tools.expand.stacked_delay import StackedSequencesFromSeries
-from sklearn.preprocessing import StandardScaler
 from functools import wraps
 
 class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
@@ -44,9 +43,18 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
     def freq_target(self):
         return self._freq_target
 
+
+    @property
+    def int_freq_target(self):
+        return self._int_freq_target
+
     @property
     def exclude_target(self):
         return self._exclude_target
+
+    @property
+    def max_delay(self):
+        return self._max_delay
 
 
     @exclude_target.setter
@@ -98,7 +106,7 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
 
         return wrap_function
 
-#public methods 
+#instance public methods
     
     def arrays(self, serie, exclude_target=None): 
         self.exclude_target = exclude_target
@@ -117,7 +125,7 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
         return self._build_dict_output(*self._frame(serie), type_output='dataframe')
 
 
-#private methods 
+#instance private methods 
                    
     def _array(self, serie):
         array_min_frecuency_to_cut, array_target = self._get_array_min_frecuency(serie)
@@ -155,6 +163,7 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
     def _get_dataframe_min_frecuency(self, serie):
         dataframe_target = None
         dataframe = self.dataframe_without_nan(serie)
+
         if not self._exclude_target:
             dataframe_target = dataframe.iloc[:, [-1]].copy()
 
@@ -235,6 +244,7 @@ class MultiFrecuencyScaleAndStackSequences(MultiFrecuencyStackedSequencesFromSer
                 #get data stacked
                 data_to_cut, data_target = self._get_stacked_data(serie, type_output)
 
+
                 list_data_cut_and_map = []
 
                 cond = scale_target and (not self.exclude_target)
@@ -268,7 +278,6 @@ class MultiFrecuencyScaleAndStackSequences(MultiFrecuencyStackedSequencesFromSer
                         return output, scaler
                 return output
 
-
             return from_serie
 
         return wrap_function_serie
@@ -295,7 +304,7 @@ class MultiFrecuencyScaleAndStackSequences(MultiFrecuencyStackedSequencesFromSer
                         if name_col == target_label:
                             self.exclude_target = exclude_target
                         else:
-                            self.exclude_target = False
+                            self.exclude_target = True
 
                         #get data stacked
 
@@ -305,11 +314,11 @@ class MultiFrecuencyScaleAndStackSequences(MultiFrecuencyStackedSequencesFromSer
                         #pass target to scale if neccesary
                         if cond and (freq == self._int_freq_target):
                             array_for_freq_col, array_target, scaler = function_to_cut_and_map(self, 
-                                                                                             array_to_cut,
-                                                                                             freq,
-                                                                                             array_target,
-                                                                                             **kwargs)
-                        else:
+                                                                                               array_to_cut,
+                                                                                               freq,
+                                                                                               array_target,
+                                                                                               **kwargs)
+                        else:  
                             array_for_freq_col = function_to_cut_and_map(self, array_to_cut, freq, **kwargs)
 
                         list_arrays2d_cut_and_map.append(array_for_freq_col)
@@ -342,6 +351,7 @@ class MultiFrecuencyScaleAndStackSequences(MultiFrecuencyStackedSequencesFromSer
         if type_output == 'dataframe':
             data_to_cut, data_target = self._get_dataframe_min_frecuency(serie)
 
+
         elif type_output == 'array':
             data_to_cut, data_target = self._get_array_min_frecuency(serie)
         else:
@@ -350,58 +360,5 @@ class MultiFrecuencyScaleAndStackSequences(MultiFrecuencyStackedSequencesFromSer
         return data_to_cut, data_target
 
 
-
-
-class MultiFrecuencyStandardScaleAndStackSequences(MultiFrecuencyScaleAndStackSequences):
-
-
-
-
-    @MultiFrecuencyScaleAndStackSequences.wrap_array3d_from_dataframe(save_in='list')
-    def arrays_scaled_from_dataframe(self, array, array_target=None, **kwargs):
-        return self._scale_array_and_target(array, array_target)
-
-
-    @MultiFrecuencyScaleAndStackSequences.wrap_array3d_from_dataframe(save_in='dict')
-    def dict_arrays_scaled_from_dataframe(self, array, array_target=None, **kwargs):
-        return self._scale_array_and_target(array, array_target)
-
-
-
-    @MultiFrecuencyScaleAndStackSequences.wrap_from_serie(type_output='dataframe')
-    def frames_scaled_from_serie(self, dataframe, dataframe_target=None, **kwargs):
-
-        array_scaled, scaler = self._scale(dataframe)
-        dataframe_scaled = pd.DataFrame(array_scaled, columns=dataframe.columns, index=dataframe.index)
-
-        if dataframe_target is not None:
-            return dataframe_scaled, pd.DataFrame(self._scale_target(dataframe_target, scaler),
-                                                  columns=dataframe_target.columns,
-                                                  index= dataframe_target.index), scaler
-
-        return dataframe_scaled
-
-
-    @MultiFrecuencyScaleAndStackSequences.wrap_from_serie(type_output='array')
-    def arrays_scaled_from_serie(self, array, array_target=None, **kwargs):
-        return self._scale_array_and_target(array, array_target)
-
-
-    def _scale_array_and_target(self, array, array_target=None):
-        array_scaled, scaler = self._scale(array)
-        if array_target is not None:
-            return array_scaled, self._scale_target(array_target, scaler), scaler
-        return array_scaled
-
-
-    def _scale(self, data):
-
-        scaler=StandardScaler(with_std=False)
-        data_scaled = scaler.fit_transform(data.T).T
-        return data_scaled, scaler
-
-    @staticmethod
-    def _scale_target(target, scaler):
-        return scaler.transform(target.T).T
 
 

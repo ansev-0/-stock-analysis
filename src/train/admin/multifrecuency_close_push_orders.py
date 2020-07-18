@@ -4,9 +4,9 @@ from src.train.admin import admin
 companies=['AMD', 'NFLX', 'GOOGL',
            'ADSK', 'NVDA', 'AAPL','CSCO'
           ]
-delays = [52, 104, 130, 260]
-TRAIN_START = '01/31/2020'
-TRAIN_END = '06/07/2020'
+delays = [[65, 91, 156, 208 , 260]] * len(companies)
+TRAIN_START = '03/01/2020'
+TRAIN_END = '04/01/2020'
 
 
 
@@ -17,7 +17,7 @@ def push_order(company, delay):
     active=company,
     train_start=TRAIN_START,
     train_end=TRAIN_END,
-    delays=str(delay),
+    delays=delay,
     optimizer_params={'loss' : 'mse',
                      'optimizer' : 'adam'})
     
@@ -35,4 +35,4 @@ def push_combinations_orders(list_companies, list_delays):
 combinations = reduce(lambda cum, new: cum + new, ([(company, delay) for delay in delays] 
                                     for company in companies))
                                     
-#push_combinations_orders(companies, delays)
+push_combinations_orders(companies, delays)
