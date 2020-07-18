@@ -8,6 +8,7 @@ from src.data_preparation.tools.resample.ohlcv import ResampleOhlcDataFrame
 from src.data_preparation.tools.fill_missing_values.bygroups import FillByPeriods
 from src.data_preparation.tools.expand.stacked_delay import  StackedSequencesFromSeries
 from src.data_preparation.tools.expand.aggregate_dataframe import AggregateWindowEwm, AggregateWindowRolling
+from src.data_preparation.tools.scale.intradaystacked import MultiFrecuencyStandardScaleAndStackSequences
 from src.data_preparation.tools.split.io_dataset_split import SplitIO
 from sklearn.preprocessing import StandardScaler
 
@@ -84,16 +85,17 @@ def get_data_from_base(company, init_date, last_date, reader=reader):
     reader = reader.intraday_dataframe('1min')
     return reader.get(stock=company, start = init_date, end=last_date)
 
-def get_stacked_sequences(serie, delay, not_include_target=True):
-    return (StackedSequencesFromSeries(range_delays=range(int(not_include_target),
-                                                          delay + 1)).dataframe_without_nan(serie))
+def split_train_and_test_serie(serie, test_rows, delays, freq_target):
+    return serie[:-test_rows], serie[-test_rows - delays - freq_target:]
 
-def scale_x_data(dataframe):
-    scaler = StandardScaler(with_std=False)
-    return np.expand_dims(scaler.fit_transform(dataframe.to_numpy().T).T, 2), scaler
 
-def scale_y_data(dataframe, scaler):
-    return scaler.transform(dataframe.to_numpy().T).T
+def split_list_arrays_train_and_test(list_array, test_rows, l_train, l_test):
+    for arr in list_array:
+        train, test = split_train_and_test(arr, test_rows)
+        l_train.append(train), l_test.append(test)
+    return l_train, l_test
+
+
 
 def split_train_and_test(data, test_samples):
     return data[:-test_samples], data[-test_samples:] 
@@ -102,32 +104,19 @@ def split_train_and_test(data, test_samples):
 def get_real_test_values(dataframe, test_rows):
     return dataframe.loc[:, ['close']][-test_rows:]
 
-def append_train_and_test_arrays(dict_sequences, test_rows, x_train, x_test):
 
-    for sequence in dict_sequences.values():
-        train_sequences, test_sequences = split_train_and_test(sequence, test_rows)
-        x_train.append(train_sequences)
-        x_test.append(test_sequences)
 
-    return x_train , x_test
 
-def stack_filter_scale_and_concatenate_features(dataframe, delay, index):
-    return np.concatenate([scale_x_data(get_stacked_sequences(serie, delay)\
-                           .loc[index])[0] 
-                           for _, serie in dataframe.items()], axis=2) 
 
 
 def generate_train_and_test_data(company,
                                  init_date, 
                                  last_date,
-                                 delay, 
+                                 delays, 
                                  frecuencies_features,
                                  frecuency_target,
                                  test_rows):
     
-
-
-
 
     ewm_values = list(range(1, 15, 2)) + list(range(20, 70, 10))
     range_rolling = range(2, 10)
@@ -141,84 +130,45 @@ def generate_train_and_test_data(company,
     df_1min = pd.concat([df_1min, df_agg, df_rolling], axis=1, join='inner')
 
 
-
     #sequences target
-    target_df = np.log1p(prepare_dataframe(df_1min, frecuency_target, add_cols=['last']))
-    sequences_target = get_stacked_sequences(target_df['close'], 
-                                             delay,
-                                             not_include_target = False)
-    index_target = sequences_target.index
+    target_df = prepare_dataframe(df_1min, '1T', add_cols=['last']).droplevel(axis=1, level=1)
+    #get real values
+    df_real = get_real_test_values(target_df, test_rows)
+    #take log1p
+    target_df = np.log1p(target_df)
 
-  
-    sequences_target_features_rolling = stack_filter_scale_and_concatenate_features(target_df.droplevel(level=1, axis=1)
-                                                                                             .filter(regex='rolling'),
-                                                                                    delay, 
-                                                                                    index_target)
+    procces = MultiFrecuencyStandardScaleAndStackSequences(list_frecuencies=[frecuency_target] + frecuencies_features,
+                                                             list_delays=delays, 
+                                                             freq_target=frecuency_target, 
+                                                             exclude_target=False)
+    int_freq_target = procces.int_freq_target
+    max_delay = procces.max_delay
 
+    #target serie
 
-    sequences_target_features_ewm = stack_filter_scale_and_concatenate_features(target_df.droplevel(level=1, axis=1)
-                                                                                         .filter(regex='ewm'),
-                                                                                delay,
-                                                                                index_target)
+    close_train, close_test = split_train_and_test_serie(target_df['close'], test_rows, max_delay, int_freq_target)
 
+    data_close_train, scaler_train = procces.arrays_scaled_from_serie(serie=close_train, scale_target=True)
+    x_close_train , Y_train = data_close_train
 
-    #others frecuency sequences
-    dict_others_frecuencies_close_log1p = {}
-    dict_df_others_frecuencies_features_log1p_rolling, dict_df_others_frecuencies_features_log1p_ewm = {}, {}
+    data_close_test, scaler_test = procces.arrays_scaled_from_serie(serie=close_test, scale_target=True)
+    x_close_test , Y_test = data_close_test
 
-    for freq in frecuencies_features:
-        dataframe = np.log1p(prepare_dataframe(df_1min, freq, add_cols=['last'])).droplevel(1, axis=1)
-        dict_others_frecuencies_close_log1p[freq] = dataframe['close']
-        dict_df_others_frecuencies_features_log1p_rolling[freq] = dataframe.filter(regex='rolling')
-        dict_df_others_frecuencies_features_log1p_ewm[freq] = dataframe.filter(regex='ewm')
+    procces.exclude_target = True
 
 
-    dict_sequences_others_frecuencies_close = {freq : scale_x_data(get_stacked_sequences(serie, delay)
-                                                                   .loc[sequences_target.index])[0] 
-                                               for freq, serie in dict_others_frecuencies_close_log1p.items()}
+    df_ewm = target_df.filter(regex = 'ewm')
+    x_ewm = procces.arrays_scaled_from_dataframe(df_ewm, scale_target=False)
 
-    dict_sequences_others_frecuencies_features_rolling = {freq : stack_filter_scale_and_concatenate_features(dataframe, delay, index_target) 
-                                                          for freq, dataframe in \
-                                                          dict_df_others_frecuencies_features_log1p_rolling.items()}
-
-    dict_sequences_others_frecuencies_features_ewm = {freq :  stack_filter_scale_and_concatenate_features(dataframe, delay, index_target)
-                                                          for freq, dataframe in \
-                                                          dict_df_others_frecuencies_features_log1p_ewm.items()}
-
-    # Get target arrays
-    train_target_sequences, test_target_sequences = split_train_and_test(sequences_target, test_rows)
-
-    spliter_io = SplitIO(1)
-      # train
-    X_train_target, Y_train = spliter_io.tuple_from_frame(train_target_sequences)
-    X_train_target, scaler_x_train_target = scale_x_data(X_train_target)
-    Y_train = scale_y_data(Y_train, scaler_x_train_target)
-
-      # Test
-    X_test_target, Y_test = spliter_io.tuple_from_frame(test_target_sequences)
-    X_test_target, scaler_x_test_target = scale_x_data(X_test_target)
-    Y_test = scale_y_data(Y_test, scaler_x_test_target)
+    df_rolling = target_df.filter(regex = 'rolling')
+    x_rolling = procces.arrays_scaled_from_dataframe(df_rolling, scale_target=False)
 
 
-    X_train = [X_train_target]
-    X_test = [X_test_target]
+    X_train = [np.expand_dims(arr, 2) for arr in x_close_train]
+    X_test = [np.expand_dims(arr, 2) for arr in x_close_test]
+    
+    X_train, X_test = split_list_arrays_train_and_test(x_ewm, test_rows, X_train, X_test)
+    X_train, X_test = split_list_arrays_train_and_test(x_rolling, test_rows, X_train, X_test)
 
-
-    train_sequences, test_sequences = split_train_and_test(sequences_target_features_rolling, test_rows)
-    X_train.append(train_sequences)
-    X_test.append(test_sequences)
-
-    train_sequences, test_sequences = split_train_and_test(sequences_target_features_ewm, test_rows)
-    X_train.append(train_sequences)
-    X_test.append(test_sequences)
-
-
-    X_train, X_test = append_train_and_test_arrays(dict_sequences_others_frecuencies_close, test_rows, X_train, X_test)
-    X_train, X_test = append_train_and_test_arrays(dict_sequences_others_frecuencies_features_rolling, test_rows, X_train, X_test)
-    X_train, X_test = append_train_and_test_arrays(dict_sequences_others_frecuencies_features_ewm, test_rows, X_train, X_test)
-
-
-    df_real = get_real_test_values(df_1min, test_rows)
-
-    return X_train, Y_train, X_test, Y_test, scaler_x_test_target, df_real
+    return X_train, Y_train, X_test, Y_test, scaler_test, df_real
 

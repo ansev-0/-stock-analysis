@@ -35,6 +35,8 @@ class StackedSequencesFromSeries(StackedSequences):
 
     def dataframe(self, serie):
         dataframe = self.concat_dataframe(serie)
+
+
         return dataframe.set_axis([f'{name}_{delay}' for name, delay in 
                                    zip(dataframe.columns, self._reversed_delays)], axis=1)
 

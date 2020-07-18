@@ -12,7 +12,7 @@ from src.models.keras.seq_to_one.multifrecuency_close import cnn_lstm
 
 FRECUENCY_TARGET = '30T'
 OTHERS_FRECUENCIES = ['15T', '10T', '5T', '1T']
-
+TEST_ROWS = 390
 str_frecuencies = '_'.join(sorted([FRECUENCY_TARGET] + OTHERS_FRECUENCIES))
 
 def rapid_balance(df_comp):
@@ -44,13 +44,13 @@ def run():
         dict_results = {}
         #get order
         company = order['active']
-        delay = int(order['delays'])
+        delays = list(map(int, order['delays']))
         start = order['train_start']
         end = order['train_end']
         id_train = order['_id']
-        # show company and delays of series in tensor
+        # show company and delayss of series in tensor
         print(f'Working with company {company}')    
-        print(f'Working with {delay} delays')
+        print(f'Working with {delays} delays')
         
         #data prep
         (X_train, Y_train,
@@ -58,16 +58,20 @@ def run():
          scaler, df_real) = generate_train_and_test_data(company,
                                                          start,
                                                          end,
-                                                         delay,
+                                                         delays,
                                                          OTHERS_FRECUENCIES,
                                                          FRECUENCY_TARGET,
-                                                         13)
+                                                         TEST_ROWS)
+
+
         
         print('Data for train obtained')
-        #get model
-        model = cnn_lstm(delay, 8, 12)
+        print('Shape of test data', Y_train.shape[0])
 
-        name_model = f'30_multifrecuency_cnn_{company}_{delay}_{str_frecuencies}.h5'
+        #get model
+        model = cnn_lstm(8, 12) #### HERE
+
+        name_model = f'30_multifrecuency_cnn_{company}_{delays}_{str_frecuencies}.h5'
         model.name = name_model[:-3]
         #train model
         model, result_1, result_2 = train_model(model=model,
@@ -109,4 +113,4 @@ def run():
         order = adminget_orders.get_first_pending()
         print('Order : \n', order)
 
-run()
+#run()
