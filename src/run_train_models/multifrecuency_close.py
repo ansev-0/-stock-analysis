@@ -65,7 +65,7 @@ def run():
         
         print('Data for train obtained')
         #get model
-        model = cnn_lstm(delay, 8, 12)
+        model = cnn_lstm(8, 12)
 
         name_model = f'30_multifrecuency_cnn_{company}_{delay}_{str_frecuencies}.h5'
         model.name = name_model[:-3]
