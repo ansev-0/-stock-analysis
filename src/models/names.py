@@ -12,7 +12,11 @@ class NameModel:
         
         
     def __str__(self):
-        return self._name
+        return self.name
+
+
+    def __call__(self):
+        return self.name
     
 
     @property 
