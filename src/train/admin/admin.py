@@ -196,3 +196,18 @@ class DataBaseAdminTrainOrdersDelete(DataBaseAdminTrainOrders):
     def __delete_many(self, filter_delete):
         return self.collection.delete_many(filter_delete)
         
+
+class DataBaseAdminTrainOrdersSearchModel(DataBaseAdminTrainOrders):
+
+    def search_model(self, path_model):
+        return self.collection.find_one({'path_model' : path_model})
+
+
+    def get_model(self, path_model, **kwargs):
+
+        path = self.search_model(path_model)
+        try:
+            return load_model(path, **kwargs)
+        except:
+            return None
+    
