@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def show_predictions_by_days(df_comp):
+def show_predictions_by_days(df_comp, model_name):
     
     for date, group in  df_comp.groupby(pd.Grouper(freq='D')):
         date = date.strftime('%Y-%m-%d')
@@ -26,4 +26,5 @@ def show_predictions_by_days(df_comp):
 
         fig.legend(fontsize=20)
         plt.yticks(size=15)
-        plt.show()
+        plt.show(block=False)
+        plt.savefig(f'/financialworks_predictions_png/{model_name}.png')
