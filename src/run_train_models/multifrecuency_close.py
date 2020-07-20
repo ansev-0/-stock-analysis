@@ -68,8 +68,8 @@ def run():
         print('Data for train obtained')
         print('Shape of test data', Y_train.shape[0])
 
-        #get model
-        model = cnn_lstm(8, 12) #### HERE
+        model = cnn_lstm(8, 12)
+
 
         name_model = f'30_multifrecuency_cnn_{company}_{delays}_{str_frecuencies}.h5'
         model.name = name_model[:-3]

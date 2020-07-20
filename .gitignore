@@ -11,4 +11,5 @@ dist/
 /src/acquisition/collector.py
 /*.h5
 /src/*.h5
+src/models/save.py
 

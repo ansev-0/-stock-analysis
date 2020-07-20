@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+from functools import wraps
 
 class StackedSequences:
 
@@ -70,4 +70,31 @@ class StackedSequencesFromDataFrame(StackedSequences):
     def _get_multiindex(self, dataframe_columns, n_cols):
         return pd.MultiIndex.from_tuples(zip(dataframe_columns,
                                          np.repeat(self._reversed_delays, n_cols)))
+
+
+class StackAndMapSequencesFromDataFrame:
+
+    def __init__(self, delays):
+        self.delays = delays
+
+    @classmethod
+    def wrapper_array(cls, function):
+
+        @wraps(function)
+        def map_array(self, dataframe, *args, **kwargs):
+            array = dataframe.to_numpy()
+            return np.stack([function(array[i : i + self.delays, :], *args, **kwargs) 
+                             for i in range(dataframe.shape[0] - self.delays)],
+                            axis=2)
+        return map_array
+
+    def array(self, dataframe):
+        array = dataframe.to_numpy()
+        return np.stack([array[i : i + self.delays, :] 
+                         for i in range(dataframe.shape[0] - self.delays)],
+                          axis=2)
+
+
+    
+
 
