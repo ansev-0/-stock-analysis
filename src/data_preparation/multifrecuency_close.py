@@ -101,8 +101,9 @@ def split_train_and_test(data, test_samples):
     return data[:-test_samples], data[-test_samples:] 
 
 
-def get_real_test_values(dataframe, test_rows):
-    return dataframe.loc[:, ['close']][-test_rows:]
+def get_real_test_values(dataframe, test_rows, shift_n_values=1):
+
+    return dataframe.loc[:, ['close']][-shift_n_values-test_rows:]
 
 
 
@@ -132,17 +133,22 @@ def generate_train_and_test_data(company,
 
     #sequences target
     target_df = prepare_dataframe(df_1min, '1T', add_cols=['last']).droplevel(axis=1, level=1)
-    #get real values
-    df_real = get_real_test_values(target_df, test_rows)
-    #take log1p
-    target_df = np.log1p(target_df)
 
+    #procces 
     procces = MultiFrecuencyStandardScaleAndStackSequences(list_frecuencies=[frecuency_target] + frecuencies_features,
                                                              list_delays=delays, 
                                                              freq_target=frecuency_target, 
                                                              exclude_target=False)
+
     int_freq_target = procces.int_freq_target
     max_delay = procces.max_delay
+
+    #get real values
+    df_real = get_real_test_values(target_df, test_rows, int_freq_target)
+    #take log1p
+    target_df = np.log1p(target_df)
+
+
 
     #target serie
 

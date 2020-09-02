@@ -2,14 +2,16 @@ import numpy as np
 import pandas as pd
 
 class DataFrameAcurracyForecasting:
+
     
-    def __init__(self, dataframe, init_value):
+    def __init__(self, dataframe):
         
+        self._dataframe = None
         self._real_diff = None
         self._test_diff = None
         self.__hit_serie = None
         self._accuracy_test = None
-        self.init_value = init_value
+
         self.dataframe = dataframe
         
     @property
@@ -37,18 +39,23 @@ class DataFrameAcurracyForecasting:
     def dataframe(self, dataframe):
         self.__check_valid_columns(dataframe)
         self._dataframe = dataframe
+        self._shift = dataframe['test'].isna().sum()
+        self._update_results()
+        
+    def _update_results(self):
         self._real_diff = self.__calulate_real_incr()
         self._test_diff = self.__calculate_test_incr()
         self.__hit_serie, self._accuracy_test = self.__calculate_accuracy_incr()
         
     def __calulate_real_incr(self):
         return (self.dataframe['real']
-                    .diff()
-                    .fillna(self.dataframe['real'].iloc[0] - self.init_value))
+                    .diff(self._shift)
+                    .dropna()
+               )
         
     def __calculate_test_incr(self):
-        return (self.dataframe['test'].sub(self.dataframe['real'].shift())
-                    .fillna(self.dataframe['test'].iloc[0] - self.init_value))
+        return (self.dataframe['test'].sub(self.dataframe['real'].shift(self._shift))
+                    .dropna())
     
     def __calculate_accuracy_incr(self):
         hit = np.sign(self._real_diff) == np.sign(self._test_diff)

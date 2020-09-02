@@ -81,7 +81,7 @@ def run():
         #Get model name
         model_name = NameModel(company, 'close', ['conv1d-lstm-dnn'], 'multifrecuency')()
         #Get path
-        path_model = PathModel(model_name)()
+        path_model = PathModel()(model_name)
         #search model in db
         model = admin.DataBaseAdminTrainOrdersSearchModel(train_type='multifrecuency').get_model(path_model)
         
@@ -105,7 +105,7 @@ def run():
         # predictions
         predictions = model.predict(X_test)
         df_pred = np.expm1(pd.DataFrame(scaler.inverse_transform(predictions.squeeze()).T,
-                   index=df_real.index, columns=df_real.columns))
+                   index=df_real.index[-TEST_ROWS:], columns=df_real.columns))
         
         #get df_comp
         df_comp = get_df_comp(df_real, df_pred)
