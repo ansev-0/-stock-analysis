@@ -1,11 +1,12 @@
 import numpy as np
 import pandas as pd
+import re
 from src.data_preparation.tools.expand.stacked_delay import StackedSequencesFromSeries
 from functools import wraps
 
 class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
     
-    def __init__(self, list_frecuencies, list_delays, freq_target='1T', exclude_target=None):
+    def __init__(self, list_frecuencies, list_delays, freq_target='1T', step=1, exclude_target=None):
 
         #Frecuencies
         self._check_valid_frecuencies(list_frecuencies)
@@ -27,9 +28,16 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
 
         #Get max delay
         self._max_delay = self._get_max_delay(list_frecuencies, list_delays)
+
+        # Steps
+        self._step = step
         
         #Init stacker
-        super().__init__(range(self._max_delay + self._int_freq_target + 1))
+        super().__init__(range_delays=range(self._max_delay + self._int_freq_target + 1), reverse=False)
+
+    @property
+    def step(self):
+        return self._step
 
     @property
     def frecuencies(self):
@@ -155,8 +163,9 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
     def _get_array_min_frecuency(self, serie):
         array_target=None
         array = self.array_without_nan(serie)
+
         if not self._exclude_target:
-            array_target = array[:, -1:]
+            array_target = array[::self.step, :1]
 
         return array, array_target
     
@@ -165,7 +174,9 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
         dataframe = self.dataframe_without_nan(serie)
 
         if not self._exclude_target:
-            dataframe_target = dataframe.iloc[:, [-1]].copy()
+            dataframe_target = dataframe.iloc[::self.step, [0]].copy()
+
+        print(dataframe.columns)
 
         return dataframe, dataframe_target
             
@@ -183,7 +194,7 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
             shape_1 = array.shape[1]
         size = self._list_delays[self._int_frecuencies.index(freq)] * freq
 
-        return array[:, -size - self._int_freq_target : -self._int_freq_target : freq]
+        return array[::self._step,  self._int_freq_target : self._int_freq_target + size : freq][:, ::-1]
 
     def _list_frecuencies_dataframe(self, dataframe):
         return [self._cut_dataframe_by_frecuency_and_delay(dataframe, freq,
@@ -196,12 +207,12 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
             shape_1 = dataframe.shape[1]
         size = self._list_delays[self._int_frecuencies.index(freq)] * freq
 
-        return dataframe.iloc[:, -size -self._int_freq_target : -self._int_freq_target:freq]
+        return dataframe.iloc[::self._step,  self._int_freq_target : self._int_freq_target + size : freq].iloc[:,::-1]
 
 
      
     def _check_valid_frecuencies(self, list_frecuencies):
-        if not np.all(tuple(map(lambda freq: freq.endswith('T') | freq.endswith('M'),
+        if not np.all(tuple(map(lambda freq: freq.endswith('T') | freq.endswith('M') | freq.endswith('D'),
                                              list_frecuencies))):
             raise ValueError('You must pass a valid frecuencies')
             
@@ -222,7 +233,7 @@ class MultiFrecuencyStackedSequencesFromSerie(StackedSequencesFromSeries):
     
     @staticmethod           
     def _get_int_frecuency(freq):
-        return int(freq[:freq.index('T')])
+        return int(re.findall('\d+', freq)[0])
             
 
 class MultiFrecuencyScaleAndStackSequences(MultiFrecuencyStackedSequencesFromSerie):
@@ -358,6 +369,9 @@ class MultiFrecuencyScaleAndStackSequences(MultiFrecuencyStackedSequencesFromSer
             raise ValueError('Invalid type_output, you must pass dataframe or array')
 
         return data_to_cut, data_target
+
+
+
 
 
 
