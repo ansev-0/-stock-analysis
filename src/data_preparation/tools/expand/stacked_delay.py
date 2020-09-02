@@ -4,8 +4,14 @@ from functools import wraps
 
 class StackedSequences:
 
-    def __init__(self, range_delays):
+    def __init__(self, range_delays, reverse=True):
+        self._reverse = reverse
         self.range_delays = range_delays
+
+
+    @property
+    def reverse(self):
+        return self._reverse
 
     @property
     def range_delays(self):
@@ -14,7 +20,11 @@ class StackedSequences:
     @range_delays.setter
     def range_delays(self, range_delays):
         self._range_delays = range_delays
-        self._reversed_delays = tuple(reversed(self._range_delays))
+
+        if self.reverse:
+            self._reversed_delays = tuple(reversed(self._range_delays))
+        else:
+            self._reversed_delays = tuple(self._range_delays)
     
     def array(self, shiftable):
         return np.stack(self._create_list_from_delays(shiftable), axis=1)

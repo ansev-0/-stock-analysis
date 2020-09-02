@@ -12,4 +12,5 @@ dist/
 /*.h5
 /src/*.h5
 src/models/save.py
+/src/models/path.py
 

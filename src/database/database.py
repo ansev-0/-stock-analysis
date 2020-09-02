@@ -6,13 +6,14 @@ class DataBase:
     '''
     
     def __init_subclass__(cls):
-        cls._client = MongoClient('192.168.1.37', 27017)
+        cls._client = MongoClient()
         
     def __init__(self, database_name):
         try:
             self._database = self._client[database_name]
         except Exception as error:
             print(f'It was not possible to create database connection {database_name}\n', error)
+
             
     @property
     def database(self):

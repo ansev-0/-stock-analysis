@@ -15,6 +15,9 @@ class TransformSerie:
     def log(self):
         return np.log(self.serie)
 
+    def log1p(self):
+        return np.log1p(self.serie)
+
     def exp(self,serie):
         return np.exp(self.serie)
     

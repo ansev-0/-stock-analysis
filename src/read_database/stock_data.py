@@ -20,6 +20,10 @@ class StockDataFromDataBase(DataBaseAdminDataReader):
         self.check_errors = CheckErrorsStockDataFromDataBase()
         self.datetime_index = DateTimeIndexDataBase()
 
+    @property
+    def stock_names(self):
+        return self.database.collection_names()
+
 
     def get(self, stock, start, end, **kwargs):
 
@@ -48,8 +52,8 @@ class StockDataFromDataBase(DataBaseAdminDataReader):
         try:
             return reduce(lambda cum_dict, dict_new: dict(cum_dict, **dict_new),
                           self.database[stock].find(filter={'_id' : {'$gte' : start,
-                                                                                '$lte' : end}},
-                                                               projection={'_id' : 0}))
+                                                                     '$lte' : end}},
+                                                            projection={'_id' : 0}))
         except TypeError:
             return None
 
@@ -125,7 +129,7 @@ class ManyStockDataFromDataBase(StockDataFromDataBase):
         return map(lambda kparams: self.get(**kparams, **kwargs),
                    list_kparams)
 
-    def get(self, list_params, **kwargs):
+    def get_many(self, list_params, **kwargs):
         return map(lambda args: self.get(*args, **kwargs),
                    list_params)
 
@@ -153,9 +157,9 @@ class ManyStockDataFromManyDataBase:
                           **kwargs)
             
 
-    def get(self, dict_list_params, **kwargs):
+    def get_many(self, dict_list_params, **kwargs):
         return self.__get(lambda reader, params, **kwargs : \
-                          reader.get(params, **kwargs),
+                          reader.get_many(params, **kwargs),
                           dict_list_params,
                           **kwargs)
 

@@ -3,8 +3,7 @@ from src.database.database import DataBaseAdminAcquisition
 class AcquisitionOrders(DataBaseAdminAcquisition):
 
     def __init__(self, collection):
-        #self.__database = DataBase()
-        #self.__database.connect('acquisition_orders')
+
         super().__init__('acquisition_orders')
         self.collection=self.database[collection]
 

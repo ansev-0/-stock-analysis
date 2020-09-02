@@ -13,10 +13,10 @@ from src.data_preparation.tools.split.io_dataset_split import SplitIO
 from sklearn.preprocessing import StandardScaler
 
 def check_not_incomplete_days(df):
-
-    assert (df.isnull().any(axis=1)
-              .groupby(pd.Grouper(freq='1D'))
-              .sum().value_counts().index
+    s = (df.isnull().any(axis=1)
+           .groupby(pd.Grouper(freq='1D'))
+           .sum().value_counts())
+    assert (s.index
               .isin([0, 390]).all())
     
 def check_max_diff_days(df, max_days):
