@@ -3,7 +3,7 @@ from src.fit.rewards.env_rewards import make_rewards
 
 
 
-class TransitionsSellAll(ControllerTransitions):
+class TransitionsSellBuyAll(ControllerTransitions):
 
 
 
@@ -18,6 +18,7 @@ class TransitionsSellAll(ControllerTransitions):
                  **kwargs):
 
         self._posible_func_actions = {'Buy' : self._buy_transition,
+                                      'Buy_all' : self._buy_all_transition,
                                       'Sell' : self._sell_transition, 
                                       'Sell_all' : self._sell_all_transition, 
                                       'No_actions' : self._not_actions_transition}
@@ -229,6 +230,52 @@ class TransitionsSellAll(ControllerTransitions):
 
              # total reward
             reward = unit_reward_future + reward_inventory
+
+        else:
+            valid = True
+            reward = unit_reward_future
+            income = 0
+
+        return reward, self._money, income, inventory, valid
+
+
+    def _buy_all_transition(self, index, inventory):
+
+        # features of inventory
+        len_inventory, value_inventory = self.features_inventory(inventory)
+        inventory_not_empty = (len_inventory > 0)
+        current_value = self._positions[index]
+
+
+
+        enough_money = (current_value  <= self._money)
+        unit_reward_future = self._buy_pred_rewards[index]
+        unit_reward_future *= self._gamma_future
+
+        if enough_money:
+
+            valid = True
+            n = self._money // current_value
+
+            inventory.extend([current_value] * n) # add to inventory
+            _, income = self._buy_many_incomes(index, n)
+            self._money += income # update money
+
+            # reward inventory
+            # if mean of inventory is greater than current value incr reward
+            if inventory_not_empty:
+
+                mean_inventory = value_inventory / len_inventory
+                unit_reward_inventory = mean_inventory - current_value 
+                reward_inventory = unit_reward_inventory * n
+                reward_inventory *= self._gamma_inventory
+
+            else:
+                reward_inventory = 0
+
+             # total reward
+            total_reward_future = unit_reward_future * n
+            reward = total_reward_future + reward_inventory
 
         else:
             valid = True

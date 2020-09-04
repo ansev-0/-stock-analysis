@@ -1,14 +1,20 @@
 import numpy as np
-
+from numpy.random import default_rng
 
 
 class States(dict):
 
+    '''
+    This class is used to simplify the update of the states when there is more than one numpy.
+    Array to update (market states and portfolio states).
+    '''
+
     def __init__(self, input_shapes, mem_size, names_states=None):
 
+        self._input_shapes = input_shapes
         self._mem_size = mem_size
         self._names_states = names_states
-        self._input_shapes = input_shapes
+
 
         if names_states is None:
             self._names_states = range(len(input_shapes))
@@ -20,10 +26,16 @@ class States(dict):
             raise ValueError('length of input_shapes must be equal to length of names_states')
 
         for i, shape in zip(self._names_states, self._input_shapes):
-                self[i] = np.zeros((mem_size, *shape))
+                self[i] = np.zeros((mem_size, *shape)) #initialize states
 
     def update_pos(self, index_pos, arrays, names_to_update=None):
 
+        '''
+        Update the arrays corresponding to the keys passed (names_to_update),
+        if the keys are not specified, 
+        the number of arrays must be equal to the total number of shapes specified when creating the object.
+
+        '''
         if names_to_update is None:
             names_to_update = self._names_states
 
@@ -32,6 +44,10 @@ class States(dict):
 
 
     def get_pos(self, index_pos, names_filter=None):
+
+        '''
+        Returns the position of the specified index.
+        '''
 
         if names_filter is None:
             names_filter = self._names_states
@@ -44,8 +60,13 @@ class States(dict):
 
 class ReplayBuffer:
 
+    '''
+    Save training states to enable the learning phase.
+    '''
+
     def __init__(self, mem_size, input_shapes, n_actions, discrete=False, names_states=None):
 
+        self._rng = default_rng()
         self.mem_size = mem_size #longitud maxima de la memoria
         self.mem_ctr = 0 ## contador para la memoria
         self._save_action_function = None
@@ -89,17 +110,16 @@ class ReplayBuffer:
         #incr counter
         self.mem_ctr += 1
 
-    def sample_buffer(self, batch_size, sort=False):
+    def sample_buffer(self, batch_size, sort=False, replace=True):
 
         max_mem = min(self.mem_ctr, self.mem_size)
-        batch = np.random.choice(max_mem, batch_size)
+        batch = self._rng.choice(max_mem, size=batch_size, replace=replace)
 
         if sort:
             batch = list(sorted(batch))
 
         states = self.state_memory.get_pos(batch)
         new_states = self.new_state_memory.get_pos(batch)
-
         actions = self.action_memory[batch]
         rewards = self.reward_memory[batch]
         terminal = self.terminal_memory[batch]

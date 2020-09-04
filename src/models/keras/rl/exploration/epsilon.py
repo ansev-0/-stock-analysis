@@ -16,22 +16,6 @@ class EpsilonDecay(metaclass=ABCMeta):
         pass
 
     @abstractproperty
-    def min_epsilon(self):
-        pass
-
-    @abstractproperty
-    def initial_epsilon(self):
-        pass
-
-    @abstractproperty
-    def epsilon(self):
-        pass
-
-    @abstractproperty
-    def epsilon_is_min(self):
-        pass
-
-    @abstractproperty
     def count(self):
         pass
 
@@ -50,6 +34,7 @@ class EpsilonLinear(EpsilonDecay):
     @property
     def count(self):
         return self._count
+
 
     def reset(self):
         self._count = 0
@@ -95,8 +80,6 @@ class EpsilonPower(EpsilonDecay):
         self.epsilon = self.initial_epsilon
 
     def step(self):
-
-        
         if not self.epsilon_is_min:
             self._decrement()
 
@@ -109,7 +92,7 @@ class EpsilonPower(EpsilonDecay):
 
 
     def _decrement(self):
-        self.epsilon *= self.power 
+        self.epsilon *= self.factor
 
 
 
@@ -175,6 +158,4 @@ class EpsilonExp(EpsilonDecay):
 
 
     
-
-
-    
+decay = EpsilonPower(min_epsilon=0.1, initial_epsilon=1, factor=0.99)
