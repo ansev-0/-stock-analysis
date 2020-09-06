@@ -1,5 +1,7 @@
 from src.models.keras.rl.controllers.abstract_controller import ControllerTransitions
 from src.fit.rewards.env_rewards import make_rewards
+from collections import defaultdict
+
 
 
 
@@ -22,8 +24,9 @@ class TransitionsSellBuyAll(ControllerTransitions):
                                       'Sell' : self._sell_transition, 
                                       'Sell_all' : self._sell_all_transition, 
                                       'No_actions' : self._not_actions_transition}
-        self._counters = None  
-        self.reset_counters()                            
+
+        self._indexes_actions = None
+        self.reset_transitions()                            
         
         self.init_money = init_money
         self._money = init_money
@@ -58,43 +61,40 @@ class TransitionsSellBuyAll(ControllerTransitions):
     def reset_money(self):
         self._money = self.init_money
 
-    def reset_counters(self):
+    def reset_transitions(self):
+        self._indexes_actions = defaultdict(list)
 
-        self._counters = {'Buy' : 0, 
-                          'Predict_Buy' : 0,
-                          'Sell' :  0,
-                          'Predict_Sell' :  0,
-                          'Sell_all' : 0,
-                          'Predict_Sell_all' : 0,
-                          'No_actions' : 0}
+    @property
+    def indexes_actions(self):
+        return self._indexes_actions
 
     @property
     def counters(self):
-        return self._counters
+        return {key : len(value) for key, value in self._indexes_actions.items()}
     
     @property
     def commision(self):
         return self._commision
 
 
-    def eval(self, action, done, *args, **kwargs):
+    def eval(self, action, done, index, *args, **kwargs):
 
         if done:
             # sold all at the end
-            self._counters['Sell_all'] += 1
-            return self._transition_done(*args, **kwargs)
+            self._indexes_actions['Sell_all'].append(index)
+            return self._transition_done(index, *args, **kwargs)
 
         action = self._actions[action]
 
         for posible_action, action_func in self._posible_func_actions.items():
 
             if action == posible_action:
-                out = action_func(*args, **kwargs)
+                out = action_func(index, *args, **kwargs)
 
                 if out[-1]:
-                    self._counters[action] += 1
+                    self._indexes_actions[action].append(index)
                 else:
-                    self._counters[f'Predict_{action}'] += 1
+                    self._indexes_actions[f'Predict_{action}'].append(index)
 
                 return out[:-1]
                 
@@ -257,7 +257,7 @@ class TransitionsSellBuyAll(ControllerTransitions):
             valid = True
             n = self._money // current_value
 
-            inventory.extend([current_value] * n) # add to inventory
+            inventory.extend([current_value] * int(n)) # add to inventory
             _, income = self._buy_many_incomes(index, n)
             self._money += income # update money
 
