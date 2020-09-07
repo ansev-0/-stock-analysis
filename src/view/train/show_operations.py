@@ -36,14 +36,14 @@ class ShowOperations:
 
     def _draw_marks(self, args_tuple, kwargs_tuple):
         for args, kwargs in zip(args_tuple, kwargs_tuple):
-            plt.plot(self.serie, *args, **kwargs)
+            self._ax.plot(self.serie, *args, **kwargs)
             self._fig.canvas.draw_idle()
             plt.pause(0.001)
 
 
     def _remove_marks(self):
         for i in range(self.n_operations):
-            line = self._ax.lines.pop(1)
+            _ = self._ax.lines.pop(1)
             #line.remove()
 
 
