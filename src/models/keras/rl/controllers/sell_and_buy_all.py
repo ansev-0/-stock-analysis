@@ -2,6 +2,7 @@ from src.models.keras.rl.controllers.abstract_controller import ControllerTransi
 from src.fit.rewards.env_rewards import make_rewards
 from collections import defaultdict
 from src.fit.rewards.inventory_rewards import inventory_rewards
+import numpy as np
 
 
 class TransitionsSellBuyAll(ControllerTransitions):
@@ -298,8 +299,11 @@ class TransitionsSellBuyAll(ControllerTransitions):
 
         len_inventory = len(inventory)
         value_inventory = sum(inventory)
-
-        return len_inventory, value_inventory, value_inventory / len_inventory, len_inventory > 0
+        inventory_not_empty = len_inventory > 0
+    
+        mean = value_inventory / len_inventory if inventory_not_empty else np.nan
+   
+        return len_inventory, value_inventory, mean, inventory_not_empty 
 
     def _use_default_actions(self, actions):
         return actions is None
