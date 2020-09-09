@@ -5,9 +5,10 @@ from abc import ABCMeta, abstractmethod, abstractproperty, abstractclassmethod
 class ControllerTransitions(metaclass=ABCMeta):
 
     @abstractmethod
-    def eval(self):
+    def eval_with_rewards(self):
         pass
-
+    def eval_without_rewards(self):
+        pass
     @abstractproperty
     def actions(self):
         pass

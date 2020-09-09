@@ -80,11 +80,18 @@ class TransitionsFractions(ControllerTransitions):
         return self._commision
 
 
-    def eval(self, action, done, index, *args, **kwargs):
+    def eval_with_rewards(self, action, done, index, *args, **kwargs):
+        return self._eval(True, action, done, index, *args, **kwargs)
+
+    def eval_without_rewards(self, action, done, index, *args, **kwargs):
+        return self._eval(False, action, done, index, *args, **kwargs)
+
+
+    def _eval(self, return_reward, action, done, index, *args, **kwargs):
 
         if done:
             # sold all at the end
-            out = self._transition_done(index, *args, **kwargs)
+            out = self._transition_done(return_reward, index, *args, **kwargs)
 
             if out[-1]:
                 self._indexes_actions['Sell_all'].append(index)
@@ -98,7 +105,7 @@ class TransitionsFractions(ControllerTransitions):
         for posible_action, action_func in self._posible_func_actions.items():
 
             if action == posible_action:
-                out = action_func(index, *args, **kwargs)
+                out = action_func(return_reward, index, *args, **kwargs)
 
                 if out[-1]:
                     self._indexes_actions[action].append(index)
@@ -106,67 +113,69 @@ class TransitionsFractions(ControllerTransitions):
                     self._indexes_actions[f'Predict_{action}'].append(index)
 
                 return out[:-1]
-                
-            
-
         # if action not in self._actions.keys()       
         self._raise_invalid_action()
 
 
-    def _transition_done(self, index, inventory):
+    def _transition_done(self, return_reward, index, inventory):
 
-        _, value_inventory, _, inventory_not_empty = self.features_inventory(inventory)
-        _, income = self._sell_many_incomes(index, len(inventory))
-
-        reward = income - value_inventory
+        len_inventory, value_inventory, _, inventory_not_empty = self.features_inventory(inventory)
+        _, income = self._sell_many_incomes(index, len_inventory)
         self._money += income
         inventory = []
-        return reward, self._money, income, inventory, inventory_not_empty
+
+        if return_reward:
+            return income - value_inventory, self._money, income, inventory, inventory_not_empty
+
+        return self._money, income, inventory, inventory_not_empty
 
 
-    def _sell_transition(self, index, inventory):
+    def _sell_transition(self, return_reward, index, inventory):
         
         _, _, mean_inventory, inventory_not_empty = self.features_inventory(inventory)
-        # future rewards
-        unit_reward_future = self._sell_pred_rewards[index]  * self._gamma_future
 
 
         if inventory_not_empty:
 
             # remove one action of inventory
             first_value_action = inventory.pop(0) #remove one action from inventory
+            inventory = self._correct_value_inventory(inventory, first_value_action - mean_inventory)
+
             # make balance
             gross_income, income = self._sell_incomes(index)
             self._money += income
-
-
+            
+            if return_reward:
             # commision reward for sell is already taking in future reward
             # if mean of inventory isn't greater than current value, incr reward
-            reward_inventory = inventory_rewards(mean_inventory, gross_income, 'sell') * self._gamma_inventory
-            inventory = self._correct_value_inventory(inventory, first_value_action - mean_inventory)
-            reward = unit_reward_future + reward_inventory
+                reward = self._sell_pred_rewards[index]  * self._gamma_future + \
+                    inventory_rewards(mean_inventory, gross_income, 'sell') * self._gamma_inventory
 
-        else:
-            income = 0
-            reward = unit_reward_future
+                return reward, self._money, income, inventory, inventory_not_empty
 
-        return reward, self._money, income, inventory, inventory_not_empty
+            return self._money, income, inventory, inventory_not_empty
 
-    def _sell_perc_25_transition(self, index, inventory):
-        return self._sell_perc_transition(index, inventory, 0.25)
+        elif return_reward:
+            reward = self._sell_pred_rewards[index]  * self._gamma_future
+            return reward, self._money, 0, inventory, inventory_not_empty
 
-    def _sell_perc_50_transition(self, index, inventory):
-        return self._sell_perc_transition(index, inventory, 0.50)
+        return self._money, 0, inventory, inventory_not_empty
 
-    def _sell_perc_75_transition(self, index, inventory):
-        return self._sell_perc_transition(index, inventory, 0.75)
+    def _sell_perc_25_transition(self, return_reward, index, inventory):
+        return self._sell_perc_transition(return_reward, index, inventory, 0.25)
+
+    def _sell_perc_50_transition(self, return_reward, index, inventory):
+        return self._sell_perc_transition(return_reward, index, inventory, 0.50)
+
+    def _sell_perc_75_transition(self, return_reward, index, inventory):
+        return self._sell_perc_transition(return_reward, index, inventory, 0.75)
 
 
-    def _sell_perc_transition(self, index, inventory, perc):
+    def _sell_perc_transition(self, return_reward, index, inventory, perc):
 
         len_inventory, _, mean_inventory, inventory_not_empty = self.features_inventory(inventory)
-        unit_reward_future = self._sell_pred_rewards[index] * self._gamma_future
 
+        
         if inventory_not_empty:
             #calculate size transaction
             n =  self._calculate_size_sell_transaction(perc, len_inventory)
@@ -175,29 +184,32 @@ class TransitionsFractions(ControllerTransitions):
             stock_remove = inventory[:n]
             inventory = inventory[n:]
 
-            inventory = self._correct_value_inventory(inventory, sum(stock_remove) - (mean_inventory * n))
+            inventory = self._correct_value_inventory(inventory, sum(stock_remove) - mean_inventory * n)
             #calculate balance and update money
             unit_gross_income, _, _, income = self._sell_many_incomes(index, n, return_unit=True)
             self._money += income
-
-            reward_inventory = inventory_rewards(mean_inventory, unit_gross_income, 'sell') * n * self._gamma_inventory
             
+            if return_reward:
+                #calculate reward
+                reward = (inventory_rewards(mean_inventory, unit_gross_income, 'sell')  * self._gamma_inventory + 
+                          self._sell_pred_rewards[index] * self._gamma_future) * n
 
-            total_reward_future = unit_reward_future * n
-            reward = reward_inventory + total_reward_future
+                return reward, self._money, income, inventory, inventory_not_empty
 
-        else:
-            reward = unit_reward_future
-            income = 0
+            return self._money, income, inventory, inventory_not_empty
 
-        return reward, self._money, income, inventory, inventory_not_empty
+        elif return_reward:
+            reward = self._sell_pred_rewards[index] * self._gamma_future
+            return reward, self._money, 0, inventory, inventory_not_empty
+            
+        return self._money, 0, inventory, inventory_not_empty
 
 
 
-    def _sell_all_transition(self, index, inventory):
+    def _sell_all_transition(self, return_reward, index, inventory):
         
         len_inventory, value_inventory, _, inventory_not_empty = self.features_inventory(inventory)
-        unit_reward_future = self._sell_pred_rewards[index] * self._gamma_future
+
 
         if inventory_not_empty:
             # remove inventory
@@ -205,63 +217,69 @@ class TransitionsFractions(ControllerTransitions):
             # calculate income and update money
             gross_income, income = self._sell_many_incomes(index, len_inventory)
             self._money += income
-
             # commision for sell is already taking in future reward
-            reward_inventory = inventory_rewards(value_inventory, gross_income, 'sell') * self._gamma_inventory
-            # reward
-            reward = reward_inventory + len_inventory * unit_reward_future
+            if return_reward:
+                # reward
+                reward = inventory_rewards(value_inventory, gross_income, 'sell') * self._gamma_inventory \
+                    + len_inventory * self._sell_pred_rewards[index] * self._gamma_future
+                return reward, self._money, income, inventory, inventory_not_empty
 
-        else:
-            reward = unit_reward_future
-            income = 0
+            return self._money, income, inventory, inventory_not_empty
 
-        return reward, self._money, income, inventory, inventory_not_empty
-        
+        elif return_reward:
+            reward = self._sell_pred_rewards[index] * self._gamma_future
+            return reward, self._money, 0, inventory, inventory_not_empty
 
-    def _buy_transition(self, index, inventory):
+        return self._money, 0, inventory, inventory_not_empty
+
+    def _buy_transition(self, return_reward, index, inventory):
 
         # features of inventory
         _, _, mean_inventory, inventory_not_empty = self.features_inventory(inventory)
         current_value = self._positions[index]
-        enough_money = current_value <= self._money
-        unit_reward_future = self._buy_pred_rewards[index] * self._gamma_future
+        enough_money = current_value + self._commision <= self._money
+
 
         if enough_money:
             inventory.append(current_value) # add to inventory
             _, income = self._buy_incomes(index)
             self._money += income # update money
 
-            # reward inventory
-            # if mean of inventory is greater than current value incr reward
-            reward_inventory = inventory_rewards(mean_inventory, 
-                                                 current_value,
-                                                 'buy') * self._gamma_inventory if inventory_not_empty else 0
+            if return_reward:
+                # reward inventory
+                # if mean of inventory is greater than current value incr reward
+                reward_inventory = inventory_rewards(mean_inventory, 
+                                                     current_value,
+                                                     'buy') * self._gamma_inventory if inventory_not_empty else 0
              # total reward
-            reward = unit_reward_future + reward_inventory
-        else:
-            reward = unit_reward_future
-            income = 0
+                reward = self._buy_pred_rewards[index] * self._gamma_future + reward_inventory
+                return reward, self._money, income, inventory, enough_money
 
-        return reward, self._money, income, inventory, enough_money
+            return self._money, income, inventory, enough_money
 
-    def _buy_perc_25_transition(self, index, inventory):
-        return self._buy_perc_transition(index, inventory, 0.25)
+        elif return_reward:
+            reward = self._buy_pred_rewards[index] * self._gamma_future
+            return reward, self._money, 0, inventory, enough_money
 
-    def _buy_perc_50_transition(self, index, inventory):
-        return self._buy_perc_transition(index, inventory, 0.5)
+        return self._money, 0, inventory, enough_money
 
-    def _buy_perc_75_transition(self, index, inventory):
-        return self._buy_perc_transition(index, inventory, 0.75)
+    def _buy_perc_25_transition(self, return_reward, index, inventory):
+        return self._buy_perc_transition(return_reward, index, inventory, 0.25)
 
-    def _buy_perc_transition(self, index, inventory, perc):
+    def _buy_perc_50_transition(self, return_reward, index, inventory):
+        return self._buy_perc_transition(return_reward, index, inventory, 0.5)
+
+    def _buy_perc_75_transition(self, return_reward, index, inventory):
+        return self._buy_perc_transition(return_reward, index, inventory, 0.75)
+
+    def _buy_perc_transition(self,return_reward, index, inventory, perc):
 
         # features of inventory
         _, _, mean_inventory, inventory_not_empty = self.features_inventory(inventory)
         # get current position
         current_value = self._positions[index]
         # check if enough money
-        enough_money = current_value <= self._money
-        unit_reward_future = self._buy_pred_rewards[index] * self._gamma_future
+        enough_money = current_value + self._commision <= self._money
 
         if enough_money:
             # get size of transaction
@@ -272,51 +290,63 @@ class TransitionsFractions(ControllerTransitions):
             _, income = self._buy_many_incomes(index, n)
             self._money += income 
 
-            # reward inventory
-            # if mean of inventory is greater than current value incr reward
-            reward_inventory = inventory_rewards(mean_inventory, 
-                                                 current_value,
-                                                 'buy') * self._gamma_inventory * n if inventory_not_empty else 0
-             # total reward
-            reward = unit_reward_future * n + reward_inventory
-        else:
-            reward = unit_reward_future
-            income = 0
+            if return_reward:
+                # reward inventory
+                # if mean of inventory is greater than current value incr reward
+                reward_inventory = inventory_rewards(mean_inventory, 
+                                                     current_value,
+                                                     'buy') * self._gamma_inventory  if inventory_not_empty else 0
+                 # total reward
+                reward = (self._buy_pred_rewards[index] * self._gamma_future  + reward_inventory) * n
+                return reward, self._money, income, inventory, enough_money
 
-        return reward, self._money, income, inventory, enough_money
+            return self._money, income, inventory, enough_money
+            
+        elif return_reward:
+            reward = self._buy_pred_rewards[index] * self._gamma_future
+            return reward, self._money, 0, inventory, enough_money
+
+        return self._money, 0, inventory, enough_money
 
 
-    def _buy_all_transition(self, index, inventory):
+    def _buy_all_transition(self, return_reward, index, inventory):
 
         # features of inventory
         _, _, mean_inventory, inventory_not_empty = self.features_inventory(inventory)
         current_value = self._positions[index]
-        # reward future
-        unit_reward_future = self._buy_pred_rewards[index] * self._gamma_future
-
-        enough_money = current_value  <= self._money
+        enough_money = current_value + self._commision  <= self._money
 
         if enough_money:
 
-            n = self._money // current_value # n to buy
+            n = self._money // (current_value + self._commision)# n to buy
             inventory.extend([current_value] * int(n)) # add to inventory
             _, income = self._buy_many_incomes(index, n)
             self._money += income # update money
             # reward inventory
             # if mean of inventory is greater than current value incr reward
-            reward_inventory = inventory_rewards(mean_inventory,
-                                                current_value, 'buy') * n * self._gamma_inventory \
-                if inventory_not_empty else 0
+            if return_reward:
+
+                reward_inventory = inventory_rewards(mean_inventory,
+                                                    current_value, 'buy') * n * self._gamma_inventory \
+                    if inventory_not_empty else 0
                 
-             # total reward
-            reward = unit_reward_future * n + reward_inventory
+                # total reward
+                reward = (self._buy_pred_rewards[index] * self._gamma_future  + reward_inventory) * n
+                return reward, self._money, income, inventory, enough_money
 
-        else:
+            return self._money, income, inventory, enough_money
+
+        elif return_reward:
             
-            reward = unit_reward_future
-            income = 0
+            reward = self._buy_pred_rewards[index] * self._gamma_future
+            return reward, self._money, 0, inventory, enough_money
 
-        return reward, self._money, income, inventory, enough_money
+        return self._money, 0, inventory, enough_money
+
+    def _not_actions_transition(self, return_reward, index, inventory):
+        if return_reward:
+            return self._not_actions_pred_rewards[index], self._money, 0, inventory, True
+        return self._money, 0, inventory, True
 
     @staticmethod
     def _correct_value_inventory(inventory, diff):
@@ -333,7 +363,7 @@ class TransitionsFractions(ControllerTransitions):
         return n if n > 0 else 1
 
     def _calculate_size_buy_transaction(self, perc, current_value):   
-            n = int(self._money // current_value * perc)
+            n = int(self._money // (self._commision + current_value) * perc)
             return  n if n > 0 else 1
 
     def _buy_incomes(self, index):
@@ -364,10 +394,7 @@ class TransitionsFractions(ControllerTransitions):
             return unit_gross_income, unit_income, gross_income, income
         return gross_income, income
 
-    def _not_actions_transition(self, index, inventory):
-        unit_reward_future = self._not_actions_pred_rewards[index]
-        reward = unit_reward_future
-        return reward, self._money, 0, inventory, True
+
 
     def _raise_invalid_action(self):
         valid_actions_values = ' or '.join(self._actions.keys())
