@@ -37,8 +37,9 @@ class LastPurchasesMeanReward(DependOnInventoryReward):
 
 
     def _buy(self, n_stocks, price):
-        self._update_mean(n_stocks, price)
+
         reward = self._sell(-n_stocks, price)
+        self._update_mean(n_stocks, price)
         return reward if reward != -0 else 0
         
 
@@ -46,15 +47,15 @@ class LastPurchasesMeanReward(DependOnInventoryReward):
     def _sell(self, n_stocks, price):
 
         if n_stocks <= self._n_stocks:
-
+            reward = (price - self._mean_inventory) * n_stocks if self._n_stocks else 0
             self._n_stocks -= n_stocks
-            return (price - self._mean_inventory) * n_stocks
+
+            return reward 
         return 0
 
     def _update_mean(self, n_stocks, price):
-        frac = n_stocks / (self.n_stocks + n_stocks) 
+        frac = n_stocks / self.n_stocks 
         self._mean_inventory = frac * price + (1-frac) * self._mean_inventory
 
 
 
-        
