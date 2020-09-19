@@ -23,6 +23,7 @@ class ShowOperations:
         plt.ion()
         plt.show()
         plt.plot(self.serie)
+        plt.grid()
         self._fig.canvas.draw_idle()
         plt.pause(1)
 

@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from itertools import compress
 from src.tools.builders import inlist
 from src.tools.check_components import check_equal_lengths
@@ -34,3 +35,11 @@ def columns_to_datetime(dataframe,convert=None,columns=None,formats = None):
         df[col] = pd.to_datetime(df[col], format = format_col)
         
     return df
+
+
+def monotic_blocks(serie, diff_serie=False):
+    serie = serie if diff_serie else serie.diff(-1) 
+    signs = np.sign(serie).ffill().mask(lambda sign: sign.eq(0)).ffill()
+    blocks = signs.ne(signs.shift()).cumsum()
+    return blocks
+

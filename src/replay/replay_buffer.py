@@ -2,7 +2,7 @@ import numpy as np
 from numpy.random import default_rng
 
 
-class States(dict):
+class BufferStates(dict):
 
     '''
     This class is used to simplify the update of the states when there is more than one numpy.
@@ -74,8 +74,8 @@ class ReplayBuffer:
         
         #fields of memory
         #states
-        self.state_memory = States(input_shapes, self.mem_size, names_states)
-        self.new_state_memory = States(input_shapes, self.mem_size, names_states)
+        self.state_memory = BufferStates(input_shapes, self.mem_size, names_states)
+        self.new_state_memory = BufferStates(input_shapes, self.mem_size, names_states)
         #actions 
         self.action_memory = np.zeros((self.mem_size, n_actions), dtype=np.int8)
         #reward

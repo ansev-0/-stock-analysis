@@ -43,6 +43,7 @@ class TransitionsFractions(ControllerTransitions):
         self._gamma_size_transaction = 0.97
 
 
+
         self._not_actions_pred_rewards, self._sell_pred_rewards, self._buy_pred_rewards = \
             make_rewards(positions, commision, **kwargs)
 
@@ -125,10 +126,14 @@ class TransitionsFractions(ControllerTransitions):
         _, income = self._sell_many_incomes(index, len_inventory)
          
         self._money += income
+        
         inventory = []
 
+
         if return_future_parameters:
-            return self._update_reward_size_transaction(income - value_inventory, len(inventory)), \
+            reward = self._update_reward_size_transaction(income - value_inventory, len(inventory))
+
+            return reward,\
                 self._money, income, inventory, inventory_not_empty
 
         return self._money, income, inventory, inventory_not_empty
@@ -136,7 +141,7 @@ class TransitionsFractions(ControllerTransitions):
 
     def _sell_transition(self, return_future_parameters, index, inventory):
         
-        _, _, mean_inventory, inventory_not_empty = self.features_inventory(inventory)
+        len_inventory, _, mean_inventory, inventory_not_empty = self.features_inventory(inventory)
 
 
         if inventory_not_empty:
@@ -155,14 +160,17 @@ class TransitionsFractions(ControllerTransitions):
                 reward = self._sell_pred_rewards[index]  * self._gamma_future + \
                     inventory_rewards(mean_inventory, gross_income, 'sell') * self._gamma_inventory
 
-                
-                
+
+
                 return reward, self._max_buy_next(index), income, inventory, inventory_not_empty
 
-            return self._money, income, inventory, inventory_not_empty
+            return  self._money, income, inventory, inventory_not_empty
 
         elif return_future_parameters:
+
             reward = self._sell_pred_rewards[index]  * self._gamma_future
+
+
             return reward, self._max_buy_next(index), 0, inventory, inventory_not_empty
 
         return self._money, 0, inventory, inventory_not_empty
@@ -448,4 +456,6 @@ class TransitionsFractions(ControllerTransitions):
     def _check_valid_values_actions(self):
         if sorted(tuple(self._actions.values())) != tuple(self._posible_func_actions.keys()):
             raise ValueError('Values are incorrect')
+
+
 
