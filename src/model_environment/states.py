@@ -4,17 +4,16 @@ class States:
 
     def __init__(self, time_serie, init_n_stocks, init_money, commision):
 
-        self._stock_price = None
+        self.time_serie = time_serie
         self.n_stocks = None
         self.money = None
         self.time = None
         self.terminal = False
-
         self.init_n_stocks = init_n_stocks
         self.init_money = init_money
         self.commision = commision
-        self.time_serie = time_serie
         
+
         self.reset()
 
     @property
@@ -23,7 +22,7 @@ class States:
 
     @property
     def stock_price(self):
-        return self._stock_price
+        return self.time_serie[self.time]
 
     @property
     def init_inventory_price(self):

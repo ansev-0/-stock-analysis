@@ -81,8 +81,3 @@ class Reward:
         return rewardnode if rewardnode is not None \
              else RewardNode()
         
-
-
-    
-    
-

@@ -39,8 +39,8 @@ class RunQlearningEnv(RunEnv):
 
         profit = self.states_actions.profit
 
-        return rewards, profit, income, self.states_actions.max_purchases(), \
-            self.states_actions.max_sales()
+        return rewards, (profit, income, self.states_actions.max_purchases(), \
+            self.states_actions.max_sales())
 
     @staticmethod
     def _check_valid_action(action):
@@ -48,11 +48,11 @@ class RunQlearningEnv(RunEnv):
             raise ValueError('You must pass buy, sell or no_action')
 
 
-
 class RunEnvAdaptQlearningModel(RunQlearningEnv):
 
     def __init__(self, adapter, *args, **kwargs):
         self.adapter = adapter
+        self.action_spaces = list(self.adapter)
         super().__init__(*args, **kwargs)
 
     def eval_with_rewards(self, action):
