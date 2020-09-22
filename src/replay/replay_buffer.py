@@ -64,7 +64,7 @@ class ReplayBuffer:
     Save training states to enable the learning phase.
     '''
 
-    def __init__(self, mem_size, input_shapes, n_actions, discrete=False, names_states=None):
+    def __init__(self, mem_size, input_shapes, n_actions=None, discrete=False, names_states=None):
 
         self._rng = default_rng()
         self.mem_size = mem_size #longitud maxima de la memoria
@@ -77,7 +77,7 @@ class ReplayBuffer:
         self.state_memory = BufferStates(input_shapes, self.mem_size, names_states)
         self.new_state_memory = BufferStates(input_shapes, self.mem_size, names_states)
         #actions 
-        self.action_memory = np.zeros((self.mem_size, n_actions), dtype=np.int8)
+        self._set_action_memory(n_actions)
         #reward
         self.reward_memory = np.zeros(self.mem_size)
         #terminal
@@ -96,23 +96,23 @@ class ReplayBuffer:
 
 
     def store_transition(self, state, action, reward, new_state, done):
-        #get index of pos memory to fill
-        index = self.mem_ctr % self.mem_size
+
         #save states
-        self.state_memory.update_pos(index, state)
-        self.new_state_memory.update_pos(index, new_state)
+        self.state_memory.update_pos(self.mem_ctr, state)
+        self.new_state_memory.update_pos(self.mem_ctr, new_state)
         #save actions
-        self.action_memory[index] = self._save_action_function(action)
+        self.action_memory[self.mem_ctr] = self._save_action_function(action)
         ## save reward
-        self.reward_memory[index] = reward
+        self.reward_memory[self.mem_ctr] = reward
         ## save done
-        self.terminal_memory[index] = 1-int(done)
+        self.terminal_memory[self.mem_ctr] = 1-int(done)
         #incr counter
         self.mem_ctr += 1
+        self.mem_ctr %= self.mem_size
 
     def sample_buffer(self, batch_size, sort=False, replace=True):
 
-        max_mem = min(self.mem_ctr, self.mem_size)
+        max_mem = self.mem_ctr if self.mem_ctr > 0 else self.mem_size
         batch = self._rng.choice(max_mem, size=batch_size, replace=replace)
 
         if sort:
@@ -134,4 +134,13 @@ class ReplayBuffer:
         actions = np.zeros(self.action_memory.shape[1], dtype=np.int8)
         actions[action] = 1
         return actions
+
+
+    def _set_action_memory(self, n_actions):
+        if self.discrete:
+            self.action_memory = np.zeros((self.mem_size, n_actions), 
+                                          dtype=np.int8) 
+        else:
+            self.action_memory = np.zeros((self.mem_size,), dtype=np.int8)
+ 
 

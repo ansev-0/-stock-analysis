@@ -155,7 +155,3 @@ class EpsilonExp(EpsilonDecay):
         self._b = self._initial_epsilon - self._min_epsilon
 
 
-
-
-    
-decay = EpsilonPower(min_epsilon=0.1, initial_epsilon=1, factor=0.99)

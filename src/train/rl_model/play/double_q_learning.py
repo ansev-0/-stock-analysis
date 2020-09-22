@@ -10,10 +10,11 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
 
     def __init__(self, q_eval, env, states_price):
 
-        self._states_env = None
+        
         self._q_eval = q_eval
         self.env = env
-        self.shape_env_features = self.q_eval.get_layer('states_env').output_shape[1:]
+        self._shape_env_features = self.q_eval.get_layer('states_env').output_shape[1:]
+        self._states_env = StatePortfolio(self._shape_env_features)
         self.states_price = states_price
 
 
@@ -38,6 +39,8 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
     def reset(self):
         self.env.reset()
         self.states_env.reset()
+
+
 
 
     def choose_action(self, current_states, random_probability):
@@ -69,7 +72,7 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
             self._verify_errors()
 
     def _check_number_samples(self, shape_market_states):
-        if not shape_market_states == len(self.env.states_actions.time_series):
+        if not shape_market_states == len(self.env.states_actions.time_serie):
             raise ValueError('Mismatch between time series of env and shape of market states')
 
     def _check_number_delays(self, delays_market_states):
@@ -83,7 +86,7 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
 
 
 
-class PlayAndRememberDoubleQlearning:
+class PlayAndRememberDoubleQlearning(PlayDoubleQlearning):
 
     def __init__(self, mem_size, *args, **kwargs):
 
@@ -102,7 +105,8 @@ class PlayAndRememberDoubleQlearning:
         self.reset()
         current_state = self._current_state()
 
-        for step in range(len(self.env.states_actions.time_series)):
+
+        for step in range(len(self.env.states_actions.time_serie)):
             #choose action
             action = self.choose_action(current_state, 
                                         random_probability)
@@ -111,14 +115,14 @@ class PlayAndRememberDoubleQlearning:
             #update env states
             self.states_env.update_last(*next_state_env_tuple)
             #remember state_env
-            if not self.env.states_actions.terminal:
+            if not step == len(self.env.states_actions.time_serie) - 1:
                 next_state = self._current_state()
                 self.memory.store_transition(current_state, action, reward, 
                                              next_state, False)
                 #update state
                 current_state = next_state
 
-class PlayValidationDoubleQlearning():
+class PlayValidationDoubleQlearning(PlayDoubleQlearning):
     
     def play(self, random_probability, errors='ignore'):
         # check errors
@@ -127,7 +131,7 @@ class PlayValidationDoubleQlearning():
         self.reset()
         current_state = self._current_state()
 
-        for step in range(len(self.env.states_actions.time_series)):
+        for step in range(len(self.env.states_actions.time_serie)):
             #choose action
             action = self.choose_action(current_state, 
                                         random_probability)

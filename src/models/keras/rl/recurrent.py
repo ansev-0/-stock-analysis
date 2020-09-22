@@ -8,8 +8,7 @@ def build_dqn(lr, n_actions,
               lstm1_units, lstm2_units, output_fc_dims):
 
     input_daily_serie = Input(shape = input_dims_serie)
-    input_portfolio_status = Input(shape = input_dims_portfolio)
-
+    input_portfolio_status = Input(shape = input_dims_portfolio, name='states_env')
     lstm1_tensor = LSTM(lstm1_units, return_sequences=True)(input_daily_serie)
     lstm2_tensor = LSTM(lstm2_units, return_sequences=True)(lstm1_tensor)
 

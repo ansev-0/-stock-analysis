@@ -8,11 +8,15 @@ class LearnDoubleQlearning:
         pass
 
     @abstractproperty
+    def gamma(self):
+        pass
+
+    @abstractproperty
     def q_target(self):
         pass
 
     def learn_and_update_q_target(self, memory, *args, **kwargs):
-        fit = self._learn(memory, discrete_actions=False, *args, **kwargs)
+        fit = self.learn(memory, *args, **kwargs)
         self.update_q_target()
         return fit
 
@@ -34,7 +38,7 @@ class LearnDoubleQlearning:
         q_target = q_pred
         #get target
         max_actions = np.argmax(q_eval, axis=1).astype(int)
-        batch_index = range(states.shape[0])
+        batch_index = range(states[0].shape[0])
         # fit q_eval
         q_target[batch_index, actions] = rewards + terminal_signals * self.gamma * q_next[batch_index, max_actions]
         fit = self.q_eval.fit(states, q_target, *args, **kwargs)
