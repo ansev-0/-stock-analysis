@@ -118,7 +118,7 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                                             self._agent_training.env,
                                             self._agent_training.states_env,
                                             result_fit)
-        except Exception:
+        except Exception: 
             pass
 
     def _validation(self, *args):
