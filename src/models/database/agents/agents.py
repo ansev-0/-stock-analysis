@@ -3,14 +3,16 @@ from src.database.database import DataBaseAdminModels
 class DataBaseAgents(DataBaseAdminModels):
 
     def __init__(self):
-        super().__init__('agent')
+        super().__init__('agents')
 
     def collection_names(self, *args, **kwargs):
         self._database.list_collection_names(*args, **kwargs)
 
 
 class DataBaseOneAgent(DataBaseAgents):
+
     def __init__(self, stock_name):
+        super().__init__()
         self.collection = stock_name
 
     @property
