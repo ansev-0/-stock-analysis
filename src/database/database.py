@@ -42,7 +42,19 @@ class DataBaseAdminDataDataPreparation(DataBase):
 
 class DataBaseAdminTrain(DataBase):
     '''
-    This class is used to create the client related to the data preparation process.
+    This class is used to create the client related to the train process.
+    '''
+    pass
+
+class DataBaseAdminModels(DataBase):
+    '''
+    This class is used to create the client related to the models.
+    '''
+    pass
+
+class DataBaseAdminModelFeatures(DataBase):
+    '''
+    This class is used to create the client related to the type models.
     '''
     pass
 

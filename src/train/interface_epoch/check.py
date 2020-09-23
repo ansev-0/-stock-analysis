@@ -12,7 +12,7 @@ class CheckInterfaceInputs:
     @staticmethod
     def _is_env_states(env_states):
         if not isinstance(env_states, StatePortfolio):
-            raise ValueError(f'{env_states} is not an instance of {StatePortfolio)}')
+            raise ValueError(f'{env_states} is not an instance of {StatePortfolio}')
 
     @staticmethod
     def _is_run_env(run_env):
