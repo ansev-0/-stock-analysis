@@ -7,9 +7,6 @@ class UpdateAgentDates(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
 
     _valid_fields = []
 
-    def __init__(self, stock_name):
-        super().__init__(stock_name=stock_name)
-
     @property
     def valid_fields(self):
         return self._valid_fields

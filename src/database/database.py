@@ -58,3 +58,10 @@ class DataBaseAdminModelFeatures(DataBase):
     '''
     pass
 
+
+class DataBaseAdminModelResults(DataBase):
+    '''
+    This class is used to create the client related to the model results.
+    '''
+    pass
+
