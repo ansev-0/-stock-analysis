@@ -3,26 +3,10 @@ from src.models.database.update import UpdateValidFieldsDocumentDB
 import pandas as pd
 from tools.filter import filter_dict
 
-class UpdateAgentDates(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
+
+class UpdateAgentInitEndDates(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
 
     _valid_fields = []
-
-    @property
-    def valid_fields(self):
-        return self._valid_fields
-
-
-    def _update_dict(self, data):
-        return {'$set' : {key : self.datetime(value) 
-                          for key, value in data.items()
-                          if key in self.valid_fields}}
-
-    @staticmethod
-    def datetime(date):
-        return pd.to_datetime(date) if not isinstance(date, pd.Timestamp) else date
-
-
-class UpdateAgentInitEndDates(UpdateAgentDates):
 
     def update_init(self, where, init, **kwargs):
         return self.update_one(where, self._dict_date(0, init), **kwargs)

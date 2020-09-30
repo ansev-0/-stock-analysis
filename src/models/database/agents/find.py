@@ -14,7 +14,7 @@ class FindTrainAgent(DataBaseOneAgent):
     def find_by_type_model(self, type_model, **kwargs):
         return self.find_many({'type_model' : type_model}, **kwargs)
 
-    def find_by_type_and_id_model(self, type_model, type_id, **kwargs):
+    def find_by_type_and_id_model(self, type_model, id, **kwargs):
         return self.find_one({'type_model' : type_model,
-                                'type_id' : type_id},
+                                '_id' : id},
                             **kwargs)

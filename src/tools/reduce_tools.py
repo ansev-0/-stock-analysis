@@ -6,3 +6,6 @@ def repeated(f, n):
 
 def flatten_adding(elements):
     return reduce(lambda cum, new: cum + new, elements)
+
+def combine_dicts(*args):
+    return reduce(lambda cum_dict, new_dict: dict(cum_dict, **new_dict), args)

@@ -33,8 +33,8 @@ class UpdateAgentTrainStatus(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
     def set_many(self, where, **kwargs):
         self.update_many(where, self.dict_status, **kwargs)
 
-    def set_on_id_and_type_model(self, id_type, type_model, **kwargs):
-        return self.set_one({'type_model' : type_model , 'id_type' : id_type})
+    def set_on_type_model(self, type_model, **kwargs):
+        return self.set_one({'type_model' : type_model})
 
     def set_on_id(self, id, **kwargs):
         return self.set_one({'_id' : id}, **kwargs)
