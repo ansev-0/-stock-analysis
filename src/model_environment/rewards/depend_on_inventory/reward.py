@@ -45,9 +45,8 @@ class DependOnInventoryReward(metaclass=ABCMeta):
 
 
 class DictDependOnInventoryReward(DictNode):
+    _type_node = (DependOnInventoryReward, )
 
-    def __init__(self, rewardnode=None):
-        super().__init__(DependOnInventoryReward, rewardnode=rewardnode)
 
     def total_reward(self, action, n_stocks, price, *args, **kwargs):
         rewards = self.get_flatten_reward(action, n_stocks, price)

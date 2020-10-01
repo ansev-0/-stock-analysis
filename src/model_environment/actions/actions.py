@@ -10,10 +10,11 @@ class StatesActions(States):
     def do_action(self, action, n_stocks=None, frac=None):
         return self._transaction(action, n_stocks, frac)  if action != 'no_action' else self._no_action()
 
-
+    @property
     def max_purchases(self):
         return int(self._max_float_purchases())
 
+    @property
     def max_sales(self):
         return self.n_stocks
 
@@ -24,7 +25,7 @@ class StatesActions(States):
         return int (self._max_float_purchases() * perc)
 
     def enough_money_to_buy(self, n):
-        return n <= self.max_purchases()
+        return n <= self.max_purchases
 
     def enough_stock_to_sell(self, n):
         return n <= self.n_stocks
@@ -57,7 +58,7 @@ class StatesActions(States):
         if (n_stocks > 0) and (frac_arg or self.enough_money_to_buy(n_stocks)):
 
             if not frac_arg:
-                frac = n_stocks // self.max_purchases()
+                frac = n_stocks // self.max_purchases
 
             return (frac, *self._order_buy(n_stocks))
 
@@ -83,7 +84,7 @@ class StatesActions(States):
         if (n_stocks > 0) and (frac_arg or self.enough_stock_to_sell(n_stocks)):
 
             if not frac_arg:
-                frac = n_stocks // self.max_sales()
+                frac = n_stocks // self.max_sales
 
             return (frac, *self._order_sell(n_stocks))
         else: 

@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 from inspect import isfunction
 import numpy as np
 
@@ -50,12 +51,15 @@ class RewardNode:
             raise ValueError('You must pass a instance of function')
 
 
-class DictNode(dict):
+class DictNode(dict, metaclass=ABCMeta):
 
-    _type_node = None
-    def __init__(self, type_node, rewardnode=None):
+    @property
+    @classmethod
+    @abstractmethod
+    def _type_node(self):
+        pass
 
-        self._type_node = type_node if isinstance(type_node, tuple) else (type_node, )
+    def __init__(self, rewardnode=None):
         self.rewardnode = rewardnode
 
     @property
@@ -69,7 +73,8 @@ class DictNode(dict):
 
     def __setitem__(self, reward_name, reward):
 
-        if np.any([isinstance(reward, type_node) for type_node in  self._type_node]):
+        if np.any([isinstance(reward, type_node) 
+                   for type_node in  self._type_node]):
             super().__setitem__(reward_name, reward)
 
         else:
