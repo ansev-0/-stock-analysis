@@ -4,7 +4,7 @@ class DynamicRewards(ImportRewards):
     
     def __call__(self, module, objects, parameters):
         
-        if self._one_reward(objects, parameters):
+        if self._one_reward_obj(objects, parameters):
             return self._one_reward (module, objects, parameters)
         return self._many_reward(module, objects, parameters)
 
@@ -20,7 +20,7 @@ class DynamicRewards(ImportRewards):
     
         
   
-    def _one_reward(self, objects, parameters):
+    def _one_reward_obj(self, objects, parameters):
         
         one_object = isinstance(objects, str)
         one_dict_parameters = isinstance(parameters, dict)
