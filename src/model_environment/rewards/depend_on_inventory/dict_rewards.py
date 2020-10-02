@@ -1,4 +1,4 @@
-from src.model_environment.rewards.node import DictNode
+from src.model_environment.rewards.dict_node import DictNode
 from src.model_environment.rewards.depend_on_inventory.reward import DependOnInventoryReward
 import numpy as np
 

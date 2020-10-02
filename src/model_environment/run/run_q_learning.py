@@ -26,12 +26,11 @@ class RunQlearningEnv(RunEnv):
         self.indexes_actions.save(action, self.states_actions.time, action_done, n_stocks, frac)
 
         price = self.states_actions.stock_price
-        current_profit = self.states_actions.profit
         time = self.states_actions.time
 
+        current_profit = self.states_actions.profit
         if not self.states_actions.terminal:
             self.states_actions.step()
-
         next_profit = self.states_actions.profit
 
         if action_done:

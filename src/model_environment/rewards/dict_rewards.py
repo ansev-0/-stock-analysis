@@ -1,6 +1,6 @@
 from src.model_environment.rewards.depend_on_inventory.dict_rewards import DictDependOnInventoryReward
 from src.model_environment.rewards.not_depend_on_inventory.dict_rewards import DictNotDependOnInventoryReward
-from src.model_environment.rewards.node import DictNode
+from src.model_environment.rewards.dict_node import DictNode
 
 class DictRewards(DictNode):
 
