@@ -44,7 +44,7 @@ class Reward:
 
     @property
     def rewardnode(self):
-        return self._rewardnode_profit
+        return self._rewardnode
 
     @rewardnode.setter
     def rewardnode(self, rewardnode):

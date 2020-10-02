@@ -20,8 +20,14 @@ class RunQlearningEnv(RunEnv):
         self.indexes_actions.save(action, self.states_actions.time, action_done, n_stocks, frac)
 
         price = self.states_actions.stock_price
-        profit = self.states_actions.profit
         time = self.states_actions.time
+        
+        if not self.states_actions.terminal:
+            self.states_actions.step()
+
+        profit = self.states_actions.profit
+
+
 
         if action_done:
             rewards = self.reward_action_done.reward(profit = profit, 
@@ -34,10 +40,7 @@ class RunQlearningEnv(RunEnv):
                                                          action=action, time=time,
                                                          price = price)
 
-        if not self.states_actions.terminal:
-            self.states_actions.step()
 
-        profit = self.states_actions.profit
 
         return rewards, (profit, income, self.states_actions.max_purchases(), \
             self.states_actions.max_sales())
