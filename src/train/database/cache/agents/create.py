@@ -1,4 +1,4 @@
-from src.train.database.chache.agents.agents import DataBaseAgentTrainCache
+from src.train.database.cache.agents.agents import DataBaseAgentTrainCache
 from src.tools.mongodb import encode_array_to_mongodb
 import pandas as pd
 import numpy as np
@@ -11,7 +11,7 @@ class CreateAgentTrainCache(DataBaseAgentTrainCache):
 
     def _get_next_id(self):
        ids = self._get_ids()
-       return self._next_id_from_not_empty(ids) if ids else 0
+       return int(self._next_id_from_not_empty(ids)) if ids else 0
        
     def _next_id_from_not_empty(self, ids):
         diff_arr = np.setdiff1d(range(len(ids)), ids)
@@ -22,7 +22,7 @@ class CreateAgentTrainCache(DataBaseAgentTrainCache):
                      self.collection.find({}, projection={'id' : 1}))
                 )
 
-    def __mapper_params(self, **kwargs):
+    def _mapper_params(self, **kwargs):
         return {key : self._encode(value) for key, value in kwargs.items()}
 
     @staticmethod
@@ -32,4 +32,3 @@ class CreateAgentTrainCache(DataBaseAgentTrainCache):
         elif isinstance(value, pd.Series):
             return value.to_dict()
         return value
-            
