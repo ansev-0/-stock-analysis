@@ -6,7 +6,8 @@ class BuildDictNode:
         for key, value in params.items():
             if key == 'rewardnode':
                 rewardnode = RewardNode(**value)
-            dict_params[key] = value
+            else:
+                dict_params[key] = value
         return dict_params, rewardnode
             
             
