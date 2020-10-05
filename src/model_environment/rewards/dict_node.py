@@ -12,8 +12,9 @@ class DictNode(dict, metaclass=ABCMeta):
     def _type_node(self):
         pass
 
-    def __init__(self, rewardnode=None):
+    def __init__(self, rewardnode=None, **kwargs):
         self.rewardnode = rewardnode
+        super().__init__(**kwargs)
 
     @property
     def rewardnode(self):
@@ -35,13 +36,16 @@ class DictNode(dict, metaclass=ABCMeta):
             raise TypeError(f'You must pass an instance of {valid_types}')
 
     def get_rewards(self, *args, **kwargs):
-        return {key : value.get_reward(*args, **kwargs) for key, value in self.items()} 
+        return {key : value.get_reward(*args, **kwargs) 
+                for key, value in self.items()} 
 
     def get_flatten_rewards(self, *args, **kwargs):
-        return tuple(value.get_reward(*args, **kwargs) for value in self.values())
+        return tuple(value.get_reward(*args, **kwargs) 
+                     for value in self.values())
 
     def total_rewards(self, *args, **kwargs):
-        return np.sum([reward.total_reward(*args, **kwargs) for reward in self.values()])
+        return np.sum([reward.total_reward(*args, **kwargs) 
+                       for reward in self.values()])
 
     
 
