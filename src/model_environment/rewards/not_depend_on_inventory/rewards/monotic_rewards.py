@@ -5,7 +5,13 @@ import pandas as pd
 
 class MonoticCumulativeRewards(NotDependOnInventoryReward):
 
-    def __init__(self, time_values, commision=None, gamma_pos_not_actions=1, rewardnode=None):
+    def __init__(self, 
+                 time_values=None,
+                 time_values_cache=None, 
+                 commision=None, 
+                 gamma_pos_not_actions=1, 
+                 rewardnode=None):
+                 
         super().__init__(rewardnode)
         self._mapper_action_rewards = None
         self._time_values = time_values
