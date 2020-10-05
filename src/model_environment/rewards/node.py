@@ -1,4 +1,4 @@
-from inspect import isfunction
+from src.model_environment.rewards.errors.node import check_valid_function, check_valid_parameter
 import numpy as np
 
 class RewardNode:
@@ -17,8 +17,9 @@ class RewardNode:
 
     @function.setter
     def function(self, function):
-        self._check_valid_function(function)
-        self._function = function if function is not None else lambda reward, *args, **kwargs: reward
+        check_valid_function(function)
+        self._function = function if function is not None else\
+             lambda reward, *args, **kwargs: reward
 
     @property
     def weight(self):
@@ -26,7 +27,7 @@ class RewardNode:
 
     @weight.setter
     def weight(self, weight):
-        self._check_valid_parameter(weight)
+        check_valid_parameter(weight)
         self._weight = weight
         
     @property
@@ -35,63 +36,5 @@ class RewardNode:
 
     @bias.setter
     def bias(self, bias):
-        self._check_valid_parameter(bias)
+        check_valid_parameter(bias)
         self._bias = bias
-
-
-    @staticmethod
-    def _check_valid_parameter(parameter):
-        if  not isinstance(parameter, float) and  not isinstance(parameter, int):
-            raise ValueError('You must pass int or float parameter')
-
-    @staticmethod
-    def _check_valid_function(function):
-        if  function is not None and  not isfunction(function):
-            raise ValueError('You must pass a instance of function')
-
-
-class DictNode(dict):
-
-    _type_node = None
-    def __init__(self, type_node, rewardnode=None):
-
-        self._type_node = type_node if isinstance(type_node, tuple) else (type_node, )
-        self.rewardnode = rewardnode
-
-    @property
-    def rewardnode(self):
-        return self._rewardnode
-
-    @rewardnode.setter
-    def rewardnode(self, rewardnode):
-        self._check_valid_rewardnode(rewardnode)
-        self._rewardnode = rewardnode if rewardnode is not None else RewardNode()
-
-    def __setitem__(self, reward_name, reward):
-
-        if np.any([isinstance(reward, type_node) for type_node in  self._type_node]):
-            super().__setitem__(reward_name, reward)
-
-        else:
-            valid_types = ' or '.join(map(str, self._type_node))
-            raise TypeError(f'You must pass an instance of {valid_types}')
-
-    def get_rewards(self, *args, **kwargs):
-        return {key : value.get_reward(*args, **kwargs) for key, value in self.items()} 
-
-    def get_flatten_rewards(self, *args, **kwargs):
-        return tuple(value.get_reward(*args, **kwargs) for value in self.values())
-
-    def total_rewards(self, *args, **kwargs):
-        return np.sum([reward.total_reward(*args, **kwargs) for reward in self.values()])
-
-    
-
-    @staticmethod
-    def _check_valid_rewardnode(rewardnode):
-        if  rewardnode is not None and  not isinstance(rewardnode, RewardNode):
-            raise ValueError(f'You must pass a instance of {RewardNode}')
-
-
-
-
