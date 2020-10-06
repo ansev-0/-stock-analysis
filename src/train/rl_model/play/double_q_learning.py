@@ -41,13 +41,10 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
         self.states_env.reset()
 
 
-
-
     def choose_action(self, current_states, random_probability):
         return self._random_choice() if np.random.random() < random_probability \
             else self._agent_choose_action(current_states)
 
-    # private errors methods
 
     def _current_state(self):
         return self.states_price[self.env.states_actions.time], self.states_env.values
@@ -61,7 +58,10 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
     def _random_choice(self):
         return np.random.choice(self.env.action_spaces)
 
-    def _verify_errors(self, shape):
+
+    #check private methods
+
+    def _verify_errors(self):
         self._check_is_array()
         shape = self.states_price.shape
         self._check_number_samples(shape[0])
@@ -82,9 +82,6 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
     def _check_is_array(self):
         if not isinstance(self.states_price, np.ndarray):
             raise ValueError('You must pass a instance of np.ndarray')
-
-
-
 
 class PlayAndRememberDoubleQlearning(PlayDoubleQlearning):
 
@@ -131,7 +128,7 @@ class PlayValidationDoubleQlearning(PlayDoubleQlearning):
         self.reset()
         current_state = self._current_state()
 
-        for step in range(len(self.env.states_actions.time_serie)):
+        for _ in range(len(self.env.states_actions.time_serie)):
             #choose action
             action = self.choose_action(current_state, 
                                         random_probability)

@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 class TimeActions:
     def __init__(self):
         self._timeactions = None
@@ -12,6 +13,7 @@ class TimeActions:
 
         if (n_stocks is None and frac is None) or (n_stocks and frac):
             raise ValueError('You must pass n_stocks or frac parameters')
+        
         if action == 'no_action':
             key = action 
         else:

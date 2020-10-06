@@ -65,3 +65,9 @@ class DataBaseAdminModelResults(DataBase):
     '''
     pass
 
+class DataBaseAdminTrainCache(DataBase):
+    '''
+    This class is used to create the client related to the cache train.
+    '''
+    pass
+
