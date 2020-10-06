@@ -1,20 +1,33 @@
+from src.train.database.cache.agents.find import FindAgentTrainCache
+import pandas as pd
 
 class States:
 
+    def __init__(self, init_n_stocks, init_money, commision, time_serie=None, id_cache=None):
 
-    def __init__(self, time_serie, init_n_stocks, init_money, commision):
-
-        self.time_serie = time_serie
         self.n_stocks = None
         self.money = None
         self.time = None
         self.terminal = False
+        self._id_cache = id_cache
+        self._time_serie = self._init_time_serie(time_serie)
         self.init_n_stocks = init_n_stocks
         self.init_money = init_money
         self.commision = commision
-        
-
         self.reset()
+
+    @property
+    def id_cache(self):
+        return self._id_cache
+
+    @property
+    def time_serie(self):
+        return self._time_serie
+
+    @time_serie.setter
+    def time_serie(self, time_serie):
+        self._time_serie = time_serie
+        self.reset_time()
 
     @property
     def init_stock_price(self):
@@ -67,6 +80,18 @@ class States:
         self.reset_money()
         self.reset_n_stocks()
         self.reset_time()
+
+    def _init_time_serie(self, time_serie):
+
+        if self._id_cache is not None:
+            return pd.Series(FindAgentTrainCache().\
+                find_by_id(self._id_cache, 
+                           projection = {'time_series' : True,
+                                         '_id' : False})['time_series'])
+        elif time_serie is not None:
+            return time_serie
+
+        raise ValueError('You must pass time_series or id_cache parameters')
     
 
 

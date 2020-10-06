@@ -5,7 +5,7 @@ from functools import wraps
 
 class EmbedTimeSeries:
 
-    def __init__(self, embed_dim=None, lag=0, step=1):
+    def __init__(self, embed_dim=None, lag=1, step=1):
         self.step=step
         self.lag = lag
         self.embed_dim = embed_dim
@@ -24,7 +24,7 @@ class EmbedTimeSeries:
         self._min_len = (self._embed_dim - 1) * self.lag + 1
 
 
-    def embed(self, data, ndmin=None, pos_add_dims='right'):
+    def __call__(self, data, ndmin=None, pos_add_dims='right'):
         len_data = data.shape[0]
         data = np.asarray(data)
         len_start_index = len_data - self._min_len + 1

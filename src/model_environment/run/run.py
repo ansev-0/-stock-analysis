@@ -32,6 +32,12 @@ class OutputModelActionAdapter:
     def __init__(self, load_default=True):
         self._adapter = self._load_default_actions() if load_default else {}
 
+    @property
+    def n_actions(self):
+        return len(self._adapter)
+
+    def __str__(self):
+        return self._adapter
 
     def __call__(self):
         return self._adapter
