@@ -7,7 +7,7 @@ import pandas as pd
 class MonoticCumulativeRewards(NotDependOnInventoryReward):
 
     def __init__(self, 
-                 values_to_make_reward=None,
+                 time_values=None,
                  id_cache=None, 
                  commision=None, 
                  gamma_pos_not_actions=1, 
@@ -16,7 +16,7 @@ class MonoticCumulativeRewards(NotDependOnInventoryReward):
         super().__init__(rewardnode)
         self._id_cache = id_cache
         self._mapper_action_rewards = None
-        self._values_to_make_reward = self._init_values_to_make_reward(values_to_make_reward)
+        self._time_values = self._init_time_values(time_values)
         self._commision = commision
         self._gamma_pos_not_actions = gamma_pos_not_actions
         self._get_mapper_action_rewards()
@@ -30,12 +30,12 @@ class MonoticCumulativeRewards(NotDependOnInventoryReward):
         return self._mapper_action_rewards
 
     @property
-    def values_to_make_reward(self):
-        return self._values_to_make_reward
+    def time_values(self):
+        return self._time_values
 
-    @values_to_make_reward.setter
-    def values_to_make_reward(self, values_to_make_reward):
-        self._values_to_make_reward = values_to_make_reward
+    @time_values.setter
+    def time_values(self, time_values):
+        self._time_values = time_values
         self._get_mapper_action_rewards()
 
     @property
@@ -58,7 +58,7 @@ class MonoticCumulativeRewards(NotDependOnInventoryReward):
 
     def _get_mapper_action_rewards(self):
 
-        diff = self.values_to_make_reward.diff(-1)
+        diff = self.time_values.diff(-1)
         blocks = monotic_blocks(diff, diff_serie=True)
         sell = diff[::-1].groupby(blocks, sort=False).cumsum()[::-1].dropna().rename('sell_rewards')
         buy = sell.mul(-1).dropna().rename('buy_rewards')
@@ -79,18 +79,18 @@ class MonoticCumulativeRewards(NotDependOnInventoryReward):
         return dict(zip(('no_action', 'sell', 'buy'),
                         args))
 
-    def _init_values_to_make_reward(self, values_to_make_reward):
+    def _init_time_values(self, time_values):
 
         if self._id_cache is not None:
             return pd.Series(FindAgentTrainCache().\
                 find_by_id(self._id_cache, 
-                           projection = {'values_to_make_reward' : True,
-                                         '_id' : False})['values_to_make_reward'])
+                           projection = {'time_values' : True,
+                                         '_id' : False})['time_values'])
 
-        elif values_to_make_reward is not None:
-            return values_to_make_reward
+        elif time_values is not None:
+            return time_values
 
-        raise ValueError('You must pass values_to_make_reward or id_cache parameters')
+        raise ValueError('You must pass time_values or id_cache parameters')
 
 class MonoticCumulativeRewardsNotAction(MonoticCumulativeRewards):
     def get_reward(self, action, time, *args):

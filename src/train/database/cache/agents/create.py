@@ -6,8 +6,10 @@ import numpy as np
 class CreateAgentTrainCache(DataBaseAgentTrainCache):
 
     def __call__(self, **kwargs):
-        return self.collection.insert_one({'_id' : self._get_next_id(),
-                                           **self._mapper_params(**kwargs)})
+        next_id = self._get_next_id()
+        return next_id , \
+            self.collection.insert_one({'_id' : next_id,
+                                        **self._mapper_params(**kwargs)})
 
     def _get_next_id(self):
        ids = self._get_ids()

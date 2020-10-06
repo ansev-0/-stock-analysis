@@ -1,2 +1,0 @@
-class ScalersModel(dict):
-    pass
