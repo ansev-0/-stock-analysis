@@ -1,4 +1,4 @@
-from src.model_environment.rewards.dynamic.rewards import DynamicRewards
+from src.model_environment.rewards.dynamic.builder_one_reward import DynamicRewards
 from src.tools.importer import importer
 from src.tools.reduce_tools import combine_dicts
 from src.model_environment.rewards.dynamic.build_dict_node import BuildDictNode
