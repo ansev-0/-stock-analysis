@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from src.model_environment.rewards.dynamic.rewards import DynamicRewards
+=======
+from src.model_environment.rewards.dynamic.builder_one_reward import DynamicRewards
+>>>>>>> ee145a6a2fdce0a7c8f4eea604abe763799e0474
 from src.tools.importer import importer
 from src.tools.reduce_tools import combine_dicts
 from src.model_environment.rewards.dynamic.build_dict_node import BuildDictNode
@@ -35,6 +39,10 @@ class DynamicDictNodeBuilder(BuildDictNode):
     def build(self, module_obj_dict):
         params, rewardnode = self.decode_node_params(**module_obj_dict)
         return self.dict_node_class(
+<<<<<<< HEAD
+=======
+            rewardnode=rewardnode, 
+>>>>>>> ee145a6a2fdce0a7c8f4eea604abe763799e0474
             **combine_dicts(*self._dynamic_reward.\
                             from_many_modules(params).values())
         )
