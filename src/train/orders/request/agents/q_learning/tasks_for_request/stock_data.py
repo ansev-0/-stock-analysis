@@ -4,13 +4,13 @@ from src.train.database.cache.agents.create import CreateAgentTrainCache
 import pandas as pd
 import numpy as np
 
-class TaskStockData:
+class StockDataTask:
 
     _reader = StockDataFromDataBase.dailyadj_dataframe()
 
-    def __call__(self, stock_name, train_limits, validation_limits, delays):
+    def __call__(self, stock_name, data_train_limits, data_validation_limits, delays):
         return self._to_cache(
-            self._data_preparation(stock_name, train_limits, validation_limits, delays)
+            self._data_preparation(stock_name, data_train_limits, data_validation_limits, delays)
         )
 
     def get_features(self, df):
@@ -18,11 +18,11 @@ class TaskStockData:
         return df.assign(weekday = df.index.weekday, dayofyear = df.index.dayofyear).loc[:, features]
 
 
-    def _data_preparation(self, stock_name, train_limits, validation_limits, delays):
+    def _data_preparation(self, stock_name, data_train_limits, data_validation_limits, delays):
 
         #get limits
-        init_train_date, end_train_date = self._limits_to_datetime(train_limits)
-        init_validation_date, end_validation_date = self._limits_to_datetime(validation_limits)
+        init_train_date, end_train_date = self._limits_to_datetime(data_train_limits)
+        init_validation_date, end_validation_date = self._limits_to_datetime(data_validation_limits)
         #get data
         train_dates = self._reader.get(stock_name, init_train_date, end_train_date)
         validation_dates = self._reader.get(stock_name, init_validation_date, end_validation_date)

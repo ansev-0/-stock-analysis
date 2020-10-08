@@ -1,5 +1,5 @@
-from src.models.database.agents.agents import DataBaseOneAgent
-from src.models.database.update import UpdateValidFieldsDocumentDB
+from src.train.orders.database.agents.agents import DataBaseOneAgent
+from src.train.orders.database.update import UpdateValidFieldsDocumentDB
 
 class UpdateAgentTrainStatus(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
 

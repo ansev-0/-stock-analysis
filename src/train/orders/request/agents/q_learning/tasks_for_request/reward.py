@@ -1,4 +1,4 @@
-class TaskReward:
+class RewardTask:
 
     def __call__(self, params_dict, id_cache):
         #get copy

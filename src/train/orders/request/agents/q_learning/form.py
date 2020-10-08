@@ -1,8 +1,9 @@
 class FormQlearning(dict):
 
-    _valid_fields = ('based_on', 'stock_name', 'delays', 
+    _valid_fields = ('stock_name', 'delays', 'based_on', 'json_architecture', 
                      'data_train_limits', 'data_validation_limits', 
-                     'rewards', 'rewards_not_done', 'states_actions_parameters', 
+                     'rewards', 'rewards_not_done', 
+                     'train_states_actions', 'validation_states_actions', 
                      'actions', 'conf_train_parameters', 'call_train_parameters')
 
     def __init__(self, **kwargs):

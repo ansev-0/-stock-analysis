@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractproperty
-
 from src.tools.filter import filter_dict
 
 class UpdateValidFieldsDocumentDB(metaclass=ABCMeta):
@@ -11,7 +10,6 @@ class UpdateValidFieldsDocumentDB(metaclass=ABCMeta):
     @abstractproperty
     def valid_fields(self):
         pass
-
 
     def update_many(self, where, data, **kwargs):
         return self.collection.update_many(where, 
@@ -25,5 +23,3 @@ class UpdateValidFieldsDocumentDB(metaclass=ABCMeta):
 
     def _update_dict(self, data):
         return {'$set' : filter_dict(data, self.valid_fields)}
-
-

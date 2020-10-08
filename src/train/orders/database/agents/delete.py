@@ -1,4 +1,4 @@
-from src.models.database.agents.agents import DataBaseOneAgent
+from src.train.orders.database.agents.agents import DataBaseOneAgent
 
 class DeleteTrainAgent(DataBaseOneAgent):
 
