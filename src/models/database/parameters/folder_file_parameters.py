@@ -10,7 +10,6 @@ class FolderProperties:
         self._ext = ext
         self._base_name = base_name
         self._check_only_elements_ext()
-
         
     @property
     def path(self):
@@ -31,7 +30,6 @@ class FolderProperties:
     @property
     def n_elements(self):
         return len(self.elements)
-    
         
     @property
     def number_next_element(self):
@@ -40,7 +38,7 @@ class FolderProperties:
 
     @property   
     def name_next_element(self):
-        return f'{self._base_name}_{self.number_next_element}{self._ext}'
+        return os.path.join(self._path, f'{self._base_name}_{self.number_next_element}{self._ext}')
     
     @property
     def total_size(self):
@@ -58,7 +56,7 @@ class FolderProperties:
     def _calculate_next_element(self, n_files):
         diff = np.setdiff1d(
                             range(n_files), 
-                            tuple(map(self._extract_number, os.listdir(self._path)))
+                            tuple(map(self._extract_number, self.elements))
         )
         return n_files if len(diff) == 0 else diff[0]
     

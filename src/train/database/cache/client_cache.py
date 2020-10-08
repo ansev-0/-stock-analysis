@@ -1,6 +1,6 @@
-from src.database.database import DataBaseAdminTrainCache
+from src.database.database import DataBaseAdminTrain
 
-class DataBaseTrainCache(DataBaseAdminTrainCache):
+class DataBaseTrainCache(DataBaseAdminTrain):
 
     def __init__(self, type_train):
         super().__init__('train_cache')

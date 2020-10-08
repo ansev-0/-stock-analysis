@@ -11,6 +11,7 @@ class PathModels:
             try:
                 original_umask = os.umask(0o777)
                 os.makedirs(path)
+                os.chmod(path, 0o777)
 
             finally:
                 os.umask(original_umask)

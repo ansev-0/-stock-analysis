@@ -12,7 +12,7 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                  mem_size, 
                  file_model, 
                  interface_epoch_train=None, 
-                 interface_epoch_validation = None):
+                 interface_epoch_validation=None):
         
         self._gamma = gamma
         self._interface_epoch_train = interface_epoch_train
@@ -76,19 +76,22 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
 
     def _epochs(self, epochs, sort, replace, freq_update, validation_random, *args, **kwargs):
         for epoch in range(1, epochs+1):  
-            #train epoch
-            self._train(self.epsilon_decay.epsilon, 
-                        sort, 
-                        replace, 
-                        *args, 
-                        **kwargs)
-            #update q network target
+            # train epoch
+            fit_result = self._train(self.epsilon_decay.epsilon, 
+                                     sort, 
+                                     replace, 
+                                     *args, 
+                                     **kwargs)
+            # update q network target
             if (epoch-1) % freq_update == 0:
                 self.update_q_target() 
 
-            #validation epoch
+            # validation epoch
             self._validation_func(self.epsilon_decay.epsilon 
-                                  if validation_random else 1)               
+                                  if validation_random else 1)    
+            # interface epoch
+            self._push_interface_epoch(fit_result, epoch)
+            # step epsilon
             self._epsilon_decay.step()
 
     def _reset_agent(self):
@@ -100,28 +103,16 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         #agent play
         self._agent_training.play(random_probability)
         # replay sample of experience
-        memory = self._agent_training.memory.sample_buffer(self._batch_learn_size,
+        memory = self._tuple_mem_features(
+            self._agent_training.memory.sample_buffer(self._batch_learn_size,
                                                            sort=sort, 
                                                            replace=replace)
-        memory = self._tuple_mem_features(memory)
+        )
         # agent learn
-        result_fit = self.learn(memory, *args, **kwargs)
-        try:
-            self._interface_epoch_train.get(self._q_eval,
-                                            self._agent_training.env,
-                                            self._agent_training.states_env,
-                                            result_fit)
-        except Exception: 
-            pass
+        return self.learn(memory, *args, **kwargs)
 
     def _validation(self, *args):
         self._validation_agent.play(*args)
-        try:
-            self._interface_epoch_validation.get(self._q_eval,
-                                                 self._validation_agent.env,
-                                                 self._validation_agent.states_env)
-        except Exception:
-            pass
 
     def _set_validation_func(self, validation_data, env_validation):
         if validation_data is not None and env_validation is not None:
@@ -130,6 +121,21 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                                                                    states_price=validation_data)
             self._validation_func = self._validation
         self._validation_func = lambda probability, *args, **kwargs: None
+
+    def _push_interface_epoch(self, fit_result, epoch):
+        try:
+            self._interface_epoch_train.get(epoch,
+                                            self._q_eval,
+                                            self._agent_training.env,
+                                            self._agent_training.states_env,
+                                            fit_result)
+
+            self._interface_epoch_validation.get(epoch,
+                                                 self._q_eval,
+                                                 self._validation_agent.env,
+                                                 self._validation_agent.states_env)
+        except Exception: 
+            pass
 
     @staticmethod
     def _tuple_mem_features(memory):

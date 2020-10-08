@@ -9,4 +9,15 @@ class Interface(metaclass=ABCMeta):
     def get(self):
         pass
 
-    
+    @abstractproperty
+    def channels(self):
+        pass
+
+    @abstractproperty
+    def source_data(self):
+        pass
+
+    @staticmethod
+    def _get_channel_inputs(channel):
+        return channel.__call__.__code__.co_varnames[1:]
+

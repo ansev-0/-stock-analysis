@@ -13,7 +13,7 @@ class StockDataTask:
             self._data_preparation(stock_name, data_train_limits, data_validation_limits, delays)
         )
 
-    def get_features(self, df):
+    def _get_features(self, df):
         features = ['weekday', 'dayofyear', 'open', 'high', 'low', 'close', 'volume']
         return df.assign(weekday = df.index.weekday, dayofyear = df.index.dayofyear).loc[:, features]
 
@@ -56,5 +56,5 @@ class StockDataTask:
                                   )
                               )
                       )
-        ids.append(id)
+            ids.append(id)
         return  tuple(ids)

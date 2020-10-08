@@ -1,6 +1,6 @@
-from src.database.database import DataBaseAdminModels
+from src.database.database import DataBaseAdminTrain
 
-class DataBaseAgents(DataBaseAdminModels):
+class DataBaseAgents(DataBaseAdminTrain):
 
     def __init__(self):
         super().__init__('agents')

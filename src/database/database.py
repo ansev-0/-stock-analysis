@@ -52,22 +52,3 @@ class DataBaseAdminModels(DataBase):
     '''
     pass
 
-class DataBaseAdminModelFeatures(DataBase):
-    '''
-    This class is used to create the client related to the type models.
-    '''
-    pass
-
-
-class DataBaseAdminModelResults(DataBase):
-    '''
-    This class is used to create the client related to the model results.
-    '''
-    pass
-
-class DataBaseAdminTrainCache(DataBase):
-    '''
-    This class is used to create the client related to the cache train.
-    '''
-    pass
-

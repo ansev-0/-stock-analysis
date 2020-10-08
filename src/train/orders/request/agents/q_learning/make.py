@@ -1,6 +1,5 @@
 #tasks objects
 from src.train.orders.request.agents.q_learning.tasks_for_request.based_on import BasedOnTask
-from src.train.orders.request.agents.q_learning.tasks_for_request.dates_limits import DatesLimitsTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.id import IdTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.path import PathTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.reward import RewardTask
@@ -18,7 +17,7 @@ class MakeQlearningRequest:
         #get valid form
         form = FormQlearning(**form_dict)
         valid_form_dict = self._form_making_tasks(form)
-        return CreateTrainOrderAgent(form['stock_name'])(self._form_to_db_dict(valid_form_dict))
+        return CreateTrainOrderAgent(form['stock_name'])(**self._form_to_db_dict(valid_form_dict))
 
     def _form_making_tasks(self, form):
 
@@ -26,9 +25,9 @@ class MakeQlearningRequest:
         StockNameTask()(form['stock_name'])
         cache_id_train, cache_id_val = StockDataTask()\
             (
-             {key : value for key, value in form.items()
-              if key in ('stock_name', 'data_train_limits',
-                         'data_validation_limits', 'delays')}
+             **{key : value for key, value in form.items()
+                if key in ('stock_name', 'data_train_limits',
+                           'data_validation_limits', 'delays')}
             )
         # reward task
         form['rewards'] = RewardTask()(form['rewards'], cache_id_train)
@@ -37,7 +36,10 @@ class MakeQlearningRequest:
         form['train_states_actions'] = StatesActionParametersTask()(form['train_states_actions'],
                                                                     cache_id_train)
         form['validation_states_actions'] = StatesActionParametersTask()(form['train_states_actions'], 
-                                                                         cache_id_val)
+                                                                       cache_id_val)
+        form['based_on'] = BasedOnTask()(form['based_on'])
+        form['path'] = PathTask()(form['stock_name'])
+        form['_id'] = IdTask()()
         return form
 
 

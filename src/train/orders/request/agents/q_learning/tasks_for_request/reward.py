@@ -20,6 +20,12 @@ class RewardTask:
 
     def _update_not_depend_inventory_dict(self, not_depend_on_inventory_dict, id_cache):
         for module, objects in not_depend_on_inventory_dict.items():
-            for name_object, params_obj in objects.items():
-                params_obj = dict(params_obj, **{'id_cache' : id_cache})
+            if module != 'rewardnode':
+                self._modify_rewards(objects, id_cache)
         return not_depend_on_inventory_dict
+
+    @staticmethod
+    def _modify_rewards(objects, id_cache):
+        for name_object, params_obj in objects.items():
+                objects[name_object] = dict(params_obj, **{'id_cache' : id_cache})
+        return objects
