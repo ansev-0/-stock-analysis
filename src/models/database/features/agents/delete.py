@@ -1,4 +1,4 @@
-from src.models.database.features.client import DataBaseFeatureModels
+from src.models.database.features.agents.client import DataBaseFeatureModels
 
 class DeleteFeaturesModel(DataBaseFeatureModels):
 

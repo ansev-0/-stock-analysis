@@ -1,5 +1,5 @@
-from src.models.database.features.client import DataBaseFeatureModels
-from src.models.database.features.form import FormFeatures
+from src.models.database.features.agents.client import DataBaseFeatureModels
+from src.models.database.features.agents.form import FormFeatures
 
 class CreateFeaturesModel(DataBaseFeatureModels):
 
