@@ -17,3 +17,4 @@ class RegisterAgent:
         path = self._folder_of_folder.next_file
         keras_model.save(path)
         return path, self._register_in_db.from_keras_model(keras_model, path)
+        

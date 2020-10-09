@@ -5,7 +5,7 @@ class CreateFeaturesModel(DataBaseFeatureModels):
 
     def from_dict(self, dict_features):
         form = FormFeatures(**dict_features)
-        return self._insert(form)
+        return self._insert(form.copy())
 
     def from_keys(self, json_description, path_random_model):
         form = FormFeatures(
@@ -16,7 +16,7 @@ class CreateFeaturesModel(DataBaseFeatureModels):
                    )
             )
         )
-        return self._insert(form)
+        return self._insert(form.copy())
 
     def from_keras_model(self, model, path_random_model):
         return self.from_keys(model.to_json(), path_random_model)
