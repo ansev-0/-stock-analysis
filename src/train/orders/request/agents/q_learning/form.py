@@ -4,8 +4,9 @@ class FormQlearning(dict):
                      'data_train_limits', 'data_validation_limits', 
                      'rewards', 'rewards_not_done', 
                      'train_states_actions', 'validation_states_actions', 
-                     'actions', 'conf_train_parameters', 'call_train_parameters', 
-                     'path')
+                     'actions', 'interface_epoch_train', 'interface_epoch_validaiton',
+                     'conf_train_parameters', 'call_train_parameters', 
+                     'path', 'id_cache_train', 'id_cache_validation')
 
     def __init__(self, **kwargs):
 

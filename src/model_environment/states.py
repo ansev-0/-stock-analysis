@@ -87,7 +87,7 @@ class States:
             return pd.Series(FindAgentTrainCache().\
                 find_by_id(self._id_cache, 
                            projection = {'time_series' : True,
-                                         '_id' : False})['time_series'])
+                                         '_id' : False})['time_series'])[:-1]
         elif time_serie is not None:
             return time_serie
 

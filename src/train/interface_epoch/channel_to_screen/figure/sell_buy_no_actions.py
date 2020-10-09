@@ -19,4 +19,4 @@ class SellBuyNoActionsOPerationsFigure:
         return pd.Series(FindAgentTrainCache().\
                 find_by_id(id_cache, 
                            projection = {'time_values' : True,
-                                         '_id' : False})['time_values'])
+                                         '_id' : False})['time_values'])[:-1]
