@@ -1,4 +1,4 @@
-from src.train.database.chache.agents.agents import DataBaseAgentTrainCache
+from src.train.database.cache.agents.agents import DataBaseAgentTrainCache
 
 class RemoveAgentTrainCache(DataBaseAgentTrainCache):
 

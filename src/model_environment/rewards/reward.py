@@ -1,4 +1,3 @@
-
 from src.model_environment.rewards.node import RewardNode
 from src.model_environment.rewards.dict_rewards import DictRewards
 from src.model_environment.rewards.errors.is_node import check_valid_rewardnode

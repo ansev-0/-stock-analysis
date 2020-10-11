@@ -1,12 +1,12 @@
 class FormQlearning(dict):
 
-    _valid_fields = ('_id', 'stock_name', 'delays', 'based_on', 'json_architecture', 
+    _valid_fields = ('_id', 'stock_name', 'delays', 'based_on', 
                      'data_train_limits', 'data_validation_limits', 
                      'rewards', 'rewards_not_done', 
                      'train_states_actions', 'validation_states_actions', 
-                     'actions', 'interface_epoch_train', 'interface_epoch_validaiton',
-                     'conf_train_parameters', 'call_train_parameters', 
-                     'path', 'id_cache_train', 'id_cache_validation')
+                     'actions',
+                     'conf_build_agent', 'conf_call_agent', 
+                     'path', 'cache_id_train', 'cache_id_validation')
 
     def __init__(self, **kwargs):
 

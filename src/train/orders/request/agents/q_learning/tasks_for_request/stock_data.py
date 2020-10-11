@@ -1,6 +1,7 @@
 from src.read_database.stock_data import StockDataFromDataBase
 from src.data_preparation.tools.expand.embedding import EmbedTimeSeries
 from src.train.database.cache.agents.create import CreateAgentTrainCache
+from src.train.database.cache.agents.delete import RemoveAgentTrainCache
 import pandas as pd
 import numpy as np
 
@@ -58,3 +59,7 @@ class StockDataTask:
                       )
             ids.append(id)
         return  tuple(ids)
+
+
+    def remove(self, id_cache):
+        return RemoveAgentTrainCache().delete_id(id_cache)
