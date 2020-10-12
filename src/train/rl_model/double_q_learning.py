@@ -8,17 +8,13 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
     def __init__(self, 
                  gamma,
                  epsilon_decay,
-                 batch_learn_size, 
-                 mem_size, 
                  file_model, 
                  interface_epoch_train=None, 
                  interface_epoch_validation=None):
         
         self._gamma = gamma
-        self._interface_epoch_train = interface_epoch_train
-        self._interface_epoch_validation = interface_epoch_validation
-        self._mem_size = mem_size
-        self._batch_learn_size = batch_learn_size
+        self._interface_epoch_train = self._get_interface(interface_epoch_train)
+        self._interface_epoch_validation = self._get_interface(interface_epoch_validation)
         self._epsilon_decay = epsilon_decay
         self._q_target = load_model(file_model)
         self._q_eval = load_model(file_model)
@@ -29,14 +25,6 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
     @property
     def gamma(self):
         return self._gamma
-
-    @property
-    def mem_size(self):
-        return self._mem_size
-
-    @property
-    def batch_learn_size(self):
-        return self._batch_learn_size
 
     @property
     def epsilon_decay(self):
@@ -54,6 +42,8 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
               epochs,
               train_data, 
               env_train, 
+              mem_size=None,
+              batch_learn_size=None,
               validation_data=None, 
               env_validation=None, 
               freq_update=1, 
@@ -63,8 +53,10 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
               *args, 
               **kwargs):
 
+        mem_size = train_data.shape[0] - 1 if mem_size is not None else mem_size
+        self._batch_learn_size = train_data.shape[0] - 1 if batch_learn_size is not None else mem_size
         self._epsilon_decay.reset()
-        self._agent_training = PlayAndRememberDoubleQlearning(mem_size=self._mem_size, 
+        self._agent_training = PlayAndRememberDoubleQlearning(mem_size=mem_size, 
                                                                q_eval=self.q_eval, env=env_train,
                                                                states_price=train_data)
         #set validation func
@@ -123,22 +115,33 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         self._validation_func = lambda probability, *args, **kwargs: None
 
     def _push_interface_epoch(self, fit_result, epoch):
-        try:
-            self._interface_epoch_train.get(epoch,
-                                            self._q_eval,
-                                            self._agent_training.env,
-                                            self._agent_training.states_env,
-                                            fit_result)
 
-            self._interface_epoch_validation.get(epoch,
-                                                 self._q_eval,
-                                                 self._validation_agent.env,
-                                                 self._validation_agent.states_env)
-        except Exception: 
-            pass
+        for interface_epoch in self._interface_epoch_train:
+            try:
+                interface_epoch.get(epoch,
+                                    self._q_eval,
+                                    self._agent_training.env,
+                                    self._agent_training.states_env,
+                                    fit_result)
+            except Exception: 
+                pass
+
+            for interface_epoch in self._interface_epoch_validation:
+                try:
+                    interface_epoch.get(epoch,
+                                        self._q_eval,
+                                        self._validation_agent.env,
+                                        self._validation_agent.states_env)
+                except Exception: 
+                    pass
 
     @staticmethod
     def _tuple_mem_features(memory):
         return tuple(list(mem.values()) if isinstance(mem, dict) 
                      else mem 
                      for mem in memory)
+    @staticmethod
+    def _get_interface(interface):
+        if interface is not None and not isinstance(interface, tuple) and not isinstance(interface, list):
+            return (interface, )
+        return interface
