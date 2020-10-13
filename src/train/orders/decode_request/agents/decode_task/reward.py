@@ -1,4 +1,4 @@
-from src.dynamic.reward import BuilderReward
+from src.model_environment.rewards.dynamic.reward import BuilderReward
 
 class DecodeRewardTask:
     _reward_builder = BuilderReward()

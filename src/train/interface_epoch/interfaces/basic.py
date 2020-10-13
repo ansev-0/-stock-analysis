@@ -39,6 +39,6 @@ class BasicInterface(Interface):
         for name, channel in self._channels.items():
             channel(**{name_input : inpt 
                        for name_input, inpt in d_inputs.items()
-                       if name_input in self._input_channels[name]})
+                       if name_input in self._inputs_channels[name]})
 
     

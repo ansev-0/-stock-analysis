@@ -10,10 +10,10 @@ class BuilderDictRewards(BuildDictNode):
     def __call__(self, dict_to_build):
         params, rewardnode = self.decode_node_params(**dict_to_build)
         return DictRewards(
+
             rewardnode=rewardnode, 
-            **combine_dicts(*tuple(
-                DynamicDictNodeBuilder(type_reward).build(module_obj_dict) 
-                for type_reward, module_obj_dict in params.items()
-                                  )
-                           )
+            **{type_reward : DynamicDictNodeBuilder(type_reward).build(module_obj_dict)
+                for type_reward, module_obj_dict in params.items()}
         )
+                           
+

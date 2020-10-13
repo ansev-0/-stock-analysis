@@ -8,7 +8,7 @@ class FindAgentTrainCache(DataBaseAgentTrainCache):
         return self.collection.find_one(**kwargs)
 
     def find_many(self, **kwargs):
-        return self.collection.find_many(**kwargs)
+        return self.collection.find(**kwargs)
 
-    def find_by_id(self, id, **kwargs):
-        return self.collection.find_one({'_id' : id}, **kwargs)
+    def find_by_id(self, cache_id, **kwargs):
+        return self.collection.find_one({'_id' : cache_id}, **kwargs)

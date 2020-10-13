@@ -10,7 +10,7 @@ class DynamicNode(RewardNode):
         return getattr(node_functions, name)
 
     def _modify_function(self, **kwargs):
-        for key, value in kwargs:
+        for key, value in kwargs.items():
             if key == 'function':
-                kwargs[key] = self.get_function(key)
+                kwargs[key] = self.get_function(value)
         return kwargs

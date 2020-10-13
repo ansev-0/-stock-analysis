@@ -72,7 +72,7 @@ class RunQlearningEnv(RunEnv):
 class RunEnvAdaptQlearningModel(RunQlearningEnv):
 
     def __init__(self, adapter, *args, **kwargs):
-        self.adapter = adapter
+        self.adapter = adapter()
         self.action_spaces = list(self.adapter)
         super().__init__(*args, **kwargs)
 

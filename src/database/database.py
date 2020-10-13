@@ -6,7 +6,7 @@ class DataBase:
     '''
     
     def __init_subclass__(cls):
-        cls._client = MongoClient('192.168.1.37', port=27017)
+        cls._client = MongoClient(port=27017)
         
     def __init__(self, database_name):
         try:

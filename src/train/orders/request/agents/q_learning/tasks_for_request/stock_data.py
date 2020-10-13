@@ -53,7 +53,7 @@ class StockDataTask:
         for i, type_to in enumerate(('train', 'validation')):
             id, _ = create_obj(**dict(
                                zip(('time_values', 'sequences'), 
-                                  (data_prep_result[i].tolist(), data_prep_result[i+2])
+                                  (data_prep_result[i].rename(str).to_dict(), data_prep_result[i+2])
                                   )
                               )
                       )

@@ -1,4 +1,5 @@
 from src.tools.importer import importer
+from src.tools.reduce_tools import flatten_adding
 
 class ImportInterfaces:
 
@@ -9,6 +10,9 @@ class ImportInterfaces:
 
     def _import_module(self, module):
         return importer(self._join_module(module))
+
+    def  _join_module(self, module):
+        return f'{self.base_package}.{module}'
 
 class DynamicInterface(ImportInterfaces):
 
@@ -22,15 +26,15 @@ class DynamicInterface(ImportInterfaces):
 
     def flatten_interfaces(self, module_objects_dict):
 
-        return [self._build_flatten_objects_from_module(name_module, objects)
-                for name_module, objects in module_objects_dict.items()]
+        return flatten_adding([self._build_flatten_objects_from_module(name_module, objects)
+                for name_module, objects in module_objects_dict.items()])
 
     def _build_objects_from_module(self, name_module, objects):
-        module = self._import_module(module)
+        module = self._import_module(name_module)
         return {name_object : getattr(module, name_object)(**parameters)
                 for name_object, parameters in objects.items()}
 
     def _build_flatten_objects_from_module(self, name_module, objects):
-        module = self._import_module(module)
+        module = self._import_module(name_module)
         return [getattr(module, name_object)(**parameters)
                 for name_object, parameters in objects.items()]

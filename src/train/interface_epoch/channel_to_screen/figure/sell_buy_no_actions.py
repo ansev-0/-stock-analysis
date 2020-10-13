@@ -16,7 +16,13 @@ class SellBuyNoActionsOPerationsFigure:
 
     @staticmethod
     def _get_serie(id_cache):
-        return pd.Series(FindAgentTrainCache().\
-                find_by_id(id_cache, 
-                           projection = {'time_values' : True,
-                                         '_id' : False})['time_values'])[:-1]
+        time_serie = pd.Series(FindAgentTrainCache().\
+            find_by_id(id_cache, 
+                       projection = {'time_values' : True,
+                                     '_id' : False})['time_values'])[:-1]
+                                     
+        if not isinstance(time_serie.index, pd.DatetimeIndex):
+            time_serie.index = pd.to_datetime(time_serie.index)
+        return time_serie
+
+    

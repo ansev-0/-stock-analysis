@@ -53,8 +53,8 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
               *args, 
               **kwargs):
 
-        mem_size = train_data.shape[0] - 1 if mem_size is not None else mem_size
-        self._batch_learn_size = train_data.shape[0] - 1 if batch_learn_size is not None else mem_size
+        mem_size = train_data.shape[0] - 1 if mem_size is None else mem_size
+        self._batch_learn_size = train_data.shape[0] - 1 if batch_learn_size is None else mem_size
         self._epsilon_decay.reset()
         self._agent_training = PlayAndRememberDoubleQlearning(mem_size=mem_size, 
                                                                q_eval=self.q_eval, env=env_train,
@@ -62,11 +62,14 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         #set validation func
         self._set_validation_func(validation_data, env_validation) 
         # do epochs
-        self._epochs(self, epochs, sort, replace, freq_update, validation_random, *args, **kwargs)
+        self._epochs(epochs, sort, replace, freq_update, validation_random, *args, **kwargs)
         #reset agent
         self._reset_agent()
 
+        
+
     def _epochs(self, epochs, sort, replace, freq_update, validation_random, *args, **kwargs):
+
         for epoch in range(1, epochs+1):  
             # train epoch
             fit_result = self._train(self.epsilon_decay.epsilon, 
@@ -112,28 +115,27 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                                                                    env=env_validation, 
                                                                    states_price=validation_data)
             self._validation_func = self._validation
-        self._validation_func = lambda probability, *args, **kwargs: None
+        else:
+            self._validation_func = lambda probability, *args, **kwargs: None
 
     def _push_interface_epoch(self, fit_result, epoch):
 
         for interface_epoch in self._interface_epoch_train:
-            try:
-                interface_epoch.get(epoch,
-                                    self._q_eval,
-                                    self._agent_training.env,
-                                    self._agent_training.states_env,
-                                    fit_result)
-            except Exception: 
-                pass
 
-            for interface_epoch in self._interface_epoch_validation:
-                try:
-                    interface_epoch.get(epoch,
-                                        self._q_eval,
-                                        self._validation_agent.env,
-                                        self._validation_agent.states_env)
-                except Exception: 
-                    pass
+            interface_epoch.get(epoch,
+                                self._q_eval,
+                                self._agent_training.env,
+                                self._agent_training.states_env,
+                                fit_result)
+
+
+        for interface_epoch in self._interface_epoch_validation:
+
+            interface_epoch.get(epoch,
+                                self._q_eval,
+                                self._validation_agent.env,
+                                self._validation_agent.states_env,
+                                fit_result)
 
     @staticmethod
     def _tuple_mem_features(memory):

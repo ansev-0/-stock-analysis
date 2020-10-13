@@ -1,6 +1,6 @@
-from src.model_environment.dynamic.builder_dict_rewards import BuilderDictRewards
+from src.model_environment.rewards.dynamic.builder_dict_rewards import BuilderDictRewards
 from src.model_environment.rewards.reward import Reward
-from src.model_environment.dynamic.build_node import BuildNode
+from src.model_environment.rewards.dynamic.build_node import BuildNode
 
 class BuilderReward(BuildNode):
 
