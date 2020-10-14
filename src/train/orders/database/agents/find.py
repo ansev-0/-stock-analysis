@@ -12,6 +12,6 @@ class FindTrainAgent(DataBaseOneAgent):
         return self.find_many({'status' : status}, **kwargs)
 
 
-    def find_by_id_model(self, id, **kwargs):
-        return self.find_one({'_id' : id},
+    def find_by_train_id(self, train_id, **kwargs):
+        return self.find_one({'_id' : train_id},
                              **kwargs)

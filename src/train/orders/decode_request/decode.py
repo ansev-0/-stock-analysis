@@ -20,19 +20,21 @@ class DecodeOrder:
         train_params = {}
         #get tensor
         train_params['train_data'], train_params['validation_data'] = self._decode_stock_data(order_dict)
-        # get reards in env
+        # get rewards
         reward_done, reward_not_done = self._decode_reward(order_dict)
         # get sim states action
         train_states_actions, validation_states_actions = self._decode_states_actions(order_dict)
         adapter = self._decode_actions(order_dict)
         #build run env
         train_params['env_train'] = self._decode_run_env(adapter, train_states_actions, reward_done, reward_not_done)
-        if train_params['validation_data'] is not None:
-            train_params['env_validation'] = self._decode_run_env(adapter, validation_states_actions, reward_done, reward_not_done)
-        else:
-            train_params['env_validation'] = None
+        train_params['env_validation'] = self._decode_run_env(adapter,
+                                                              validation_states_actions,
+                                                              reward_done, 
+                                                              reward_not_done) \
+            if train_params['validation_data'] is not None else None
+        
         #return agent and params to call train function
-        return self._decode_conf_agent(order_dict), dict(train_params, **order_dict['conf_call_agent'])
+        return lambda: self._decode_conf_agent(order_dict).train(**train_params, **order_dict['conf_call_agent'])
 
     def _decode_stock_data(self, order_dict):
 
@@ -78,6 +80,3 @@ class DecodeOrder:
     def _decode_conf_agent(self, order_dict):
         return TrainAgentDoubleQlearning(file_model=order_dict['path'], 
                                          **self._decoder_conf_agent(order_dict['conf_build_agent']))
-
-        
-

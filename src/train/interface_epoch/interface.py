@@ -17,6 +17,14 @@ class Interface(metaclass=ABCMeta):
     def source_data(self):
         pass
 
+    @abstractproperty
+    def train_id(self):
+        pass
+
+    @abstractproperty
+    def stock_name(self):
+        pass
+
     @staticmethod
     def _get_channel_inputs(channel):
         return channel.__call__.__code__.co_varnames[1:]

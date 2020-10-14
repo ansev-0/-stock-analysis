@@ -1,16 +1,14 @@
 
 class InterfaceEpochTask:
 
-    def __call__(self, id_cache, interface_request):
+    def __call__(self, train_id, stock_name, id_cache, interface_request):
         
-        return {module : self._objects_with_id_cache_parameter_updates(objects, id_cache) 
+        return {module : self._objects_with_new_parameters(objects, 
+                                                           train_id=train_id,
+                                                           id_cache=id_cache,
+                                                           stock_name=stock_name) 
                 for module, objects in interface_request.items()}
 
-    def _objects_with_id_cache_parameter_updates(self, objects, id_cache):
-        return {name_object : dict(object_params, **{'id_cache' : id_cache})
+    def _objects_with_new_parameters(self, objects, **kwargs):
+        return {name_object : dict(object_params, **kwargs)
                 for name_object, object_params in objects.items()}
-            
-
-
-
-

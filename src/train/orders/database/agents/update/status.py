@@ -6,6 +6,22 @@ class UpdateAgentTrainStatus(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
     _valid_fields = ('status', )
     _valids_status = ('pending', 'running', 'done', 'interrupt')
 
+    @classmethod
+    def set_pending(cls, stock_name):
+        return cls(stock_name, 'pending')
+
+    @classmethod
+    def set_runnig(cls, stock_name):
+        return cls(stock_name, 'running')
+
+    @classmethod
+    def set_done(cls, stock_name):
+        return cls(stock_name, 'done')
+
+    @classmethod
+    def set_interrupt(cls, stock_name):
+        return cls(stock_name, 'interrupt')
+
     def __init__(self, stock_name, status):
         super().__init__(stock_name=stock_name)
         self.status = status

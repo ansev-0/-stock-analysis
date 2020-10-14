@@ -1,8 +1,0 @@
-limits_data_train = ('init_data_train', 'end_data_train') 
-limits_data_val = ('init_data_train', 'end_data_train') 
-status = ('status', ) 
-path = ('path', )
-based_on = ('based_on_path', )
-train_dates = ('init_train_date', 'end_train_date')
-type_model =('type_model', )
-id_type = ('_id', )
