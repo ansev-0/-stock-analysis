@@ -26,22 +26,22 @@ class TrainAgentStatus:
     @train_id.setter
     def train_id(self, train_id):
         self._train_id = train_id
-        self._total_epochs = self._make_order_request()['conf_build_agent']['epochs']
+        self._total_epochs = self._make_order_request()['conf_call_agent']['epochs']
 
     @stock_name.setter
     def stock_name(self, stock_name):
-        self._set_running = UpdateStatusAgentTrain.set_running(stock_name)
-        self._set_done = UpdateStatusAgentTrain.set_done(stock_name)
+        self._set_running_obj = UpdateStatusAgentTrain.set_running(stock_name)
+        self._set_done_obj = UpdateStatusAgentTrain.set_done(stock_name)
         self._set_dates = UpdateStartEndAgentTrain(stock_name)
         self._find_order = FindTrainAgent(stock_name)
         self._stock_name = stock_name
 
-    def _set_running(self, epoch):
-        return self._set_running.set_on_id(self.train_id), self._set_dates('start_date_train')
+    def _set_running(self):
+        return self._set_running_obj.set_on_id(self.train_id), self._set_dates('start_date_train', self.train_id)
 
-    def _set_done(self, epoch):
-        return self._set_done.set_on_id(self.train_id), self._set_dates('end_date_train')
+    def _set_done(self):
+        return self._set_done_obj.set_on_id(self.train_id), self._set_dates('end_date_train', self.train_id)
 
     def _make_order_request(self):
-        return self._find_order.by_train_id(self._train_id, 
-                                            projection={'conf_build_agent' : 1})
+        return self._find_order.find_by_train_id(self._train_id, 
+                                                 projection={'conf_call_agent' : 1})

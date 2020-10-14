@@ -21,7 +21,7 @@ class ConfBuildAgentTask:
 
     
     def _conf_interface(self, dict_interface, val_data):
-        return self._make_interface_task(train_id,
+        return self._make_interface_task(self._train_id,
                                          self._stock_name,
                                          self._id_cache_validation if val_data \
                                              else self._id_cache_train,

@@ -67,17 +67,18 @@ class MakeQlearningRequest:
                                                                                 self._cache_id_train)
         form['validation_states_actions'] = self._make_states_action_parameters_task(form['train_states_actions'], 
                                                                                      self._cache_id_validation)
-        # make conf build agent task
-        form['conf_build_agent'] = ConfBuildAgentTask(form['stock_name'],
-                                                      self._cache_id_train, 
-                                                      self._cache_id_validation)(form['conf_build_agent'])
         # make based on task
         form['based_on'] = self._make_based_on_task(form['based_on'])
         # make path model task
         form['path'] = self._make_path_task(form['stock_name'], form['based_on'])
         # make id task
         form['_id'] = self._make_id_task()
-        
+
+        # make conf build agent task
+        form['conf_build_agent'] = ConfBuildAgentTask(form['_id'],
+                                                      form['stock_name'],
+                                                      self._cache_id_train, 
+                                                      self._cache_id_validation)(form['conf_build_agent'])
         return form
 
     def _form_to_db_dict(self, form_dict):

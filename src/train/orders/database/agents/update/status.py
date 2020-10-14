@@ -45,7 +45,7 @@ class UpdateStatusAgentTrain(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
         return cls(stock_name, 'pending')
 
     @classmethod
-    def set_runnig(cls, stock_name):
+    def set_running(cls, stock_name):
         return cls(stock_name, 'running')
 
     @classmethod

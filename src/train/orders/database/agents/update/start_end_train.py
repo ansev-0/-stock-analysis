@@ -12,4 +12,4 @@ class UpdateStartEndAgentTrain(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
 
 
     def __call__(self, field, train_id):
-        return self.update_one({'_id' : train_id}, {'field' : datetime.now()})
+        return self.update_one(where={'_id' : train_id}, data={field : datetime.now()})

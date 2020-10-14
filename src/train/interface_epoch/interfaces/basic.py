@@ -3,7 +3,7 @@ from src.train.interface_epoch.channel_to_screen.print.sell_buy_no_actions impor
 from src.train.interface_epoch.channel_to_database.status import TrainAgentStatus
 from src.train.interface_epoch.interface import Interface
 from ast import literal_eval
-from abc import ABCMeta, abractproperty
+from abc import ABCMeta, abstractproperty
 
 class BasicInterface(Interface):
 
