@@ -1,26 +1,11 @@
 from src.train.orders.database.agents.agents import DataBaseOneAgent
 from src.train.orders.database.update import UpdateValidFieldsDocumentDB
 
-class UpdateAgentTrainStatus(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
+class UpdateStatusAgentTrain(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
 
     _valid_fields = ('status', )
     _valids_status = ('pending', 'running', 'done', 'interrupt')
 
-    @classmethod
-    def set_pending(cls, stock_name):
-        return cls(stock_name, 'pending')
-
-    @classmethod
-    def set_runnig(cls, stock_name):
-        return cls(stock_name, 'running')
-
-    @classmethod
-    def set_done(cls, stock_name):
-        return cls(stock_name, 'done')
-
-    @classmethod
-    def set_interrupt(cls, stock_name):
-        return cls(stock_name, 'interrupt')
 
     def __init__(self, stock_name, status):
         super().__init__(stock_name=stock_name)
@@ -55,6 +40,25 @@ class UpdateAgentTrainStatus(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
     def set_on_status(self, status, **kwargs):
         return self.set_many({'status' : status}, **kwargs)
 
+    @classmethod
+    def set_pending(cls, stock_name):
+        return cls(stock_name, 'pending')
+
+    @classmethod
+    def set_runnig(cls, stock_name):
+        return cls(stock_name, 'running')
+
+    @classmethod
+    def set_done(cls, stock_name):
+        return cls(stock_name, 'done')
+
+    @classmethod
+    def set_interrupt(cls, stock_name):
+        return cls(stock_name, 'interrupt')
+
     def _check_valid_status(self, status):
         if not status in self._valids_status:
             raise ValueError(f'You must pass a valid status: {self._valids_status}')
+
+
+
