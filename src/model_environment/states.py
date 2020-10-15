@@ -5,6 +5,7 @@ class States:
 
     def __init__(self, init_n_stocks, init_money, commision, time_serie=None, id_cache=None):
 
+        self._historic_profit = None
         self.n_stocks = None
         self.money = None
         self.time = None
@@ -15,6 +16,10 @@ class States:
         self.init_money = init_money
         self.commision = commision
         self.reset()
+
+    @property
+    def historic_profit(self):
+        return self._historic_profit
 
     @property
     def id_cache(self):
@@ -65,6 +70,8 @@ class States:
         self.time += 1
         self._stock_price = self.time_serie[self.time]
         self.terminal = self.time == len(self.time_serie) - 1
+        #save profit
+        self._historic_profit.append(self.profit)
         
     def reset_n_stocks(self):
         self.n_stocks = self.init_n_stocks
@@ -77,6 +84,7 @@ class States:
 
     def reset(self):
         self.terminal = False
+        self._historic_profit = []
         self.reset_money()
         self.reset_n_stocks()
         self.reset_time()

@@ -1,6 +1,7 @@
 from src.train.interface_epoch.channel_to_screen.figure.sell_buy_no_actions import SellBuyNoActionsOPerationsFigure
 from src.train.interface_epoch.channel_to_screen.print.sell_buy_no_actions import SellBuyNoActionsOPerationsPrint
 from src.train.interface_epoch.channel_to_database.status import TrainAgentStatus
+from src.train.interface_epoch.channel_to_database.profit import ProfitEpoch
 from src.train.interface_epoch.interface import Interface
 from ast import literal_eval
 from abc import ABCMeta, abstractproperty
@@ -54,6 +55,8 @@ class BasicInterface(Interface):
         self._stock_name = stock_name
         self._channels['status'] = TrainAgentStatus(stock_name, self._train_id)
         self._inputs_channels['status'] = self._get_channel_inputs(self._channels['status'])
+        self._channels['profit'] = ProfitEpoch(self._source_data, self._train_id, self._stock_name)
+        self._inputs_channels['profit'] = self._get_channel_inputs(self._channels['profit'])
 
     @property
     def source_data(self):

@@ -1,11 +1,10 @@
 from src.train.orders.database.agents.agents import DataBaseOneAgent
-from src.train.orders.database.update import UpdateValidFieldsDocumentDB
+from src.database.update import UpdateValidFieldsDocumentDB
 
 class UpdateStatusAgentTrain(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
 
     _valid_fields = ('status', )
     _valids_status = ('pending', 'running', 'done', 'interrupt')
-
 
     def __init__(self, stock_name, status):
         super().__init__(stock_name=stock_name)
@@ -59,6 +58,3 @@ class UpdateStatusAgentTrain(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
     def _check_valid_status(self, status):
         if not status in self._valids_status:
             raise ValueError(f'You must pass a valid status: {self._valids_status}')
-
-
-

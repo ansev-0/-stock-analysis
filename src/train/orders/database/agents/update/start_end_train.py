@@ -1,5 +1,5 @@
 from src.train.orders.database.agents.agents import DataBaseOneAgent
-from src.train.orders.database.update import UpdateValidFieldsDocumentDB
+from src.database.update import UpdateValidFieldsDocumentDB
 from datetime import datetime
 
 class UpdateStartEndAgentTrain(DataBaseOneAgent, UpdateValidFieldsDocumentDB):
