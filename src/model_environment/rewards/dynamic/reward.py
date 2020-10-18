@@ -8,6 +8,7 @@ class BuilderReward(BuildNode):
         # Build rewardnodes
         params_dict = self.decode_node_params(**params_dict) 
         # Build DictReward
-        params_dict['dict_rewards'] = BuilderDictRewards()(params_dict['dict_rewards'])
+        params_dict['dict_rewards'] = BuilderDictRewards()(params_dict['dict_rewards']) \
+            if params_dict['dict_rewards'] else None
         # Build Reward
         return Reward(**params_dict) 

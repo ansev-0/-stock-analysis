@@ -2,12 +2,11 @@ from src.read_database.stock_data import StockDataFromDataBase
 from src.data_preparation.tools.expand.embedding import EmbedTimeSeries
 from src.train.database.cache.agents.create import CreateAgentTrainCache
 from src.train.database.cache.agents.delete import RemoveAgentTrainCache
+from src.train.orders.request.agents.q_learning.tasks_for_request.stock_data.get_data import GetDataTask
 import pandas as pd
 import numpy as np
 
 class StockDataTask:
-
-    _reader = StockDataFromDataBase.dailyadj_dataframe()
 
     def __call__(self, stock_name, data_train_limits, data_validation_limits, delays):
         return self._to_cache(
@@ -16,20 +15,19 @@ class StockDataTask:
 
     def _get_features(self, df):
         features = ['weekday', 'dayofyear', 'open', 'high', 'low', 'close', 'volume']
-        return df.assign(weekday = df.index.weekday, dayofyear = df.index.dayofyear).loc[:, features]
+        return df.assign(weekday=df.index.weekday, 
+                         dayofyear=df.index.dayofyear).loc[:, features]
 
 
     def _data_preparation(self, stock_name, data_train_limits, data_validation_limits, delays):
-
-        #get limits
-        init_train_date, end_train_date = self._limits_to_datetime(data_train_limits)
-        init_validation_date, end_validation_date = self._limits_to_datetime(data_validation_limits)
+        
         #get data
-        train_dates = self._reader.get(stock_name, init_train_date, end_train_date)
-        validation_dates = self._reader.get(stock_name, init_validation_date, end_validation_date)
+        train_data, validation_data = GetDataTask()(stock_name, 
+                                                    data_train_limits, data_validation_limits, 
+                                                    delays)
         #get_features
-        train_features = self._get_features(train_dates)
-        validation_features = self._get_features(validation_dates)
+        train_features = self._get_features(train_data)
+        validation_features = self._get_features(validation_data)
         #embed sequences
         mbed = EmbedTimeSeries(delays+1)
         train_sequences = np.diff(mbed(train_features[:-1]), axis=1)

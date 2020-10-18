@@ -83,7 +83,7 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
 
             # validation epoch
             self._validation_func(self.epsilon_decay.epsilon 
-                                  if validation_random else 1)    
+                                  if validation_random else 0)    
             # interface epoch
             self._push_interface_epoch(fit_result, epoch)
             # step epsilon

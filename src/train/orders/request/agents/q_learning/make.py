@@ -5,7 +5,7 @@ from src.train.orders.request.agents.q_learning.tasks_for_request.id import IdTa
 from src.train.orders.request.agents.q_learning.tasks_for_request.path import PathTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.reward import RewardTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.states_actions_parameters import StatesActionParametersTask
-from src.train.orders.request.agents.q_learning.tasks_for_request.stock_data import StockDataTask
+from src.train.orders.request.agents.q_learning.tasks_for_request.stock_data.stock_data import StockDataTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.stock_name import StockNameTask
 from src.train.orders.database.agents.create.train_order import CreateTrainOrderAgent
 from src.train.orders.request.agents.q_learning.form import FormQlearning

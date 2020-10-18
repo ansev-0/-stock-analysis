@@ -5,11 +5,10 @@ from src.model_environment.rewards.errors.is_node import check_valid_rewardnode
 class Reward:
 
     def __init__(self, 
-                 dict_rewards, 
+                 dict_rewards=None, 
                  rewardnode=None, 
                  rewardnode_current_profit=None, 
                  rewardnode_next_profit=None):
-
 
         self.dict_rewards = dict_rewards
         self.rewardnode_current_profit = rewardnode_current_profit
@@ -54,20 +53,24 @@ class Reward:
         self._rewardnode_next_profit = self._valid_rewardnode(rewardnode_next_profit)
 
     def reset(self):
-        self.dict_rewards.reset()
+        if self.dict_rewards is not None:
+            self.dict_rewards.reset() 
 
 
     def reward(self, current_profit, next_profit, **kwargs):
 
-        return self.rewardnode(self._dict_rewards.total_reward(**kwargs) + \
+        return self.rewardnode(self._reward_from_dict_reward(**kwargs) + \
                                self._rewardnode_current_profit(current_profit) + \
                                self._rewardnode_next_profit(next_profit), 
                                **kwargs)
 
+    def _reward_from_dict_reward(self, **kwargs):
+        return self._dict_rewards.total_reward(**kwargs) \
+                               if self._dict_rewards is not None else 0
 
     @staticmethod
     def _check_valid_dict_rewards(dict_reward):
-        if not isinstance(dict_reward, DictRewards):
+        if not isinstance(dict_reward, DictRewards) and dict_reward is not None:
             raise ValueError(f'You must pass a instance of {DictRewards}')
 
     @staticmethod

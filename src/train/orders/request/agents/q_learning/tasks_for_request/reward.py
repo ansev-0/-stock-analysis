@@ -14,7 +14,7 @@ class RewardTask:
     def _get_not_depend_dict(params_dict):
         try:
             return params_dict['dict_rewards']['not_depend_on_inventory']
-        except KeyError:
+        except Exception:
             return False
 
 
