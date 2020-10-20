@@ -4,12 +4,13 @@ from src.train.orders.database.agents.update.id_results_train import UpdateIdRes
 
 class ProfitEpoch:
 
-    def __init__(self, source_data, train_id, stock_name):
+    def __init__(self, source_data, train_id, stock_name, n=5):
 
         self._results_id = None
         self.source_data = source_data
         self.stock_name = stock_name
         self.train_id = train_id
+        self.n = n
 
     @property
     def stock_name(self):
@@ -34,8 +35,9 @@ class ProfitEpoch:
         self._make_reference()
 
     def _update_results_in_db(self, historic_profit, epoch):
-        self._update_train_results.update_on_id(self._results_id, 
-                                                {f'epoch {epoch}' : {'profit' : historic_profit}})
+        if epoch % self.n == 0:
+            self._update_train_results.update_on_id(self._results_id, 
+                                                    {f'epoch {epoch}' : {'profit' : historic_profit}})
 
     def _make_reference(self):
         return getattr(self._create_reference_in_orders_db, 

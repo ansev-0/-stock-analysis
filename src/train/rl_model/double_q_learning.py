@@ -19,7 +19,7 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         self._q_target = load_model(file_model)
         self._q_eval = load_model(file_model)
         self._agent_training = None
-        self._agent_val = None
+        self._agent_validation = None
         self._validation_func = None
 
     @property
@@ -107,11 +107,11 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         return self.learn(memory, *args, **kwargs)
 
     def _validation(self, *args):
-        self._validation_agent.play(*args)
+        self._agent_validation.play(*args)
 
     def _set_validation_func(self, validation_data, env_validation):
         if validation_data is not None and env_validation is not None:
-            self._validation_agent = PlayValidationDoubleQlearning(q_eval=self.q_eval, 
+            self._agent_validation = PlayValidationDoubleQlearning(q_eval=self.q_eval, 
                                                                    env=env_validation, 
                                                                    states_price=validation_data)
             self._validation_func = self._validation
@@ -133,8 +133,8 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
 
             interface_epoch.get(epoch,
                                 self._q_eval,
-                                self._validation_agent.env,
-                                self._validation_agent.states_env,
+                                self._agent_validation.env,
+                                self._agent_validation.states_env,
                                 fit_result)
 
     @staticmethod
