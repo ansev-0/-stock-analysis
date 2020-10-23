@@ -1,4 +1,4 @@
-from app.app import app
+from src.app.app import app
 from src.app.homepage.homepage import HomePage
 from src.app.login.login import Login
 from flask import request
@@ -31,3 +31,4 @@ def register():
 
 if __name__ == '__main__':
     app.run(debug=True)
+

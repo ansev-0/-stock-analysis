@@ -52,3 +52,9 @@ class DataBaseAdminModels(DataBase):
     '''
     pass
 
+class DataBaseAdminUsers(DataBase):
+    '''
+    This class is used to create the client related to the users.
+    '''
+    pass
+

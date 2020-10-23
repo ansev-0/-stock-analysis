@@ -1,0 +1,33 @@
+body {
+    background-color: red;
+    background-image: url("../images/login/login0.jpg");
+    background-size:cover;
+}
+
+.container {
+    background-color:white;
+    text-align:center;
+    font-size:20px;
+    width:600px;
+    margin: auto;
+
+    
+
+}
+#floating_message {
+    background-color: white;
+}
+
+#button_send {
+    background-color: white;
+    font-size: 25px;
+}
+
+.row-control-group {
+    background-color: white;
+}
+
+
+header h1.title_header {
+    text-align:center;
+}
