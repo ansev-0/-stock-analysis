@@ -4,7 +4,7 @@ class DataBaseUsers(DataBaseAdminUsers):
 
     def __init__(self, collection):
         super().__init__('users')
-        self._collection = collection
+        self._collection = self._database[collection]
 
     @property
     def collection(self):

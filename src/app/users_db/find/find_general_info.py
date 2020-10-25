@@ -28,7 +28,7 @@ class FindGeneralInfoDataBaseUsers(DataBaseUsersGeneralInfo, FindDataBaseUsers):
         return self.exist('phone_number', phone_number)
 
     def exist(self, field, value_field):
-        return self.find_one_by_field(field, value_field) is not None
+        return  self.find_one_by_field(field, value_field) is not None
 
     def exist_with_password(self, password, field, value_field):
         return self.find_one({'password' : password, field : value_field}) is not None

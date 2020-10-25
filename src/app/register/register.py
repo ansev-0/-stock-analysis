@@ -1,11 +1,18 @@
 from src.app.tools.inputs.button_redirect import ButtonRedirect
 from flask import render_template, request, session
 from src.app.tools.forms import RegisterForm
-
+from src.app.users_db.create.create_user import CreateNewUser
+from src.app.register.mail_sender import MailSender
+from src.app.safe import EmailRegisterToken
 
 class Register:
 
-    _button_redirects = ButtonRedirect('button', {'send' : 'register/confirm'})
+    def __init__(self, app):
+        self._mail_token_sender = MailSender(app)
+
+    _button_redirects = ButtonRedirect('button', {'send' : 'successful_register'})
+    _create_new_user = CreateNewUser()
+    _token = EmailRegisterToken()
 
     def get(self):
         register_form = RegisterForm(request.form)
@@ -13,12 +20,23 @@ class Register:
 
     def post(self):
         register_form = RegisterForm(request.form)
-        return self._post_valid_login(register_form) if register_form.validate() \
-             else self._post_invalid_login(register_form)
+        return self._post_valid_register(register_form) if register_form.validate() \
+             else self._post_invalid_register(register_form)
 
-    def _post_valid_login(self, register_form_validated):
-        session['username'] = register_form_validated.username.data
+    def _post_valid_register(self, register_form_validated):
+        # register user in db with confirm = False
+        self._create_new_user(register_form_validated.data)
+        # send the email
+
+        # get the email
+        email = register_form_validated.data['email']
+        # create token
+        token = self._token.create(email)
+        #send the message
+        self._mail_token_sender(email, token)
+        # redirect to succes redirect, waitting to confirm
         return self._button_redirects(request.form['button'])
 
-    def _post_invalid_login(self, invalid_register_form):
+    def _post_invalid_register(self, invalid_register_form):
        return render_template('register.html', form=invalid_register_form, title='Register')
+       
