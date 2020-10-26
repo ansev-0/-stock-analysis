@@ -3,8 +3,10 @@ from src.app.homepage.homepage import HomePage
 from src.app.login.login import Login
 from src.app.register.register import Register
 from src.app.register.register_confirmed import RegisterConfirmed
-from flask import request
+from flask import request, session
 from src.app import config
+from datetime import timedelta
+
 
 
 homepage_agent = HomePage()
@@ -24,7 +26,6 @@ def homepage():
 def login():
 
     if request.method == 'POST':
-        
         return login_agent.post()
     elif request.method == 'GET':
         return login_agent.get()
@@ -43,6 +44,11 @@ def confirm_email(token):
 @app.route('/waiting/confirm')
 def successful_register():
     return {'waiting' : 'confirm'}
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(hours=5)
 
 if __name__ == '__main__':
     app.config.from_object('src.app.config.DeveloperConfig')

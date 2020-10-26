@@ -34,7 +34,10 @@ class UpdateGeneralInfoDataBaseUsers(DataBaseUsersGeneralInfo, UpdateDataBaseUse
     def _update_by_field(self, field, val_field, dict_update, **kwargs):
         return self.update_one({field : val_field}, dict_update, **kwargs)
 
-
-    def update_confirmed(self, token):
+    def user_confirmed(self, token, online=True):
         return self.update_one(where={'confirmed' : token}, 
-                               dict_update={'confirmed' : True})
+                               dict_update={'confirmed' : True, 
+                                            'online' : online})
+
+    def user_logout(self, username):
+        return self.update_by_username(username, {'online' : False})

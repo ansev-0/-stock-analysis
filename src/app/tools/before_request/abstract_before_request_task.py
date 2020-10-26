@@ -3,7 +3,7 @@ from flask import request
 
 class BeforeRequestTask(metaclass=ABCMeta):
 
-    def __init__(self, endpoints_task):
+    def __init__(self, endpoints_task=None):
         self._endpoints_task = endpoints_task
     
     @property
@@ -12,7 +12,8 @@ class BeforeRequestTask(metaclass=ABCMeta):
 
     @property
     def endpoint_in_endpoints_task(self):
-        return request.endpoint in self._endpoints_task
+        return request.endpoint in self._endpoints_task \
+            if self._endpoints_task is not None else True
 
 
     @abstractmethod

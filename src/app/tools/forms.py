@@ -8,13 +8,21 @@ from src.app.users_db.find.find_general_info import FindGeneralInfoDataBaseUsers
 class CheckLoginInDB(FindGeneralInfoDataBaseUsers):
     find_in_db = FindGeneralInfoDataBaseUsers()
 
+    def __init__(self):
+        self._username = None
+
     def check_username(self, form, field):
         if not self.find_in_db.exist_username_in_db(field.data):
             raise validators.ValidationError('Username not exist!')
+        else:
+            self._username = field.data
+
 
     def check_password(self, form, field):
-        if not self.find_in_db.exist_username_in_db(field.data):
+        if not self.find_in_db.exist_username_with_password(self._username, field.data):
             raise validators.ValidationError('Incorrect password')
+        else:
+            self._username = None
 
 class CheckRegisterInDB(FindGeneralInfoDataBaseUsers):
     find_in_db = FindGeneralInfoDataBaseUsers()
