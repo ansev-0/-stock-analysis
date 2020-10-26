@@ -7,3 +7,13 @@ class UserSession:
 
     def redirect_user_to_login(self):
         return redirect(url_for('login'))
+
+    def set_user(self, user):
+        session['username'] = user
+
+
+    def redirect_user_to_index(self):
+        return redirect('/')
+
+
+    

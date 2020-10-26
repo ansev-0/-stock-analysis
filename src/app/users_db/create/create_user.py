@@ -10,17 +10,17 @@ class CreateNewUser(DataBaseUsersGeneralInfo, CreateDataBaseUsers):
     _to_db_admin_fields = OpsFieldsToDB(general_info_external_fields)
 
 
-    def __call__(self, register_dict_data):
+    def __call__(self, register_dict_data, token):
         # check there are only valids external fields
         self._to_db_admin_fields.check_invalid_fields_in_dict_data(register_dict_data)
         # insert confirmed False
-        register_dict_data = self._add_confirmed_false(register_dict_data)
+        register_dict_data = self._add_token_confirm(register_dict_data, token)
         # create with external fields and datetime 
         return super().insert_one(
             self._to_db_admin_fields.build_with_date_last_change(register_dict_data)
             )
 
     @staticmethod
-    def _add_confirmed_false(register_dict_data):
-        return dict(register_dict_data, **{'confirmed' : False})
+    def _add_token_confirm(register_dict_data, token):
+        return dict(register_dict_data, **{'confirmed' : token})
 

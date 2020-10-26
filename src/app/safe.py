@@ -10,5 +10,5 @@ class EmailRegisterToken:
     def create(self, email):
         return self._url_safe_token_maker.dumps(email, salt=self._salt)
 
-    def load(self, token):
+    def loads(self, token):
         return self._url_safe_token_maker.loads(token, max_age=self._max_age, salt=self._salt)

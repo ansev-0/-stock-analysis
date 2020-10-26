@@ -12,6 +12,12 @@ class FindGeneralInfoDataBaseUsers(DataBaseUsersGeneralInfo, FindDataBaseUsers):
     def find_by_phone_number(self, phone_number, **kwargs):
         return self.find_one_by_field('phone_number', phone_number, **kwargs)
 
+    def find_by_token_confirmed(self, token, **kwargs):
+        return self.find_one_by_field('confirmed', token, **kwargs)
+
+    def find_not_confirmed(self, **kwargs):
+        return self.find_many_by_field('confirmed', False, **kwargs)
+
     def find_one_by_field(self, field, value_field, **kwargs):
         return self.find_one({field : value_field}, **kwargs)
 

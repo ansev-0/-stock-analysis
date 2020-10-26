@@ -1,6 +1,6 @@
 from flask_mail import Mail, Message
 from flask import url_for
-from src.app.config import MAIL_DEFAULT_SENDER
+from src.app.config import MAIL_USERNAME
 
 
 class MailSender:
@@ -10,7 +10,7 @@ class MailSender:
 
     def __call__(self, email, token):
         # get he url to include in the message
-        link = url_for('Confirm_email', token=token, _external=True)
+        link = url_for('confirm_email', token=token, _external=True)
         # write the message
         msg = self._write_msg(email, link)
         # send the email
@@ -18,6 +18,6 @@ class MailSender:
         
     @staticmethod
     def _write_msg(email, link):
-        msg = Message('Confirm email', sender=MAIL_DEFAULT_SENDER, recipients=email)
+        msg = Message('Confirm email', sender=MAIL_USERNAME, recipients=[email])
         msg.body = f'Your link is: {link}'
         return msg
