@@ -6,7 +6,7 @@ class DataBase:
     '''
     
     def __init_subclass__(cls):
-        cls._client = MongoClient(port=27017)
+        cls._client = MongoClient(host='192.168.1.37', port=27017)
         
     def __init__(self, database_name):
         try:
@@ -49,6 +49,12 @@ class DataBaseAdminTrain(DataBase):
 class DataBaseAdminModels(DataBase):
     '''
     This class is used to create the client related to the models.
+    '''
+    pass
+
+class DataBaseAdminUsers(DataBase):
+    '''
+    This class is used to create the client related to the users.
     '''
     pass
 

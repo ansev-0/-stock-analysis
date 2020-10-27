@@ -1,0 +1,83 @@
+{% extends 'base/base.html'%}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+{% endblock %}
+
+{% block content %}
+
+     {% from "_macro.html" import render_field %}
+
+    <header> 
+        <h1 class="title_header"> Register <h1>
+    </header>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="login">
+
+        <br>
+        <br>
+
+        <form name="username_form" id="username_form" method="POST">
+            <div class="row-control-group" id="username_div">
+                <div class="form-group col-xs-12 floating-label-form-group
+                controls" id='floating_message'>
+                    {{render_field(form.username, class='form-control')}}
+
+                    <p class="help-block text-danger"></p>
+                </div>
+            </div>
+
+
+        <form name="email_form" id="email_form" method="POST">
+            <div class="row-control-group" id="email_div">
+                <div class="form-group col-xs-12 floating-label-form-group
+                controls" id='floating_message'>
+                    {{render_field(form.email, class='form-control')}}
+
+                    <p class="help-block text-danger"></p>
+                </div>
+            </div>
+
+
+        <form name="phone_number_form" id="phone_number_form" method="POST">
+            <div class="row-control-group" id="phone_number_div">
+                <div class="form-group col-xs-12 floating-label-form-group
+                controls" id='floating_message'>
+                    {{render_field(form.phone_number, class='form-control')}}
+
+                    <p class="help-block text-danger"></p>
+                </div>
+            </div>
+
+
+        <form name="password_form" id="password_form" method="POST">
+            <div class="row-control-group" id="password_div">
+                <div class="form-group col-xs-12 floating-label-form-group
+                controls">
+                    {{render_field(form.password, class='form-control')}}
+
+                    <p class="help-block text-danger"></p>
+                </div>
+            </div>
+
+            <br>
+            <div id="Success"></div>
+            <div class="row">
+                <div class="form-group col-xs-12">
+                    <button type="submit" name="button" value="send" class="btn-default" id="button_send"> Send </button>
+                </div>
+            </div>
+        </form>
+        </div>
+      <div>
+    </div>
+
+
+
+{% endblock %}
+
