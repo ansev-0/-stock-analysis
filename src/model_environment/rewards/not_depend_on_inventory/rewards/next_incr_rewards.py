@@ -4,7 +4,8 @@ class NextIncrRewards(BaseNotDependOnInventoryReward):
 
     def _get_sell_serie(self):
         return self.time_values.diff(-1).dropna().rename('sell_rewards')
-        
+
+
 class NextIncrRewardsNotAction(NextIncrRewards):
     def get_reward(self, action, time, *args):
         return super().get_reward(action , time, 1)

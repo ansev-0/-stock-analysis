@@ -4,6 +4,10 @@
 
 {% block content %}
 
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage_with_session.css') }}">
+{% endblock %}
+
 <header> 
     <h1 class="title_header"> Bienvenido! <h1>
 </header>
