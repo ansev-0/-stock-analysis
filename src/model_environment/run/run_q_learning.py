@@ -8,6 +8,7 @@ class RunQlearningEnv(RunEnv):
         self.indexes_actions = TimeActions()
 
     def transition(self, action, n_stocks=None, frac=None):  
+        
 
         _,_, action_done, income = self.states_actions.do_action(action, n_stocks, frac)
         self.indexes_actions.save(action, self.states_actions.time, action_done, n_stocks, frac)
@@ -22,20 +23,26 @@ class RunQlearningEnv(RunEnv):
 
     def transition_with_rewards(self, action, n_stocks=None, frac=None):
 
+        # profit before make action
+        current_profit = self.states_actions.profit
+
         real_frac, real_n_stocks, action_done, income = self.states_actions.do_action(action, n_stocks, frac)
         self.indexes_actions.save(action, self.states_actions.time, action_done, n_stocks, frac)
 
         price = self.states_actions.stock_price
         time = self.states_actions.time
-
-        current_profit = self.states_actions.profit
+        
         if not self.states_actions.terminal:
             self.states_actions.step()
+
+        # profit next day after make a action
         next_profit = self.states_actions.profit
+        # incr profit 
+        incr_profit = next_profit - current_profit
 
         if action_done:
             rewards = self.reward_action_done.reward(current_profit=current_profit, 
-                                                     next_profit=next_profit,
+                                                     incr_profit=incr_profit,
                                                      action=action, 
                                                      time=time, 
                                                      n_stocks=real_n_stocks, 
@@ -43,7 +50,7 @@ class RunQlearningEnv(RunEnv):
                                                      frac=real_frac)   
         else:
             rewards = self.reward_action_not_done.reward(current_profit=current_profit, 
-                                                         next_profit=next_profit, 
+                                                         incr_profit=incr_profit, 
                                                          action=action, 
                                                          time=time,
                                                          price=price)
