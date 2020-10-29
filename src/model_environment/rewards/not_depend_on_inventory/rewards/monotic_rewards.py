@@ -9,7 +9,7 @@ class MonoticCumulativeRewards(BaseNotDependOnInventoryReward):
         return diff[::-1].groupby(blocks, sort=False).cumsum()[::-1].dropna().rename('sell_rewards')
 
 
-class LosssOpportunityPenalty(MonoticCumulativeRewards):
+class LossOpportunityPenaltyRewards(MonoticCumulativeRewards):
 
     def get_reward(self, action, time, max_purchases, max_sales):
 
