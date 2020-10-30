@@ -20,9 +20,10 @@ class LossOpportunityPenaltyRewards(MonoticCumulativeRewards):
             keys_str = ' or '.join(self.mapper_action_rewards.keys())
             raise KeyError(error, f'You must pass : {keys_str}' )
 
+
     def _get_penalty(self,  action, time, max_purchases, max_sales):
-        return self._get_negative_penalty( max_purchases, max_sales, time) \
-            if self._necessary_penalty(action, time) else 0
+        return self._get_negative_penalty(max_purchases, max_sales, time) \
+            if self._necessary_penalty(time) else 0
 
 
     def _get_negative_penalty(self, max_purchases, max_sales, time):
@@ -41,12 +42,10 @@ class LossOpportunityPenaltyRewards(MonoticCumulativeRewards):
         reward = self.mapper_action_rewards[action][time]
         return reward if reward > 0 else False
         
-
-    def _necessary_penalty(self, action, time):
-        return action == 'no_action' and self.mapper_action_rewards['no_action'][time] < 0
+    def _necessary_penalty(self, time):
+        return self.mapper_action_rewards['no_action'][time] < 0
 
         
-
 class MonoticCumulativeRewardsNotAction(MonoticCumulativeRewards):
     def get_reward(self, action, time, *args):
         return super().get_reward(action , time, 1)
