@@ -11,17 +11,17 @@ class MonoticCumulativeRewards(BaseNotDependOnInventoryReward):
 
 class LossOpportunityPenaltyRewards(MonoticCumulativeRewards):
 
-    def get_reward(self, action, time, max_purchases, max_sales):
+    def get_reward(self, time, max_purchases, max_sales, *args, **kwargs):
 
         try:
-            return self.rewardnode(self._get_penalty(action, time, max_purchases, max_sales)) 
+            return self.rewardnode(self._get_penalty(time, max_purchases, max_sales)) 
 #
         except KeyError as error:
             keys_str = ' or '.join(self.mapper_action_rewards.keys())
             raise KeyError(error, f'You must pass : {keys_str}' )
 
 
-    def _get_penalty(self,  action, time, max_purchases, max_sales):
+    def _get_penalty(self, time, max_purchases, max_sales):
         return self._get_negative_penalty(max_purchases, max_sales, time) \
             if self._necessary_penalty(time) else 0
 

@@ -6,12 +6,32 @@ class DictNotDependOnInventoryReward(DictNode):
 
     _type_node = (NotDependOnInventoryReward, )
 
-    def total_reward(self, action, time, n_stocks=1, *args, **kwargs):
-        rewards = self.get_flatten_reward(action, time, n_stocks=1)
-        return self.rewardnode(np.sum(rewards), action, time, n_stocks=1, *args, **kwargs)
+    def total_reward(self, action, time, max_purchases, max_sales, n_stocks=1, *args, **kwargs):
 
-    def get_reward(self, action, time, n_stocks=1, *args, **kwargs):
-        return  self.get_rewards(action, time, n_stocks)
+        rewards = self.get_flatten_reward(action=action,
+                                          time=time,
+                                          max_purchases=max_purchases, 
+                                          max_sales= max_sales,
+                                          n_stocks=n_stocks)
 
-    def get_flatten_reward(self, action, time, n_stocks=1, *args, **kwargs):
-        return  self.get_flatten_rewards(action, time, n_stocks)
+        return self.rewardnode(reward=np.sum(rewards), 
+                               action=action, 
+                               time=time, 
+                               max_purchases=max_purchases,
+                               max_sales=max_sales, 
+                               n_stocks=n_stocks, 
+                               *args, **kwargs)
+
+    def get_reward(self, action, time, max_purchases, max_sales, n_stocks=1, *args, **kwargs):
+        return  self.get_rewards(action=action,
+                                 time=time,
+                                 max_purchases=max_purchases, 
+                                 max_sales= max_sales,
+                                 n_stocks=n_stocks)
+
+    def get_flatten_reward(self, action, time, max_purchases, max_sales, n_stocks=1, *args, **kwargs):
+        return  self.get_flatten_rewards(action=action,
+                                         time=time,
+                                         max_purchases=max_purchases, 
+                                         max_sales= max_sales,
+                                         n_stocks=n_stocks)

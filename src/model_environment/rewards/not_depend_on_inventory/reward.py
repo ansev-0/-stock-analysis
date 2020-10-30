@@ -12,7 +12,7 @@ class NotDependOnInventoryReward(metaclass=ABCMeta):
     def mapper_action_rewards(self):
         pass
 
-    def get_reward(self, action, time, n_stocks):
+    def get_reward(self, action, time, n_stocks, *args, **kwargs):
         try:
             return self.rewardnode(self.mapper_action_rewards[action][time] * n_stocks) 
 
