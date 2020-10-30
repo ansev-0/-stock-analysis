@@ -26,19 +26,25 @@ class LossOpportunityPenaltyRewards(MonoticCumulativeRewards):
 
 
     def _get_negative_penalty(self, max_purchases, max_sales, time):
+        
+        pos_buy_reward = self._positive_penalty_from_action('buy', time)
+        if pos_buy_reward:
+            return -pos_buy_reward * max_purchases
 
-        if self.mapper_action_rewards['buy'][time] >= 0:
-            return self.mapper_action_rewards['buy'][time] * max_purchases
-        elif self.mapper_action_rewards['sell'][time] >= 0:
-            return self.mapper_action_rewards['sell'][time] * max_sales
+        pos_sell_reward = self._positive_penalty_from_action('sell', time)
+        if pos_sell_reward:
+            return -pos_sell_reward * max_sales
 
         raise ValueError('Invalid mapper')
+
+    def _positive_penalty_from_action(self, action, time):
+        reward = self.mapper_action_rewards[action][time]
+        return reward if reward > 0 else False
+        
 
     def _necessary_penalty(self, action, time):
         return action == 'no_action' and self.mapper_action_rewards['no_action'][time] < 0
 
-
-    
         
 
 class MonoticCumulativeRewardsNotAction(MonoticCumulativeRewards):
