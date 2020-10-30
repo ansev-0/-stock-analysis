@@ -1,0 +1,62 @@
+body {
+    background-color: red;
+    background-image: url("../images/login/login0.jpg");
+    background-size:cover;
+}
+
+.container {
+    vertical-align: middle;
+    background-color : white;
+    text-align:center;
+    font-size:20px;
+    width:800px;
+    margin: auto;
+    border: 2px outset rgb(105, 214, 2);
+}
+
+.form {
+    text-align:center;
+    margin: auto;
+    vertical-align: middle;
+}
+
+#floating_message {
+    background-color: white;
+    text-align:center;
+    font-size: 20px;
+    margin-right: 10px;
+    block-size : 90px;
+}
+
+#button_send {
+    color : white;
+    height: 50px;
+    width: 300px;
+    background-color: rgb(105, 214, 2);
+}
+
+.row-control-group {
+    background-color: white;
+    text-transform: capitalize;
+    margin-right: 30px;
+}
+
+.text_name {
+    background-color: white;
+    text-align:center;
+    font-size:20px;
+    width:800px;
+    margin: auto;
+
+}
+
+.text_field {
+    background-color: white;
+
+}
+
+header h1.title_header {
+    text-align:center;
+    margin: auto;
+}
+

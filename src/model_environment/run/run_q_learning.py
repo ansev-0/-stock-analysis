@@ -39,6 +39,9 @@ class RunQlearningEnv(RunEnv):
         next_profit = self.states_actions.profit
         # incr profit 
         incr_profit = next_profit - current_profit
+        #opportunities
+        max_purchases = self.states_actions.max_purchases
+        max_sales = self.states_actions.max_sales
 
         if action_done:
             rewards = self.reward_action_done.reward(current_profit=current_profit, 
@@ -47,13 +50,17 @@ class RunQlearningEnv(RunEnv):
                                                      time=time, 
                                                      n_stocks=real_n_stocks, 
                                                      price = price,
-                                                     frac=real_frac)   
+                                                     frac=real_frac,
+                                                     max_purchases=max_purchases,
+                                                     max_sales=max_sales)   
         else:
             rewards = self.reward_action_not_done.reward(current_profit=current_profit, 
                                                          incr_profit=incr_profit, 
                                                          action=action, 
                                                          time=time,
-                                                         price=price)
+                                                         price=price,
+                                                         max_purchases=max_purchases,
+                                                         max_sales=max_sales)
 
 
         return rewards, (next_profit, income, self.states_actions.max_purchases, \
