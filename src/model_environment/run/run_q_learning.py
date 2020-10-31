@@ -10,60 +10,53 @@ class RunQlearningEnv(RunEnv):
     def transition(self, action, n_stocks=None, frac=None):  
         
 
-        _,_, action_done, income = self.states_actions.do_action(action, n_stocks, frac)
+        _,_, action_done = self.states_actions.do_action(action, n_stocks, frac)
         self.indexes_actions.save(action, self.states_actions.time, action_done, n_stocks, frac)
 
         if not self.states_actions.terminal:
             self.states_actions.step()
 
-        next_profit = self.states_actions.profit
-
-        return next_profit, income, self.states_actions.max_purchases,\
-             self.states_actions.max_sales
+        return self.states_actions.max_purchases, self.states_actions.max_sales
 
     def transition_with_rewards(self, action, n_stocks=None, frac=None):
 
-        # profit before make action
-        current_profit = self.states_actions.profit
-
-        real_frac, real_n_stocks, action_done, income = self.states_actions.do_action(action, n_stocks, frac)
-        self.indexes_actions.save(action, self.states_actions.time, action_done, n_stocks, frac)
-
         price = self.states_actions.stock_price
         time = self.states_actions.time
-        
+        # profit before make action
+        current_profit = self.states_actions.profit
+        #opportunities before
+        current_max_purchases = self.states_actions.max_purchases
+        current_max_sales = self.states_actions.max_sales
+        #make action
+        real_frac, real_n_stocks, action_done  = self.states_actions.do_action(action, n_stocks, frac)
+        self.indexes_actions.save(action, self.states_actions.time, action_done, n_stocks, frac)
+        # step
         if not self.states_actions.terminal:
             self.states_actions.step()
 
-        # profit next day after make a action
-        next_profit = self.states_actions.profit
-        # incr profit 
-        incr_profit = next_profit - current_profit
-        #opportunities
-        max_purchases = self.states_actions.max_purchases
-        max_sales = self.states_actions.max_sales
+
 
         if action_done:
             rewards = self.reward_action_done.reward(current_profit=current_profit, 
-                                                     incr_profit=incr_profit,
+                                                     incr_profit=self.states_actions.incr_profit,
                                                      action=action, 
                                                      time=time, 
                                                      n_stocks=real_n_stocks, 
                                                      price = price,
                                                      frac=real_frac,
-                                                     max_purchases=max_purchases,
-                                                     max_sales=max_sales)   
+                                                     max_purchases=current_max_purchases,
+                                                     max_sales=current_max_sales)   
         else:
             rewards = self.reward_action_not_done.reward(current_profit=current_profit, 
-                                                         incr_profit=incr_profit, 
+                                                         incr_profit=self.states_actions.incr_profit, 
                                                          action=action, 
                                                          time=time,
                                                          price=price,
-                                                         max_purchases=max_purchases,
-                                                         max_sales=max_sales)
+                                                         max_purchases=current_max_purchases,
+                                                         max_sales=current_max_sales)
 
 
-        return rewards, (next_profit, income, self.states_actions.max_purchases, \
+        return rewards, (self.states_actions.max_purchases, \
             self.states_actions.max_sales)
 
     def reset(self):

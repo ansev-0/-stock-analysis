@@ -67,7 +67,7 @@ class StatesActions(States):
         self.n_stocks += n_stocks
         income = - 1 * n_stocks * (self.stock_price + self.commision)
         self.money += income
-        return n_stocks, True, income
+        return n_stocks, True
 
 
     def _sell(self, n_stocks=None, frac=None):
@@ -90,11 +90,11 @@ class StatesActions(States):
         self.n_stocks -= n_stocks
         income = n_stocks * (self.stock_price - self.commision)
         self.money += income
-        return n_stocks, True, income
+        return n_stocks, True
 
 
     def _no_action(self):
-        return 0, 0, False, 0
+        return 0, 0, False
 
     def _max_float_purchases(self):
         return self.money / (self.stock_price + self.commision)

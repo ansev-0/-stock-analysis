@@ -12,7 +12,7 @@ def build_dqn(lr, n_actions,
     lstm1_tensor = LSTM(lstm1_units, return_sequences=True, bias_regularizer=L1L2(0.001, 0.001))(input_daily_serie)
     lstm2_tensor = LSTM(lstm2_units, return_sequences=True,bias_regularizer=L1L2(0.001, 0.001))(lstm1_tensor)
 
-    fc2_portfolio = Conv1D(50, padding = 'causal', kernel_size=2)(input_portfolio_status)
+    fc2_portfolio = Conv1D(50, padding = 'causal', kernel_size=2, bias_regularizer=L1L2(0.001, 0.001))(input_portfolio_status)
     
     lstm_portfolio_input = Concatenate(axis=2)([lstm2_tensor, fc2_portfolio])
     lstm3_tensor = LSTM(lstm2_units, bias_regularizer=L1L2(0.001, 0.001))(lstm_portfolio_input)
