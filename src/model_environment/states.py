@@ -35,6 +35,7 @@ class States:
 
     def __init__(self, init_n_stocks, init_money, commision, time_serie=None, id_cache=None):
 
+        
         self._historic_profit = []
         self.terminal = False
         self._id_cache = id_cache
@@ -49,6 +50,7 @@ class States:
         self._n_stocks = self.init.n_stocks
         self.money = self.init.money
         self.commision = commision
+        self._max_float_purchases = self._get_max_float_purchases()
 
     @property
     def n_stocks(self):
@@ -58,7 +60,19 @@ class States:
     def n_stocks(self, n_stocks):
         self._incr_n_stocks = n_stocks - self._n_stocks
         self._n_stocks = n_stocks
-        
+
+    @property
+    def max_sales(self):
+        return self._n_stocks
+
+    @property
+    def max_float_purchases(self):
+        return self._max_float_purchases
+
+    @property
+    def max_purchases(self):
+        return int(self._max_float_purchases)
+
     @property
     def historic_profit(self):
         return self._historic_profit
@@ -107,6 +121,8 @@ class States:
         self.terminal = self.time == len(self.time_serie) - 1
         #save profit
         self._historic_profit.append(self.profit)
+        #update max purchases
+        self._max_float_purchases = self._get_max_float_purchases()
         
     def reset_n_stocks(self):
         self._incr_n_stocks = 0
@@ -119,14 +135,18 @@ class States:
         self.time = 0
         self._stock_price = self.init.stock_price
 
-    def reset(self):
+    def reset(self): 
         self.terminal = False
         self._historic_profit = []
         self.reset_time()
         self.reset_money()
         self.reset_n_stocks()
-        
+        self._max_float_purchases = self._get_max_float_purchases()
 
+    def _get_max_float_purchases(self):
+        return self.money / (self.stock_price + self.commision)
+
+        
     def _init_time_serie(self, time_serie):
 
         if self._id_cache is not None:

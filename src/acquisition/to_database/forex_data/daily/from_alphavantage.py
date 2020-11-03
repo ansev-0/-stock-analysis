@@ -1,13 +1,12 @@
-from src.acquisition.to_database.stock_data.daily_adjusted.update_daily_adjusted \
-     import UpdateDailyAdj
-from src.acquisition.acquisition.alphavantage.timeseries import TimeSeries
+from src.acquisition.to_database.forex_data.daily.update_daily import UpdateDaily
+from src.acquisition.acquisition.alphavantage.forex import Forex
 from src.acquisition.to_database.tools.to_database import CreateDictsWithSameId
-from src.acquisition.to_database.stock_data.save_many import SaveMany
+from src.acquisition.to_database.forex_data.save_many import SaveMany
 
+class UpdateDailyAlphavantage(UpdateDaily):
 
-class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
     '''
-    This class is an interface to save the daily adjusted data of the Alphavantage API
+    This class is an interface to save the daily forex data of the Alphavantage API
 
     Parameters
     ----------
@@ -24,6 +23,7 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         compact returns only the latest 100 data points in the daily time series;
         full returns the full-length daily time series.
     '''
+
     def __init__(self, apikey, outputsize='full', new_database='create', **kwargs):
 
         #Get outputsize
@@ -31,22 +31,24 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         #Create connection to the database
         super().__init__(new_database=new_database)
         # Create reader from AlphaVantage
-        self.__reader = TimeSeries(apikey=apikey, **kwargs)
+        self.__reader = Forex(apikey=apikey, **kwargs)
         self._create_dict_to_db = CreateDictsWithSameId('daily')
 
 
-    def to_database(self, company):
+    def to_database(self, from_symbol, to_symbol):
+
         '''
-        This function save in DataBase the data of the specified company,
+        This function save in DataBase the data of the specified pair (from_symbol, to_symbol),
         when an API error is obtained, the error returns,
         if no error is obtained, nothing returns (None)
         '''
 
         #Get response from reader Api Alphavantage
-        response = self.__read_from_alphavantage(company=company)
+        response = self.__read_from_alphavantage(from_symbol, to_symbol)
 
         if isinstance(response, tuple):
             return response
+
         #Get data
         # list(response) get keys of response dict,
         # the seconds key contains the data,
@@ -58,36 +60,29 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         #Get correct format
         list_dicts_to_update = self._create_dict_to_db(data)
         #Call to update
-        self.update(list_dicts_to_update=list_dicts_to_update, company=company)
-
+        self.update(list_dicts_to_update=list_dicts_to_update, 
+                    from_symbol=from_symbol, to_symbol=to_symbol)
         return None
 
+    def __read_from_alphavantage(self, from_symbol, to_symbol):
 
-    def __read_from_alphavantage(self, company):
         '''
         This function gets the API response,
         returns a dictionary if the answer does not contain errors,
         and a list if there are errors.
         '''
-        return self.__reader.get_daily_adjusted(symbol=company,
-                                                outputsize=self._outputsize)
+        return self.__reader.get_daily(from_symbol=from_symbol,
+                                       to_symbol= to_symbol,
+                                       outputsize=self._outputsize)
 
-    @classmethod
-    def full(cls, apikey, **kwargs):
-        return cls(apikey=apikey, outputsize='full', **kwargs)
-
-    @classmethod
-    def compact(cls, apikey, **kwargs):
-        return cls(apikey=apikey, outputsize='compact', **kwargs)
-
-
-class UpdateDailyAdjAlphaVantageMany(UpdateDailyAdjAlphaVantage):
+class UpdateDailyAlphaVantageMany(UpdateDailyAlphavantage):
 
     __save_many=SaveMany()
     
-    def to_database_getting_errors(self, list_company):
-        return self.__save_many.save_and_return_errors(self.to_database, list_company)
+    def to_database_getting_errors(self, list_queries):
+        return self.__save_many.save_and_return_errors(self.to_database, list_queries)
 
-    def to_database_ignoring_errors(self, list_company):
-        return self.__save_many.save(self.to_database, list_company)
+    def to_database_ignoring_errors(self, list_queries):
+        return self.__save_many.save(self.to_database, list_queries)
+
 

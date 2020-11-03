@@ -16,7 +16,7 @@ class RunQlearningEnv(RunEnv):
         if not self.states_actions.terminal:
             self.states_actions.step()
 
-        return self.states_actions.max_purchases, self.states_actions.max_sales
+        return self.states_actions.stock_price, self.states_actions.max_float_purchases, self.states_actions.n_stocks
 
     def transition_with_rewards(self, action, n_stocks=None, frac=None):
 
@@ -56,8 +56,9 @@ class RunQlearningEnv(RunEnv):
                                                          max_sales=current_max_sales)
 
 
-        return rewards, (self.states_actions.max_purchases, \
-            self.states_actions.max_sales)
+        return rewards, (self.states_actions.stock_price, 
+                         self.states_actions.max_float_purchases,
+                         self.states_actions.n_stocks)
 
     def reset(self):
         self.states_actions.reset()
