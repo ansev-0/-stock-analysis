@@ -5,6 +5,7 @@ from src.exceptions.readbase_exceptions import GetFromDataBaseError
 class ForexDataFromDataBase(DataFromDataBase):
     '''
     This class is used for reading forex_data databases.
+    
     '''
 
     def get(self, from_symbol, to_symbol, start, end, **kwargs):
