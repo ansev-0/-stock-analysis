@@ -38,12 +38,14 @@ class States:
         self._historic_profit = []
         self.terminal = False
         self._id_cache = id_cache
-        self._time_serie = self._init_time_serie(time_serie).values
-        self._time_serie_diff = self._time_serie.diff().values
+        #get time series
+        time_serie = self._init_time_serie(time_serie)
+        self._time_serie = time_serie.values
+        self._time_serie_diff = time_serie.diff().values
         self.time = 0
         self._stock_price = self._time_serie[self.time]
         self.init = InitState(init_n_stocks, init_money, self._stock_price, commision)
-        self._incr_n_stocks = None
+        self._incr_n_stocks = 0
         self._n_stocks = self.init.n_stocks
         self.money = self.init.money
         self.commision = commision
@@ -107,7 +109,7 @@ class States:
         self._historic_profit.append(self.profit)
         
     def reset_n_stocks(self):
-        self._incr_n_stocks = None
+        self._incr_n_stocks = 0
         self._n_stocks = self.init.n_stocks
 
     def reset_money(self):

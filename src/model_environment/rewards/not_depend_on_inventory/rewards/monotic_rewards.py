@@ -8,42 +8,54 @@ class MonoticCumulativeRewards(BaseNotDependOnInventoryReward):
         blocks = monotic_blocks(diff, diff_serie=True)
         return diff[::-1].groupby(blocks, sort=False).cumsum()[::-1].dropna().rename('sell_rewards')
 
-
 class LossOpportunityPenaltyRewards(MonoticCumulativeRewards):
 
-    def get_reward(self, time, max_purchases, max_sales, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._penalty_reward = self._time_values.diff(-1).dropna().values
+        self._buy_cum_rewards = self.mapper_action_rewards['buy']
+
+    def get_reward(self, time, max_purchases, *args, **kwargs):
 
         try:
-            return self.rewardnode(self._get_penalty(time, max_purchases, max_sales)) 
+            return self.rewardnode(self._get_penalty(time, max_purchases)) 
 #
         except KeyError as error:
             keys_str = ' or '.join(self.mapper_action_rewards.keys())
             raise KeyError(error, f'You must pass : {keys_str}' )
 
 
-    def _get_penalty(self, time, max_purchases, max_sales):
-        return self._get_negative_penalty(max_purchases, max_sales, time) \
-            if self._necessary_penalty(time) else 0
+    def _get_penalty(self, time, max_purchases):
+        return max_purchases * self._penalty_reward[time] \
+            if self._necessary_unit_penalty(time) else 0
+
+    def _necessary_unit_penalty(self, time):
+        return self._buy_cum_rewards[time] > 0 
 
 
-    def _get_negative_penalty(self, max_purchases, max_sales, time):
-        
-        pos_buy_reward = self._positive_penalty_from_action('buy', time)
-        if pos_buy_reward:
-            return -pos_buy_reward * max_purchases
+class SellRewards(MonoticCumulativeRewards):
 
-        pos_sell_reward = self._positive_penalty_from_action('sell', time)
-        if pos_sell_reward:
-            return -pos_sell_reward * max_sales
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._sell_rewards = self._time_values.diff(-1).dropna().values
+        self._sell_cum_rewards = self.mapper_action_rewards['sell']
 
-        raise ValueError('Invalid mapper')
+    def get_reward(self, action, time, n_stocks, *args, **kwargs):
 
-    def _positive_penalty_from_action(self, action, time):
-        reward = self.mapper_action_rewards[action][time]
-        return reward if reward > 0 else False
-        
-    def _necessary_penalty(self, time):
-        return self.mapper_action_rewards['no_action'][time] < 0
+        try:
+            return self.rewardnode(self._get_sell_reward(action, time, n_stocks)) 
+#
+        except KeyError as error:
+            keys_str = ' or '.join(self.mapper_action_rewards.keys())
+            raise KeyError(error, f'You must pass : {keys_str}' )
+
+
+    def _get_sell_reward(self, action, time, n_stocks):
+        return n_stocks * self._sell_rewards[time] \
+            if ('action' == 'sell') and (self._sell_cum_rewards[time] > 0) else 0
+
+
+
 
         
 class MonoticCumulativeRewardsNotAction(MonoticCumulativeRewards):

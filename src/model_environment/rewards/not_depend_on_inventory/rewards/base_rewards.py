@@ -70,7 +70,7 @@ class BaseNotDependOnInventoryReward(NotDependOnInventoryReward, metaclass=ABCMe
         sell -= self.commision
         no_actions_serie = no_actions_serie.where(no_actions_serie.le(0),
                                                   no_actions_serie.mul(self.gamma_pos_not_actions))
-        self._mapper_action_rewards = self._get_dict_mapper(no_actions_serie, sell, buy)
+        self._mapper_action_rewards = self._get_dict_mapper(no_actions_serie.values, sell.values, buy.values)
 
     @staticmethod
     def _get_dict_mapper(*args):
