@@ -16,5 +16,4 @@ class CheckErrorsSaveFromApi(DataBaseAdminAcquisition):
             raise ToDataBaseError(f'Invalid API: {self.api}, the valid API are: {list_apis}',
                                   ValueError)
     def __get_apis(self):
-        collection_intraday = self.database[self.collection]
-        return list(map(lambda x: x['_id'], collection_intraday.find({}, projection='_id')))
+        return list(map(lambda x: x['_id'], self.database[self.collection].find({}, projection='_id')))

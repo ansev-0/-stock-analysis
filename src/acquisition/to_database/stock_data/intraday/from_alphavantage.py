@@ -76,9 +76,6 @@ class UpdateIntradayAlphaVantage(UpdateIntraday):
 
         return None
 
-
-
-
     def __read_from_alphavantage(self, company):
         '''
         This function gets the API response,
