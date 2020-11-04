@@ -9,24 +9,39 @@ class CommisionDegiro(Commision):
                  date_range=None,
                  from_db=True, 
                  fixed=None, 
-                 variables=None, 
+                 vars=None, 
                  frecuency='daily'):
 
-            self._find_commision = FindCommisionFromBroker('degiro', frecuency)
-            self._fixed, self._variables = self._find_commision.in_usd(date_range) \
-                if from_db else fixed, variables
+            self._fixed = None
+            self._vars = None
+            self._find_commision = FindCommisionFromBroker(frecuency, 'degiro')
+
+            if from_db:
+                self._fixed, self._vars = self._find_commision.in_usd(date_range)
+            else:
+                self._fixed, self._vars = fixed, vars
 
     @property
     def fixed(self):
         return self._fixed
 
     @property
-    def variables(self):
-        return self._variables
+    def vars(self):
+        return self._vars
 
 
     def __call__(self, n_stocks, time=None):
-        return self._variables * n_stocks + self._fixed[time] if time is not None\
-            else self._variables * n_stocks + self._fixed
+        return self._vars * n_stocks + self._fixed[time] if time is not None\
+            else self._vars * n_stocks + self._fixed
 
 
+commision = CommisionDegiro(date_range=('01/01/2010', '01/01/2012'))
+
+output = commision(n_stocks=10, time=0)
+#0.76050
+print(output)
+
+
+output = commision(n_stocks=100, time=0)
+#0.76050
+print(output)

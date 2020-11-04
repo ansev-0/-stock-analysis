@@ -5,12 +5,12 @@ class FindCommisionFromBroker(FindBrokers):
     
     def __init__(self, frecuency, *args, **kwargs):
          self._reader_exchange = ForexDataFromDataBase(db_name=f'forex_data_{frecuency}')
+         super().__init__(*args, **kwargs)
 
     def in_usd(self, date_range):
 
         commisions = self.find_one({'_id' : 'commision'},
-                                    projection={'fixed' : 1, 
-                                                'variables' : 1})
+                                    projection={'_id' : 0})
 
         return self._commisions_to_coin('USD', commisions, date_range)
 
@@ -19,17 +19,10 @@ class FindCommisionFromBroker(FindBrokers):
         start, end = date_range
 
         for commision in commisions.values():
-            commision['value'] = float(commision['value'])
-
             if commision['units'] != coin:
                 commision['value'] *= self._reader_exchange.get(start=start, 
                                                                 end=end, 
                                                                 from_symbol=commision['units'], 
                                                                 to_symbol=coin)['close']
 
-        return commisions['fixed'], commisions['variables']
-
-
-
-
-    
+        return commisions['fixed']['value'], commisions['variables']['value']
