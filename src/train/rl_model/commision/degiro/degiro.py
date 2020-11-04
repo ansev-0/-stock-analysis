@@ -4,10 +4,15 @@ from src.brokers.database.commision.find import FindCommisionFromBroker
 class CommisionDegiro(Commision):
 
     measurement_units = 'USD'
-    _find_commision = FindCommisionFromBroker('degiro')
 
-    def __init__(self, from_db=True, date_range=None, fixed=None, variables=None):
+    def __init__(self, 
+                 date_range=None,
+                 from_db=True, 
+                 fixed=None, 
+                 variables=None, 
+                 frecuency='daily'):
 
+            self._find_commision = FindCommisionFromBroker('degiro', frecuency)
             self._fixed, self._variables = self._find_commision.in_usd(date_range) \
                 if from_db else fixed, variables
 
@@ -20,7 +25,8 @@ class CommisionDegiro(Commision):
         return self._variables
 
 
-    def __call__(self, n_stocks, time):
-        return self._variables * n_stocks + self._fixed[time]
+    def __call__(self, n_stocks, time=None):
+        return self._variables * n_stocks + self._fixed[time] if time is not None\
+            else self._variables * n_stocks + self._fixed
 
 
