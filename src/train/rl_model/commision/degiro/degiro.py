@@ -30,7 +30,7 @@ class CommisionDegiro(Commision):
         return self._vars
 
 
-    def __call__(self, n_stocks, time=None):
+    def __call__(self, n_stocks, time=None, *args, **kwargs):
         return self._vars * n_stocks + self._fixed[time] if time is not None\
             else self._vars * n_stocks + self._fixed
 

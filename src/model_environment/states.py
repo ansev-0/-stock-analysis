@@ -1,56 +1,46 @@
 from src.train.database.cache.agents.find import FindAgentTrainCache
+from src.model_environment.init_state import InitState
 import pandas as pd
 import numpy as np
 
 
-class InitState:
-
-    def __init__(self,  init_n_stocks, init_money, init_stock_price, commision):
-
-        self.n_stocks = init_n_stocks
-        self.money = init_money
-        self.commision = commision
-        self.stock_price = init_stock_price
-        self._gross_inventory_price = self._get_gross_inventory_price()
-        self._inventory_price = self._get_inventory_price()
-
-
-    @property
-    def gross_inventory_price(self):
-        return self._gross_inventory_price
-
-    @property
-    def inventory_price(self):
-        return self._inventory_price
-
-    def _get_gross_inventory_price(self):
-        return self.n_stocks * self.stock_price
-
-    def _get_inventory_price(self):
-        return self.n_stocks * (self.stock_price - self.commision)
-
-        
 
 class States:
 
     def __init__(self, init_n_stocks, init_money, commision, time_serie=None, id_cache=None):
 
-        
+        self.time = 0
         self._historic_profit = []
         self.terminal = False
         self._id_cache = id_cache
+        #get commision object
+        self.commision = commision
         #get time series
         time_serie = self._init_time_serie(time_serie)
         self._time_serie = time_serie.values
         self._time_serie_diff = time_serie.diff().values
-        self.time = 0
+        #get stock price
         self._stock_price = self._time_serie[self.time]
-        self.init = InitState(init_n_stocks, init_money, self._stock_price, commision)
+        #init state
+        self.init = InitState(init_n_stocks, 
+                              init_money, 
+                              self._stock_price, 
+                              self.commision(time=self.time,
+                                             n_stocks=init_n_stocks, 
+                                             price=self._stock_price)
+                            )
         self._incr_n_stocks = 0
         self._n_stocks = self.init.n_stocks
         self.money = self.init.money
-        self.commision = commision
         self._max_float_purchases = self._get_max_float_purchases()
+
+    @property
+    def money(self):
+        return self.money
+
+    @money.setter
+    def money(self, money):
+        self.money = money
 
     @property
     def n_stocks(self):
@@ -96,7 +86,7 @@ class States:
 
     @property
     def inventory_price(self):
-        return self.n_stocks * (self.stock_price - self.commision)
+        return self.gross_inventory_price - self._get_commision_costs(self.n_stocks)
 
     @property
     def gross_inventory_price(self):
@@ -106,16 +96,13 @@ class States:
     def profit(self):
         return self.inventory_price + self.money - self.init.money - self.init.inventory_price
 
-    @property
-    def incr_profit(self):
-        return self._time_serie_diff[self.time] * self.n_stocks \
-             - self.commision * self._incr_n_stocks * (1 + np.sign(self._incr_n_stocks))
-
     @property     
     def inventory_empty(self):
         return self.n_stocks > 0
 
+
     def step(self):
+        
         self.time += 1
         self._stock_price = self.time_serie[self.time]
         self.terminal = self.time == len(self.time_serie) - 1
@@ -143,6 +130,10 @@ class States:
         self.reset_n_stocks()
         self._max_float_purchases = self._get_max_float_purchases()
 
+    def _get_commision_costs(self, n_stocks):
+        return self.commision(n_stocks=n_stocks, price=self.stock_price, time=self.time)
+
+
     def _get_max_float_purchases(self):
         return self.money / (self.stock_price + self.commision)
 
@@ -159,5 +150,3 @@ class States:
 
         raise ValueError('You must pass time_series or id_cache parameters')
     
-
-

@@ -1,17 +1,33 @@
 from src.model_environment.states import States
+from src.model_environment.actions.basic import BasicActions
 
-class StatesActions(States):
+class StatesActions(States, BasicActions):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._commision_costs = 0
+
+    @property
+    def commision_costs(self):
+        return self._commision_costs
+
+    @property
+    def incr_profit(self):
+        return self._time_serie_diff[self.time] * self.n_stocks - self._commision_costs
+
+    def reset(self):
+        super().reset()
+        self._commision_costs = 0
 
     def do_action(self, action, n_stocks=None, frac=None):
-        return self._transaction(action, n_stocks, frac)  if action != 'no_action' else self._no_action()
-
+        return self._transaction(action, n_stocks, frac)  \
+            if action != 'no_action' else self._no_action()
 
     def n_sales_for_percentage(self, perc):
         return int(perc * self.n_stocks)
 
     def n_purchases_for_percentage(self, perc):
-        return int(self.max_float_purchases * perc)
+        return int(perc * self.max_float_purchases)
 
     def enough_money_to_buy(self, n):
         return n <= self.max_purchases
@@ -20,7 +36,6 @@ class StatesActions(States):
         return n <= self.n_stocks
 
     def take_money_out(self, money):
-
         if money <= self.money:
             self.money -= money
             return self.money
@@ -45,22 +60,14 @@ class StatesActions(States):
             n_stocks = self.n_purchases_for_percentage(frac)
 
         if (n_stocks > 0) and (frac_arg or self.enough_money_to_buy(n_stocks)):
-
             if not frac_arg:
                 frac = n_stocks // self.max_purchases
 
-            return (frac, *self._order_buy(n_stocks))
-
+            self._commision_costs = self._get_commision_costs(n_stocks)
+            self.order_buy(n_stocks)
+            return frac, n_stocks, True
         else:
             return self._no_action()
-
-
-    def _order_buy(self, n_stocks):
-
-        self.n_stocks += n_stocks
-        income = - 1 * n_stocks * (self.stock_price + self.commision)
-        self.money += income
-        return n_stocks, True
 
 
     def _sell(self, n_stocks=None, frac=None):
@@ -69,35 +76,21 @@ class StatesActions(States):
         if frac_arg:
             n_stocks = self.n_sales_for_percentage(frac)
 
-
         if (n_stocks > 0) and (frac_arg or self.enough_stock_to_sell(n_stocks)):
-
             if not frac_arg:
                 frac = n_stocks // self.n_stocks
 
-            return (frac, *self._order_sell(n_stocks))
+            self._commision_costs = self._get_commision_costs(n_stocks)
+            self.order_sell(n_stocks)
+            return frac, n_stocks, True
         else: 
              return self._no_action()
 
-    def _order_sell(self, n_stocks):
-        self.n_stocks -= n_stocks
-        income = n_stocks * (self.stock_price - self.commision)
-        self.money += income
-        return n_stocks, True
-
-
     def _no_action(self):
+        self._commision_costs = 0
         return 0, 0, False
 
     @staticmethod
     def _check_valid_action_parameters(action, frac):
          if (action and frac) or (action is None and frac is None): 
              raise ValueError('You must pass action or frac parameters')
-
-
-
-
-
-
-
-
