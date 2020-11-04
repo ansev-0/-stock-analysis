@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractproperty, abstractmethod
 
 class Commision:
-    
+
     @abstractproperty
     def fixed(self):
         pass

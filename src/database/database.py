@@ -58,3 +58,11 @@ class DataBaseAdminUsers(DataBase):
     '''
     pass
 
+
+class DataBaseAdminBrokers(DataBase):
+    '''
+    This class is used to create the client related to the brokers.
+    '''
+    pass
+
+
