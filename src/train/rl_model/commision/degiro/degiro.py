@@ -36,12 +36,3 @@ class CommisionDegiro(Commision):
 
 
 commision = CommisionDegiro(date_range=('01/01/2010', '01/01/2012'))
-
-output = commision(n_stocks=10, time=0)
-#0.76050
-print(output)
-
-
-output = commision(n_stocks=100, time=0)
-#0.76050
-print(output)
