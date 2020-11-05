@@ -25,4 +25,7 @@ class GetDataTask:
 
     @staticmethod
     def _reindex_and_fill(df, index):
-        return df.asfreq('D').loc[index].ffill()
+        forex_df = df.asfreq('D').loc[index].ffill()
+        assert forex_df.index == index
+        
+        return forex_df

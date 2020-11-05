@@ -6,8 +6,9 @@ class FormQlearning(dict):
                      'train_states_actions', 'validation_states_actions', 
                      'actions',
                      'conf_build_agent', 'conf_call_agent', 
-                     'path', 'cache_id_train', 'cache_id_validation')
-
+                     'path', 'cache_id_train', 'cache_id_validation',
+                     'commision_cache')
+                     
     def __init__(self, **kwargs):
 
         super().__init__(**{self._check_key(key) : value 
