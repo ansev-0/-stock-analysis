@@ -1,6 +1,6 @@
 class FormQlearning(dict):
 
-    _valid_fields = ('_id', 'stock_name', 'delays', 'based_on', 
+    _valid_fields = ('_id', 'stock_name', 'broker,' 'delays', 'based_on', 
                      'data_train_limits', 'data_validation_limits', 
                      'rewards', 'rewards_not_done', 
                      'train_states_actions', 'validation_states_actions', 

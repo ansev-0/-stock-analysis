@@ -62,6 +62,5 @@ class StockDataTask:
             ids.append(id)
         return  tuple(ids)
 
-
     def remove(self, id_cache):
         return RemoveAgentTrainCache().delete_id(id_cache)
