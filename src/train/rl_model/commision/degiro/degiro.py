@@ -31,8 +31,4 @@ class CommisionDegiro(Commision):
 
 
     def __call__(self, n_stocks, time=None, *args, **kwargs):
-        return self._vars * n_stocks + self._fixed[time] if time is not None\
-            else self._vars * n_stocks + self._fixed
-
-
-commision = CommisionDegiro(date_range=('01/01/2010', '01/01/2012'))
+        return self._vars * n_stocks + self._fixed[time] if n_stocks > 0 else 0 

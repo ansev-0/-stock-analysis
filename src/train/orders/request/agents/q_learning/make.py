@@ -6,6 +6,7 @@ from src.train.orders.request.agents.q_learning.tasks_for_request.path import Pa
 from src.train.orders.request.agents.q_learning.tasks_for_request.reward import RewardTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.states_actions_parameters import StatesActionParametersTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.stock_data.stock_data import StockDataTask
+from src.train.orders.request.agents.q_learning.tasks_for_request.forex_data.forex_data import ForexDataTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.stock_name import StockNameTask
 from src.train.orders.database.agents.create.train_order import CreateTrainOrderAgent
 from src.train.orders.request.agents.q_learning.form import FormQlearning
@@ -14,6 +15,7 @@ class MakeQlearningRequest:
 
     _make_stock_name_task = StockNameTask()
     _make_stock_data_task = StockDataTask()
+    _make_forex_data_task = ForexDataTask()
     _make_reward_task = RewardTask()
     _make_states_action_parameters_task = StatesActionParametersTask()
     _make_based_on_task = BasedOnTask()
@@ -52,11 +54,20 @@ class MakeQlearningRequest:
         # make stock name task
         self._make_stock_name_task(form['stock_name'])
         # make stock data task
-        self._cache_id_train, self._cache_id_validation = self._make_stock_data_task(
+        idx_train, idx_val, self._cache_id_train, self._cache_id_validation = self._make_stock_data_task(
              **{key : value for key, value in form.items()
                 if key in ('stock_name', 'data_train_limits',
                            'data_validation_limits', 'delays')}
             )
+
+        # make forex reward
+        self._make_forex_data_task(
+             **{key : value for key, value in form.items()
+                if key in ('stock_name', 'data_train_limits',
+                           'data_validation_limits')}, 
+                           index_train=idx_train, index_validation=idx_val
+        )
+        
         # save cache_id
         form['cache_id_train'], form['cache_id_validation'] = self._cache_id_train, self._cache_id_validation
         # make reward task

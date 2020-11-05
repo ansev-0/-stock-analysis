@@ -31,16 +31,16 @@ class States:
                             )
         self._incr_n_stocks = 0
         self._n_stocks = self.init.n_stocks
-        self.money = self.init.money
+        self._money = self.init.money
         self._max_float_purchases = self._get_max_float_purchases()
 
     @property
     def money(self):
-        return self.money
+        return self._money
 
     @money.setter
     def money(self, money):
-        self.money = money
+        self._money = money
 
     @property
     def n_stocks(self):
@@ -94,7 +94,7 @@ class States:
 
     @property
     def profit(self):
-        return self.inventory_price + self.money - self.init.money - self.init.inventory_price
+        return self.inventory_price + self._money - self.init.money - self.init.inventory_price
 
     @property     
     def inventory_empty(self):
@@ -102,7 +102,7 @@ class States:
 
 
     def step(self):
-        
+
         self.time += 1
         self._stock_price = self.time_serie[self.time]
         self.terminal = self.time == len(self.time_serie) - 1
@@ -116,13 +116,14 @@ class States:
         self._n_stocks = self.init.n_stocks
 
     def reset_money(self):
-        self.money = self.init.money
+        self._money = self.init.money
 
     def reset_time(self):
         self.time = 0
         self._stock_price = self.init.stock_price
 
     def reset(self): 
+
         self.terminal = False
         self._historic_profit = []
         self.reset_time()
@@ -135,7 +136,8 @@ class States:
 
 
     def _get_max_float_purchases(self):
-        return self.money / (self.stock_price + self.commision)
+        self.commision.fixed[self.time]
+        return (self._money - self.commision.fixed[self.time]) / (self.stock_price + self.commision.vars)
 
         
     def _init_time_serie(self, time_serie):

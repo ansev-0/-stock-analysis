@@ -20,9 +20,9 @@ class BasicActions:
 
     def order_sell(self, n_stocks):
 
-        self.n_stocks += n_stocks
-        self.money -= n_stocks * self.stock_price - self.commision_costs
+        self.n_stocks -= n_stocks
+        self.money += n_stocks * self.stock_price - self.commision_costs
 
     def order_buy(self, n_stocks):
         self.n_stocks += n_stocks
-        self.money -= n_stocks * self.stock_price - self.commision_costs
+        self.money -= n_stocks * self.stock_price + self.commision_costs
