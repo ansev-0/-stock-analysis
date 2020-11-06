@@ -3,8 +3,10 @@ from src.train.database.cache.agents.create import CreateAgentTrainCache
 from src.train.database.cache.agents.delete import RemoveAgentTrainCache
 
 class DataTask(metaclass=ABCMeta):
+
     _create_agent_cache = CreateAgentTrainCache()
     _remove_cache = RemoveAgentTrainCache()
+    
     @property
     @classmethod
     @abstractmethod
