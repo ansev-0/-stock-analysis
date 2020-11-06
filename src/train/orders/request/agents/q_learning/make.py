@@ -15,7 +15,7 @@ class MakeQlearningRequest:
 
     _make_stock_name_task = StockNameTask()
     _make_stock_data_task = StockDataTask()
-    _make_broker_commision_task = BrokerCommisionTask()
+    
     _make_reward_task = RewardTask()
     _make_states_action_parameters_task = StatesActionParametersTask()
     _make_based_on_task = BasedOnTask()
@@ -33,7 +33,8 @@ class MakeQlearningRequest:
         form = FormQlearning(**form_dict)
         try:
             valid_form_dict = self._form_making_tasks(form)
-        except Exception:
+        except Exception as error:
+            print(error)
             self._remove_cache_if_errors()
         else:
             return CreateTrainOrderAgent(form['stock_name'])(**self._form_to_db_dict(valid_form_dict))
@@ -61,9 +62,11 @@ class MakeQlearningRequest:
             )
 
         # get commision cache
-        form['commision_cache'] = self._make_broker_commision_task(index_train=idx_train,
-                                                                   index_validation=idx_val, 
-                                                                   delays=form['delays'])
+        _make_broker_commision_task = BrokerCommisionTask(form['broker'])
+        form['cache_id_commision_train'], form['cache_id_commision_validation'] = \
+            _make_broker_commision_task(index_train=idx_train,
+                                        index_val=idx_val, 
+                                        delays=form['delays'])
         
         # save cache_id
         form['cache_id_train'], form['cache_id_validation'] = self._cache_id_train, self._cache_id_validation

@@ -1,13 +1,13 @@
 class FormQlearning(dict):
 
-    _valid_fields = ('_id', 'stock_name', 'broker,' 'delays', 'based_on', 
+    _valid_fields = ('_id', 'stock_name', 'broker', 'delays', 'based_on', 
                      'data_train_limits', 'data_validation_limits', 
                      'rewards', 'rewards_not_done', 
                      'train_states_actions', 'validation_states_actions', 
                      'actions',
                      'conf_build_agent', 'conf_call_agent', 
                      'path', 'cache_id_train', 'cache_id_validation',
-                     'commision_cache')
+                     'cache_id_commision_train', 'cache_id_commision_validation')
                      
     def __init__(self, **kwargs):
 

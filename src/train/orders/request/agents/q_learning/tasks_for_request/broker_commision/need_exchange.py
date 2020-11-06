@@ -17,14 +17,14 @@ class NeedExchangeTask:
 
     def __call__(self):
 
-        return tuple(
-            ('USD', unit) for unit in
-            map(
-                lambda commision: commision['units'],
-                self._broker.find_one({'_id' : 'commision'},
-                                      projection={'_id' : 0}).values()
-                )
-            if unit != 'USD'
+        return {commision_type : 
+                ('USD', commision['units']) 
+                for commision_type, commision in \
 
-        )
+                self._find_broker.find_one({'_id' : 'commision'},
+                                           projection={'_id' : 0}).items()
+                
+                if commision['units'] != 'USD'
+
+        }
         

@@ -5,7 +5,7 @@ from src.train.orders.request.agents.q_learning.tasks_for_request.data_task impo
 
 class ForexDataTask(DataTask):
 
-    feautures = ('close', )
+    features = ('close', )
     data_from_db = GetDataTask()
     def __call__(self, from_symbol, to_symbol, index_train, index_val, delays):
 
@@ -22,7 +22,7 @@ class ForexDataTask(DataTask):
         #get data
         train_data, validation_data = self.data_from_db(from_symbol, to_symbol, 
                                                         index_train, index_val, 
-                                                        delays)
+                                                        )
         #get_features
         train_features = self._get_features(train_data)
         validation_features = self._get_features(validation_data)

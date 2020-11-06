@@ -7,15 +7,25 @@ class BrokerCommisionTask:
 
     _forex_data_task = ForexDataTask()
 
-    def _init__(self, broker):
+    def __init__(self, broker):
         self.broker = broker
 
     def __call__(self, index_train, index_val, delays):
 
-        return tuple(self._forex_data_task(from_symbol, to_symbol, 
+        commision_dict = {commision_type : self._forex_data_task(*symbols, 
                                            index_train, index_val, 
                                            delays) 
-                     for from_symbol, to_symbol in self._need_broker_exchange)
+                          for commision_type, symbols in self._need_broker_exchange.items()}
+
+        return self._get_dict_output(commision_dict)
+
+    @staticmethod
+    def _get_dict_output(commmision_dict):
+        tup = {}, {}
+        for key, value in commmision_dict.items():
+            for i, val in enumerate(value):
+                tup[i][key] = val
+        return tup
 
     @property
     def broker(self):
