@@ -26,7 +26,7 @@ class CommisionDegiro(Commision):
 
     @classmethod
     def from_cache_train(cls, dict_cache):
-        return cls(*DecodeCommisionCache()(dict_cache))
+        return cls(*DecodeCommisionCache(('fixed', 'variables'))(dict_cache))
         
 
     def __call__(self, n_stocks, time=None, *args, **kwargs):
