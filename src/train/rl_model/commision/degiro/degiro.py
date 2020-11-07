@@ -1,5 +1,6 @@
 from src.train.rl_model.commision.commision import Commision
 from src.brokers.database.commision.find import FindCommisionFromBroker
+from src.train.rl_model.commision.decode_commision_cache import DecodeCommisionCache
 
 class CommisionDegiro(Commision):
 
@@ -25,7 +26,7 @@ class CommisionDegiro(Commision):
 
     @classmethod
     def from_cache_train(cls, dict_cache):
-        return cls(*DecodeCommisionCacheTrain()(dict_cache))
+        return cls(*DecodeCommisionCache()(dict_cache))
         
 
     def __call__(self, n_stocks, time=None, *args, **kwargs):
