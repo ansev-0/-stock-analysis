@@ -1,7 +1,9 @@
 from src.brokers.database.find import FindBrokers
 from src.read_database.forex_data import ForexDataFromDataBase
+from src.train.database.cache.agents.find import FindAgentTrainCache
 
-class FindCommisionFromBroker(FindBrokers):
+
+class FindCommisionFromBrokerAndForexDB(FindBrokers):
     
     def __init__(self, frecuency, *args, **kwargs):
          self._reader_exchange = ForexDataFromDataBase(db_name=f'forex_data_{frecuency}')
@@ -26,4 +28,5 @@ class FindCommisionFromBroker(FindBrokers):
                                                                 to_symbol='USD')['close']
 
         return commisions['fixed']['value'], commisions['variables']['value']
+
 

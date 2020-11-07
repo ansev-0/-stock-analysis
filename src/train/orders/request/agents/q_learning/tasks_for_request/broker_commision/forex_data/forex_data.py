@@ -7,35 +7,23 @@ class ForexDataTask(DataTask):
 
     features = ('close', )
     data_from_db = GetDataTask()
-    def __call__(self, from_symbol, to_symbol, index_train, index_val, delays):
 
-        data_prep = self._data_preparation(from_symbol, to_symbol,
-                                           index_train, 
-                                           index_val,
-                                           delays)
+    def __call__(self, from_symbol, to_symbol, index, delays):
 
-        return self._to_cache(data_prep)
+        return self._to_cache(
+            self._data_preparation(from_symbol, 
+                                   to_symbol, 
+                                   index, 
+                                   delays)
+        )
             
-
-    def _data_preparation(self, from_symbol, to_symbol, index_train, index_val, delays):
-        
-        #get data
-        train_data, validation_data = self.data_from_db(from_symbol, to_symbol, 
-                                                        index_train, index_val, 
-                                                        )
+    def _data_preparation(self, from_symbol, to_symbol, index, delays):
         #get_features
-        train_features = self._get_features(train_data)
-        validation_features = self._get_features(validation_data)
+        features = self._get_features(self.data_from_db(from_symbol, to_symbol, index))
         #embed sequences
         transform_features = TransformData(delays)
-
-        return transform_features(train_features), transform_features(validation_features)
+        return transform_features(features)
                 
-
-    @staticmethod
-    def _get_limits_from_index(index):
-        return tuple(index[[0,-1]])
-
 
 
 

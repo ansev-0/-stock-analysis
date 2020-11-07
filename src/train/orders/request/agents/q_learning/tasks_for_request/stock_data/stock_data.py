@@ -15,7 +15,7 @@ class StockDataTask(DataTask):
                                            data_validation_limits, 
                                            delays)
 
-        return (*data_prep[-2:], *self._to_cache(data_prep[:-2]))
+        return (*data_prep[-2:], *tuple(self._to_cache(data) for data in data_prep[:2]))
             
 
     def _data_preparation(self, stock_name, data_train_limits, data_validation_limits, delays):

@@ -6,18 +6,15 @@ class GetDataTask:
 
     _reader = ForexDataFromDataBase.daily_dataframe()
 
-    def __call__(self, from_symbol, to_symbol, index_train, index_val):
+    def __call__(self, from_symbol, to_symbol, index):
 
-        return tuple(
-            map(
-                lambda index: self._reindex_and_fill(
-                    self._reader.get(from_symbol, 
-                                     to_symbol, 
-                                     *self._get_limits_from_index(index)), 
-                    index),
-                (index_train, index_val))
-                    )
+        return self._reindex_and_fill(
 
+            self._reader.get(from_symbol, 
+                             to_symbol, 
+                             *self._get_limits_from_index(index)), 
+            index
+        )
     @staticmethod
     def _get_limits_from_index(index):
         return tuple(index[[0,-1]])

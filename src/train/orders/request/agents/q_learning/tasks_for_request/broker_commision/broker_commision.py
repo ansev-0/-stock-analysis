@@ -12,20 +12,19 @@ class BrokerCommisionTask:
 
     def __call__(self, index_train, index_val, delays):
 
-        commision_dict = {commision_type : self._forex_data_task(*symbols, 
-                                           index_train, index_val, 
-                                           delays) 
-                          for commision_type, symbols in self._need_broker_exchange.items()}
+        return tuple(self._get_commision_for_index(index, delays) 
+                     for index in (index_train, index_val))
 
-        return self._get_dict_output(commision_dict)
 
-    @staticmethod
-    def _get_dict_output(commmision_dict):
-        tup = {}, {}
-        for key, value in commmision_dict.items():
-            for i, val in enumerate(value):
-                tup[i][key] = val
-        return tup
+
+
+    def _get_commision_for_index(self, index, delays):
+
+        return {commision_type : {'cache_id' : self._forex_data_task(*data['symbols'], index, delays),
+                                  'value' : data['value']} \
+                if isinstance(data, dict) else {'value' : data} \
+                for commision_type, data in self._need_broker_exchange.items()}
+
 
     @property
     def broker(self):

@@ -7,7 +7,7 @@ class Commision:
         pass
 
     @abstractproperty
-    def variables(self):
+    def vars(self):
         pass
 
     @property

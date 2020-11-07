@@ -28,21 +28,17 @@ class DataTask(metaclass=ABCMeta):
                          dayofyear=df.index.dayofyear)\
             .loc[:, ('weekday', 'dayofyear') + self.features]
 
-    def _to_cache(self, data_prep_result):
-        ids = []
+    def _to_cache(self, data):
 
-        for i, _ in enumerate(('train', 'validation')):
-            id, _ = self._create_agent_cache(
+            return self._create_agent_cache(
                 **dict(
                         zip(
                             ('sequences', 'time_values'), 
-                            data_prep_result[i]
+                            data
                             )
                         )
-            )  
-            ids.append(id)
+            )[0]
 
-        return  tuple(ids)
 
     def remove(self, id_cache):
         return self._remove_cache.delete_id(id_cache)
