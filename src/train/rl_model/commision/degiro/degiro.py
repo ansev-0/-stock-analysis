@@ -29,5 +29,9 @@ class CommisionDegiro(Commision):
         return cls(*DecodeCommisionCache(('fixed', 'variables'))(dict_cache))
         
 
-    def __call__(self, n_stocks, time=None, *args, **kwargs):
+    def __call__(self, n_stocks, time, *args, **kwargs):
         return self._vars * n_stocks + self._fixed[time] if n_stocks > 0 else 0 
+
+
+#commision = CommisionDegiro.from_cache_train({'fixed' : {'cache_id' : 107, 'value' : 0.5}, 'variables' : {'value' : 0.004}})
+#pass

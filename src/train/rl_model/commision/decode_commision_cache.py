@@ -1,20 +1,21 @@
-from src.train.orders.database.agents.find import FindTrainAgent
+from src.train.database.cache.agents.find import FindAgentTrainCache
 import pandas as pd
 
 class DecodeCommisionCache:
 
-    _find_in_cache = FindTrainAgent()
+    _find_in_cache = FindAgentTrainCache()
 
     def __init__(self, type_commisions):
         self.type_commisions = type_commisions
 
 
     def __call__(self, dict_cache):
-        return tuple(self._decode_param(dict_param) for dict_param in dict_cache.items())
+        return tuple(self._decode_param(param, dict_param) for param, dict_param in dict_cache.items())
         
     def _build_serie_from_db(self, cache_id):
-        return pd.Series(self._find_in_cache.find_by_id(cache_id, 
-                                                        projection={'time_values' : 1})['time_values'])
+        return pd.Series(
+            self._find_in_cache.find_by_id(cache_id, 
+                                           projection={'time_values' : 1})['time_values'])[:-1]
 
     def _decode_param(self, param, dict_param):
         #check valid type commision

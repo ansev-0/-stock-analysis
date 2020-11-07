@@ -56,9 +56,13 @@ class DecodeOrder:
 
 
     def _decode_states_actions(self, order_dict):
-        train_states_actions = self._decoder_states_actions(order_dict['train_states_actions'])
+        train_states_actions = self._decoder_states_actions(order_dict['broker'], 
+                                                            order_dict['train_states_actions'], 
+                                                            order_dict['cache_id_commision_train'])
         try:
-            validation_states_actions = self._decoder_states_actions(order_dict['validation_states_actions'])
+            validation_states_actions = self._decoder_states_actions(order_dict['broker'], 
+                                                                     order_dict['validation_states_actions'], 
+                                                                     order_dict['cache_id_commision_validation'])
         except KeyError:
             validation_states_actions = None
         return train_states_actions, validation_states_actions
