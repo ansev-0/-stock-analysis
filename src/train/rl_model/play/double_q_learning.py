@@ -8,7 +8,7 @@ import numpy as np
 
 class PlayDoubleQlearning(metaclass=ABCMeta):
 
-    def __init__(self, q_eval, env, states_price):
+    def __init__(self, q_eval, env, states_price, states_commision):
 
         
         self._q_eval = q_eval
@@ -16,6 +16,7 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
         self._shape_env_features = self.q_eval.get_layer('states_env').output_shape[1:]
         self._states_env = StatePortfolio(self._shape_env_features)
         self.states_price = states_price
+        self.states_commision = states_commision
 
 
     @property
@@ -47,7 +48,7 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
 
 
     def _current_state(self):
-        return self.states_price[self.env.states_actions.time], self.states_env.values
+        return self.states_price[self.env.states_actions.time], self.states_commision[self.env.states_actions.time], self.states_env.values
 
     def _agent_choose_action(self, current_state):
         state = list(map(lambda state: state[np.newaxis, :], current_state))
@@ -90,7 +91,9 @@ class PlayAndRememberDoubleQlearning(PlayDoubleQlearning):
         super().__init__(*args, **kwargs)
 
         self.memory =  ReplayBuffer(mem_size, 
-                                    (self.states_price.shape[1:], self.shape_env_features),
+                                    (self.states_price.shape[1:], 
+                                     self.states_commision.shape[1:], 
+                                     self.shape_env_features),
                                     len(self.env.action_spaces),
                                     discrete=False)
 
@@ -107,15 +110,18 @@ class PlayAndRememberDoubleQlearning(PlayDoubleQlearning):
             #choose action
             action = self.choose_action(current_state, 
                                         random_probability)
+
             # do action, step and get reward
             reward, next_state_env_tuple = self.env.eval_with_rewards(action)
+            # done
+            done = self.env.states_actions.done
             #update env states
             self.states_env.update_last(*next_state_env_tuple)
             #remember state_env
             if not step == len(self.env.states_actions.time_serie) - 1:
                 next_state = self._current_state()
                 self.memory.store_transition(current_state, action, reward, 
-                                             next_state, False)
+                                             next_state, done)
                 #update state
                 current_state = next_state
 

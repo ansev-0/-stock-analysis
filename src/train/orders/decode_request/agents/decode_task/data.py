@@ -1,6 +1,6 @@
 from src.train.database.cache.agents.find import FindAgentTrainCache
 
-class DecodeStockDataTask:
+class DecodeDataTask:
 
     _find_sequences = FindAgentTrainCache()
     _projection = {'_id' : 0, 'time_values' : 0}

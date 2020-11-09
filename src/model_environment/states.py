@@ -16,9 +16,9 @@ class States:
         #get commision object
         self.commision = commision
         #get time series
-        time_serie = self._init_time_serie(time_serie)
-        self._time_serie = time_serie.values
-        self._time_serie_diff = time_serie.diff().values
+        self._pandas_time_serie = self._init_time_serie(time_serie)
+        self._time_serie = self._pandas_time_serie.values
+        self._time_serie_diff = self._pandas_time_serie.diff().values
         #get stock price
         self._stock_price = self._time_serie[self.time]
         #init state
@@ -33,6 +33,11 @@ class States:
         self._n_stocks = self.init.n_stocks
         self._money = self.init.money
         self._max_float_purchases = self._get_max_float_purchases()
+        self._done = self._get_serie_done()
+
+    @property
+    def done(self):
+        return self._done[self.time]
 
     @property
     def money(self):
@@ -151,4 +156,9 @@ class States:
             return time_serie
 
         raise ValueError('You must pass time_series or id_cache parameters')
+
+
+    def _get_serie_done(self):
+        return (self._pandas_time_serie.lt(self._pandas_time_serie.shift())
+            & self._pandas_time_serie.lt(self._pandas_time_serie.shift(-1))).values
     

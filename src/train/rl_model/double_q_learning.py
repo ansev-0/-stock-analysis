@@ -41,10 +41,12 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
     def train(self, 
               epochs,
               train_data, 
+              train_commision,
               env_train, 
               mem_size=None,
               batch_learn_size=None,
               validation_data=None, 
+              validation_commision=None,
               env_validation=None, 
               freq_update=1, 
               sort=True,
@@ -57,10 +59,12 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         self._batch_learn_size = train_data.shape[0] - 1 if batch_learn_size is None else mem_size
         self._epsilon_decay.reset()
         self._agent_training = PlayAndRememberDoubleQlearning(mem_size=mem_size, 
-                                                               q_eval=self.q_eval, env=env_train,
-                                                               states_price=train_data)
+                                                              q_eval=self.q_eval, env=env_train,
+                                                              states_price=train_data,
+                                                              states_commision=train_commision,
+                                                            )
         #set validation func
-        self._set_validation_func(validation_data, env_validation) 
+        self._set_validation_func(validation_data, validation_commision, env_validation) 
         # do epochs
         self._epochs(epochs, sort, replace, freq_update, validation_random, *args, **kwargs)
         #reset agent
@@ -100,8 +104,8 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         # replay sample of experience
         memory = self._tuple_mem_features(
             self._agent_training.memory.sample_buffer(self._batch_learn_size,
-                                                           sort=sort, 
-                                                           replace=replace)
+                                                      sort=sort, 
+                                                      replace=replace)
         )
         # agent learn
         return self.learn(memory, *args, **kwargs)
@@ -109,11 +113,12 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
     def _validation(self, *args):
         self._agent_validation.play(*args)
 
-    def _set_validation_func(self, validation_data, env_validation):
+    def _set_validation_func(self, validation_data, validation_commision, env_validation):
         if validation_data is not None and env_validation is not None:
             self._agent_validation = PlayValidationDoubleQlearning(q_eval=self.q_eval, 
                                                                    env=env_validation, 
-                                                                   states_price=validation_data)
+                                                                   states_price=validation_data,
+                                                                   states_commision=validation_commision)
             self._validation_func = self._validation
         else:
             self._validation_func = lambda probability, *args, **kwargs: None

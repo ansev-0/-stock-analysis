@@ -1,4 +1,4 @@
-from src.train.orders.decode_request.agents.decode_task.stock_data import DecodeStockDataTask
+from src.train.orders.decode_request.agents.decode_task.data import DecodeDataTask
 from src.model_environment.rewards.dynamic.reward import BuilderReward
 from src.train.orders.decode_request.agents.decode_task.reward import DecodeRewardTask
 from src.train.orders.decode_request.agents.decode_task.states_actions import DecodeStatesActionsTask
@@ -10,7 +10,7 @@ from src.tools.mongodb import decode_array_from_mongodb
 
 class DecodeOrder:
 
-    _decoder_stock_data = DecodeStockDataTask()
+    _decoder_data = DecodeDataTask()
     _decoder_reward = DecodeRewardTask()
     _decoder_states_actions = DecodeStatesActionsTask()
     _decoder_actions = DecodeActionsTask()
@@ -19,7 +19,8 @@ class DecodeOrder:
     def __call__(self, order_dict):
         train_params = {}
         #get tensor
-        train_params['train_data'], train_params['validation_data'] = self._decode_stock_data(order_dict)
+        (train_params['train_data'], train_params['validation_data'], 
+         train_params['train_commision'], train_params['validation_commision']) = self._decode_data(order_dict)
         # get rewards
         reward_done, reward_not_done = self._decode_reward(order_dict)
         # get sim states action
@@ -36,20 +37,33 @@ class DecodeOrder:
         #return agent and params to call train function
         return lambda: self._decode_conf_agent(order_dict).train(**train_params, **order_dict['conf_call_agent'])
 
-    def _decode_stock_data(self, order_dict):
+    def _decode_data(self, order_dict):
 
         train_sequences = decode_array_from_mongodb(
-            self._decoder_stock_data(order_dict['cache_id_train'])['sequences']
+            self._decoder_data(order_dict['cache_id_train'])['sequences']
+            )
+
+        train_commision_sequences = decode_array_from_mongodb(
+            self._decoder_data(order_dict['cache_id_commision_train']['fixed']['cache_id'])['sequences']
             )
 
         try:
             validation_sequences = decode_array_from_mongodb(
-                self._decoder_stock_data(order_dict['cache_id_validation'])['sequences']
+                self._decoder_data(order_dict['cache_id_validation'])['sequences']
                 )
+
         except KeyError:
             validation_sequences = None
 
-        return train_sequences, validation_sequences
+        try:
+            validation_commision_sequences = decode_array_from_mongodb(
+                self._decoder_data(order_dict['cache_id_commision_validation']['fixed']['cache_id'])['sequences']
+                )
+        except KeyError:
+            validation_commision_sequences = None
+
+
+        return train_sequences, validation_sequences, train_commision_sequences, validation_commision_sequences
 
     def _decode_reward(self, order_dict):
         return self._decoder_reward(order_dict['rewards']), self._decoder_reward(order_dict['rewards_not_done'])

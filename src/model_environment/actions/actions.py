@@ -28,6 +28,7 @@ class StatesActions(States, BasicActions):
         self._action_done = False
 
     def do_action(self, action, n_stocks=None, frac=None):
+        self._action_done = True
         return self._transaction(action, n_stocks, frac)  \
             if action != 'no_action' else self._no_action()
 
@@ -54,7 +55,6 @@ class StatesActions(States, BasicActions):
     def _transaction(self, action, n_stocks, frac):
         try:
             self._check_valid_action_parameters(n_stocks, frac)
-            self._action_done = True
             return getattr(self, f'_{action}')(n_stocks, frac)
 
         except Exception as error:
