@@ -1,6 +1,6 @@
 import numpy as np
 
-def risk_by_transaction_size(reward, action=None, frac=None, tau_n=0.01, tau_frac=1, n_stocks=None, p_n_stocks=0.5, p_frac=0.5,  *args, **kwargs):
+def risk_by_transaction_size(reward, action=None, frac=None, tau_n=0.001, tau_frac=0.5, n_stocks=None, p_n_stocks=0.5, p_frac=0.5,  *args, **kwargs):
     
     if action == 'buy':
 

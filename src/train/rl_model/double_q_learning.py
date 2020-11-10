@@ -12,6 +12,7 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                  interface_epoch_train=None, 
                  interface_epoch_validation=None):
         
+        self._file_model = file_model
         self._gamma = gamma
         self._interface_epoch_train = self._get_interface(interface_epoch_train)
         self._interface_epoch_validation = self._get_interface(interface_epoch_validation)
@@ -63,6 +64,8 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                                                               states_price=train_data,
                                                               states_commision=train_commision,
                                                             )
+
+        print(train_data[1:3, -1, 5])
         #set validation func
         self._set_validation_func(validation_data, validation_commision, env_validation) 
         # do epochs
@@ -141,6 +144,9 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                                 self._agent_validation.env,
                                 self._agent_validation.states_env,
                                 fit_result)
+
+        if epoch % 5 == 0:
+            self._q_eval.save(self._file_model)
 
     @staticmethod
     def _tuple_mem_features(memory):
