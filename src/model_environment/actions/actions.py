@@ -106,12 +106,13 @@ class StatesActions(States, BasicActions):
          if (action and frac) or (action is None and frac is None): 
              raise ValueError('You must pass action or frac parameters')
 
-from src.train.rl_model.commision.degiro.degiro import CommisionDegiro
-import pandas as pd
-
-commision = CommisionDegiro.from_db(frecuency='daily', date_range=('01/01/2010', '01/01/2012'))
-states_actions = StatesActions(0, 1000, commision, time_serie=pd.Series(range(len(commision.fixed))), done_rule = 'local_min_or_max')
-
+#from src.train.rl_model.commision.degiro.degiro import CommisionDegiro
+#import pandas as pd
+#
+#commision = CommisionDegiro.from_db(frecuency='daily', date_range=('01/01/2010', '01/01/2012'))
+#states_actions = StatesActions((0, 10, 2), (0, 1000, 50), commision, time_serie=pd.Series(range(len(commision.fixed))), done_rule = 'local_min_or_max')
+#states_actions.reset()
+#states_actions.reset()
 #print(
 #states_actions.commision.fixed[:7],
 #states_actions.commision_costs,

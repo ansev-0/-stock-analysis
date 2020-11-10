@@ -7,6 +7,7 @@ class States:
     def __init__(self, init_n_stocks, init_money, commision, time_serie=None, cache_id=None, done_rule='local_min'):
 
         #init
+        self._init_money = None
         self._max_float_purchases = None
         self._done = None
         self._stock_price = None
@@ -25,12 +26,12 @@ class States:
         self.init = InitState(init_n_stocks, 
                               init_money, 
                               self._stock_price, 
-                              self.commision(time=self.time,
-                                             n_stocks=init_n_stocks, 
-                                             price=self._stock_price)
+                              lambda init_n_stocks: self.commision(time=self.time,
+                                                                   n_stocks=init_n_stocks, 
+                                                                   price=self._stock_price)
                             )
-        self.reset_money()
         self.reset_n_stocks()
+        self.reset_money()
         self._update_max_float_purchases()
 
         
@@ -85,7 +86,7 @@ class States:
 
     @property
     def profit(self):
-        return self.inventory_price + self._money - self.init.money - self.init.inventory_price
+        return self.inventory_price + self._money - self._init_money - self.init.inventory_price
 
     def step(self):
         self.time += 1
@@ -98,8 +99,11 @@ class States:
         self._incr_n_stocks = 0
         self._n_stocks = self.init.n_stocks
 
+
     def reset_money(self):
-        self._money = self.init.money
+        self._init_money = self.init.money
+        self._money = self._init_money
+
 
     def reset_time_properties(self):
         self.time = 0
