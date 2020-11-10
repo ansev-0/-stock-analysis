@@ -12,7 +12,7 @@ from src.tools.mongodb import decode_array_from_mongodb
 class DecodeOrder:
 
     _decoder_data = DecodeDataTask()
-    _decoder_forex_data = DecodeDataTask()
+    _decoder_forex_data = DecodeForexDataTask()
     _decoder_reward = DecodeRewardTask()
     _decoder_states_actions = DecodeStatesActionsTask()
     _decoder_actions = DecodeActionsTask()

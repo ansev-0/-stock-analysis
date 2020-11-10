@@ -34,7 +34,7 @@ class States:
         self._money = self.init.money
         self._max_float_purchases = self._get_max_float_purchases()
         self._done = self._get_serie_done()
-
+        
     @property
     def done(self):
         return self._done[self.time]

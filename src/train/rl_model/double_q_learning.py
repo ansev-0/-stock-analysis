@@ -65,7 +65,7 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                                                               states_commision=train_commision,
                                                             )
 
-        print(train_data[1:3, -1, 5])
+
         #set validation func
         self._set_validation_func(validation_data, validation_commision, env_validation) 
         # do epochs
