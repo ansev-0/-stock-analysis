@@ -4,7 +4,7 @@ from src.model_environment.init_state import InitState
 
 class States:
 
-    def __init__(self, init_n_stocks, init_money, commision, time_serie=None, cache_id=None):
+    def __init__(self, init_n_stocks, init_money, commision, time_serie=None, cache_id=None, done_rule='local_min'):
 
         #init
         self._max_float_purchases = None
@@ -19,7 +19,7 @@ class States:
         #get commision object
         self.commision = commision
         #get time values
-        self.time_states_values = TimeStatesValues(cache_id, time_serie)
+        self.time_states_values = TimeStatesValues(done_rule, cache_id, time_serie)
         self.reset_time_properties()
         #init state
         self.init = InitState(init_n_stocks, 

@@ -1,15 +1,16 @@
 from src.train.database.cache.agents.find import FindAgentTrainCache
+from src.model_environment.done_rule.done_rules import DoneRules
 import pandas as pd
 import numpy as np
 
 class TimeStatesValues:
 
-    def __init__(self, cache_id=None, time_data=None):
+    def __init__(self, done_rule, cache_id=None, time_data=None):
 
         self._cache_id = cache_id
         self._time_values = self._init_time_values(time_data)
         self._time_values_diff = np.concatenate(([np.nan], np.diff(self._time_values)))
-        self._time_values_done = self._get_values_done()
+        self._time_values_done = self._get_values_done(done_rule)
 
     def __len__(self):
         return len(self._time_values)
@@ -53,7 +54,6 @@ class TimeStatesValues:
                 )[:-1]
         )
 
-    def _get_values_done(self):
-        value_serie = pd.Series(self._time_values)
-        return (value_serie.lt(value_serie.shift())
-            & value_serie.lt(value_serie.shift(-1))).to_numpy()
+    def _get_values_done(self, done_rule):
+        return getattr(DoneRules(), done_rule)(self._time_values)
+

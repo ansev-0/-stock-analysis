@@ -19,3 +19,4 @@ class Commision:
     @abstractmethod
     def max_purchases(self):
         pass
+    
