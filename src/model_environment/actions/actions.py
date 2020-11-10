@@ -14,7 +14,7 @@ class StatesActions(States, BasicActions):
 
     @property
     def incr_profit(self):
-        return self._time_serie_diff[self.time] * self.n_stocks - self._commision_costs
+        return self._price_incr * self.n_stocks - self._commision_costs
 
     def reset(self):
         super().reset()
@@ -109,11 +109,11 @@ class StatesActions(States, BasicActions):
 #from src.train.rl_model.commision.degiro.degiro import CommisionDegiro
 #import pandas as pd
 #
-#commision = CommisionDegiro(date_range=('01/01/2010', '01/01/2012'))
+#commision = CommisionDegiro.from_db(frecuency='daily', date_range=('01/01/2010', '01/01/2012'))
 #states_actions = StatesActions(0, 1000, commision, time_serie=pd.Series(range(len(commision.fixed))))
 #
 #print(
-#states_actions.commision.fixed[:3],
+#states_actions.commision.fixed[:7],
 #states_actions.commision_costs,
 #states_actions.max_purchases,
 #states_actions.money,
@@ -145,7 +145,20 @@ class StatesActions(States, BasicActions):
 #'\n',
 #'-'*50,
 #'\n',
-#states_actions.do_action('buy', n_stocks=1, frac=None),
+#states_actions.do_action('sell', n_stocks=1, frac=None),
+#states_actions.money,
+#states_actions.commision_costs,
+#states_actions.profit,
+#states_actions.step(),
+#states_actions.commision_costs,
+#states_actions.profit,
+#states_actions.incr_profit,
+#states_actions.max_float_purchases,
+#
+#'\n',
+#'-'*50,
+#'\n',
+#states_actions.do_action('sell', n_stocks=states_actions.n_stocks, frac=None),
 #states_actions.money,
 #states_actions.commision_costs,
 #states_actions.profit,
@@ -191,7 +204,32 @@ class StatesActions(States, BasicActions):
 #'\n',
 #'-'*50,
 #'\n',
-#states_actions.do_action('buy', n_stocks=1, frac=None),
+#states_actions.do_action('sell', n_stocks=1, frac=None),
+#states_actions.money,
+#states_actions.commision_costs,
+#states_actions.profit,
+#states_actions.step(),
+#states_actions.commision_costs,
+#states_actions.profit,
+#states_actions.incr_profit,
+#states_actions.max_float_purchases,
+#
+#'\n',
+#'-'*50,
+#'\n',
+#states_actions.do_action('sell', n_stocks=states_actions.n_stocks, frac=None),
+#states_actions.money,
+#states_actions.commision_costs,
+#states_actions.profit,
+#states_actions.step(),
+#states_actions.commision_costs,
+#states_actions.profit,
+#states_actions.incr_profit,
+#states_actions.max_float_purchases,
+#'\n',
+#'-'*50,
+#'\n',
+#states_actions.do_action('sell', n_stocks=states_actions.n_stocks, frac=None),
 #states_actions.money,
 #states_actions.commision_costs,
 #states_actions.profit,
