@@ -1,4 +1,5 @@
 from src.train.orders.decode_request.agents.decode_task.data import DecodeDataTask
+from src.train.orders.decode_request.agents.decode_task.data import DecodeForexDataTask
 from src.model_environment.rewards.dynamic.reward import BuilderReward
 from src.train.orders.decode_request.agents.decode_task.reward import DecodeRewardTask
 from src.train.orders.decode_request.agents.decode_task.states_actions import DecodeStatesActionsTask
@@ -11,6 +12,7 @@ from src.tools.mongodb import decode_array_from_mongodb
 class DecodeOrder:
 
     _decoder_data = DecodeDataTask()
+    _decoder_forex_data = DecodeDataTask()
     _decoder_reward = DecodeRewardTask()
     _decoder_states_actions = DecodeStatesActionsTask()
     _decoder_actions = DecodeActionsTask()
@@ -39,26 +41,15 @@ class DecodeOrder:
 
     def _decode_data(self, order_dict):
 
-        train_sequences = decode_array_from_mongodb(
-            self._decoder_data(order_dict['cache_id_train'])['sequences']
-            )
-
-        train_commision_sequences = decode_array_from_mongodb(
-            self._decoder_data(order_dict['cache_id_commision_train']['fixed']['cache_id'])['sequences']
-            )
-
+        train_sequences = self._decoder_data(order_dict['cache_id_train'])
+        train_commision_sequences = self._decoder_forex_data(order_dict['cache_id_commision_train'])
+            
         try:
-            validation_sequences = decode_array_from_mongodb(
-                self._decoder_data(order_dict['cache_id_validation'])['sequences']
-                )
-
+            validation_sequences = self._decoder_data(order_dict['cache_id_validation'])
         except KeyError:
             validation_sequences = None
-
         try:
-            validation_commision_sequences = decode_array_from_mongodb(
-                self._decoder_data(order_dict['cache_id_commision_validation']['fixed']['cache_id'])['sequences']
-                )
+            validation_commision_sequences = self._decoder_forex_data(order_dict['cache_id_commision_validation'])
         except KeyError:
             validation_commision_sequences = None
 
