@@ -16,3 +16,6 @@ class Commision:
     def measurement_units(self):
         pass
     
+    @abstractmethod
+    def max_purchases(self):
+        pass

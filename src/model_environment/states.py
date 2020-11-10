@@ -120,7 +120,4 @@ class States:
         return self.commision(n_stocks=n_stocks, price=self.stock_price, time=self.time)
 
     def _update_max_float_purchases(self):
-        self.commision.fixed[self.time]
-        self._max_float_purchases = (self._money - self.commision.fixed[self.time]) / \
-            (self.stock_price + self.commision.vars)
-
+        self._max_float_purchases = self.commision.max_purchases(self.time, self._stock_price, self._money)
