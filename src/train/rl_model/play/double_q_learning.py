@@ -106,7 +106,7 @@ class PlayAndRememberDoubleQlearning(PlayDoubleQlearning):
         current_state = self._current_state()
 
 
-        for step in range(len(self.env.states_actions.time_serie)):
+        for step in range(len(self.env.states_actions.time_states_values)):
             #choose action
             action = self.choose_action(current_state, 
                                         random_probability)
@@ -118,7 +118,7 @@ class PlayAndRememberDoubleQlearning(PlayDoubleQlearning):
             #update env states
             self.states_env.update_last(*next_state_env_tuple)
             #remember state_env
-            if not step == len(self.env.states_actions.time_serie) - 1:
+            if not step == len(self.env.states_actions.time_states_values) - 1:
                 next_state = self._current_state()
                 self.memory.store_transition(current_state, action, reward, 
                                              next_state, done)
@@ -134,7 +134,7 @@ class PlayValidationDoubleQlearning(PlayDoubleQlearning):
         self.reset()
         current_state = self._current_state()
 
-        for _ in range(len(self.env.states_actions.time_serie)):
+        for _ in range(len(self.env.states_actions.time_states_values)):
             #choose action
             action = self.choose_action(current_state, 
                                         random_probability)
