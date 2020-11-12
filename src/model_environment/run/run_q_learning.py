@@ -61,15 +61,19 @@ class RunQlearningEnv(RunEnv):
                          self.states_actions.n_stocks)
 
     def reset(self):
-        self.states_actions.reset()
+
+        init_state = self.states_actions.reset()
         self.indexes_actions.reset()
 
         if self.reward_action_done is not None:
-            self.reward_action_done.reset() 
-
+            self.reward_action_done.reset()
 
         if self.reward_action_not_done is not None:
             self.reward_action_not_done.reset()
+
+        return init_state
+
+        
 
     @staticmethod
     def _check_valid_action(action):

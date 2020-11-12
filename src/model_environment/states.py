@@ -109,7 +109,11 @@ class States:
         self.time = 0
         self._update_time_vars()
 
-    def reset(self): 
+    def reset(self):
+        self._reset()
+        return self.stock_price, self.max_purchases, self.n_stocks
+
+    def _reset(self): 
         self._historic_profit = []
         self.reset_time_properties()
         self.reset_n_stocks()
