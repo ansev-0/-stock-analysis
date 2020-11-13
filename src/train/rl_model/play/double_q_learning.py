@@ -8,8 +8,8 @@ import numpy as np
 
 class PlayDoubleQlearning(metaclass=ABCMeta):
 
-    def __init__(self, q_eval, env, states_price, states_commision):
 
+    def __init__(self, q_eval, env, states_price, states_commision):
         
         self._q_eval = q_eval
         self.env = env
