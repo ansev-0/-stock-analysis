@@ -6,11 +6,11 @@ from src.model_environment.rewards.dynamic.build_dict_node import BuildDictNode
 class DynamicDictNodeBuilder(BuildDictNode):
 
     base_package = 'src.model_environment.rewards'
-    def __init__(self, type_reward):
+    def __init__(self, type_reward, builder_with_components=None):
         
         self._module = None
         self._name = None
-        self._dynamic_reward = DynamicRewards(type_reward)
+        self._dynamic_reward = DynamicRewards(type_reward, builder_with_components)
         self.type_reward = type_reward
         
 
