@@ -14,7 +14,7 @@ class NotDependOnInventoryReward(metaclass=ABCMeta):
 
     def get_reward(self, action, time, n_stocks, *args, **kwargs):
         try:
-            return self.rewardnode(self.mapper_action_rewards[action][time] * n_stocks) 
+            return self.rewardnode(self.mapper_action_rewards(action, time, n_stocks)) 
 
         except KeyError as error:
             keys_str = ' or '.join(self.mapper_action_rewards.keys())

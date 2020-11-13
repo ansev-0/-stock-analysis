@@ -2,6 +2,7 @@ from src.model_environment.rewards.dynamic.dynamic_node import DynamicNode
 
 
 class BuildDictNode:
+    
     def decode_node_params(self, **params):
         dict_params, rewardnode = {}, None
         for key, value in params.items():
