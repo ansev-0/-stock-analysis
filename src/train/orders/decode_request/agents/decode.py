@@ -10,6 +10,7 @@ from src.train.rl_model.double_q_learning import TrainAgentDoubleQlearning
 from src.tools.mongodb import decode_array_from_mongodb
 
 class DecodeOrder:
+    
     _create_builder = CreateBuilderTask()
     _decoder_data = DecodeDataTask()
     _decoder_forex_data = DecodeForexDataTask()
@@ -80,7 +81,7 @@ class DecodeOrder:
                                                                      builder_validation)
         except KeyError:
             validation_states_actions = None
-            
+
         return train_states_actions, validation_states_actions
 
     def _decode_run_env(self, 
