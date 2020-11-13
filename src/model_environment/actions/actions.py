@@ -3,8 +3,8 @@ from src.model_environment.actions.basic import BasicActions
 
 class StatesActions(States, BasicActions):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, time_values, init_n_stocks, init_money, commision, *args, **kwargs):
+        super().__init__(time_values, init_n_stocks, init_money, commision, *args, **kwargs)
         self._commision_costs = self.init.commision
         self._action_done = False
 

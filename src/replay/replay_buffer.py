@@ -108,6 +108,7 @@ class ReplayBuffer:
         self.terminal_memory[self.mem_ctr] = 1-int(done)
         #incr counter
         self.mem_ctr += 1
+
         self.mem_ctr %= self.mem_size
 
     def sample_buffer(self, batch_size, sort=False, replace=True):

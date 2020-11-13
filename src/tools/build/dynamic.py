@@ -7,6 +7,7 @@ class BuilderWithComponents:
 
     def register_component(self, name_component, component):
         self.components[name_component] = component
+        self.components = self.components.copy()
 
     def __call__(self, class_object, dkwargs):
         return class_object(**dkwargs, **self._filter_valids_components(class_object))

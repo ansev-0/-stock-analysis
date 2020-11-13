@@ -1,9 +1,7 @@
 from src.model_environment.rewards.dynamic.reward import BuilderReward
 
 class DecodeRewardTask:
-
-    def __init__(self, builder_with_components=None):
-        self._reward_builder = BuilderReward(builder_with_components)
+    _builder_reward = BuilderReward()
         
-    def __call__(self, reward_dict):
-        return self._reward_builder(reward_dict) if reward_dict else None
+    def __call__(self, reward_dict, builder_with_components):
+        return self._builder_reward(reward_dict, builder_with_components) if reward_dict else None

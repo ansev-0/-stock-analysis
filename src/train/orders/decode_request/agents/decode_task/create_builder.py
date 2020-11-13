@@ -16,7 +16,10 @@ class CreateBuilderTask:
         return DynamicCommision()(broker).from_cache_train(dict_cache_broker)
 
     def _load_serie_from_cache(self, cache_id):
+
         return pd.Series(FindAgentTrainCache().\
-                find_by_id(cache_id, 
-                           projection = {'time_values' : True,
-                                         '_id' : False})['time_values'])
+            find_by_id(cache_id, 
+                       projection = {'time_values' : True,
+                                     '_id' : False})['time_values'])
+
+

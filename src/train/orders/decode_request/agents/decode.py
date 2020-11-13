@@ -17,9 +17,7 @@ class DecodeOrder:
     _decoder_states_actions = DecodeStatesActionsTask()
     _decoder_actions = DecodeActionsTask()
     _decoder_conf_agent = DecodeConfBuildAgentTask()
-
-    def __init__(self):
-        self._decoder_reward = None
+    _decoder_reward = DecodeRewardTask()
 
     def __call__(self, order_dict):
         train_params = {}
@@ -68,16 +66,16 @@ class DecodeOrder:
         return train_sequences, validation_sequences, train_commision_sequences, validation_commision_sequences
 
     def _decode_reward(self, order_dict, builder_train):
-        self._decoder_reward = DecodeRewardTask(builder_train)
-        return self._decoder_reward(order_dict['rewards']), self._decoder_reward(order_dict['rewards_not_done'])
+        return self._decoder_reward(order_dict['rewards'], builder_train), \
+            self._decoder_reward(order_dict['rewards_not_done'], builder_train)
 
 
     def _decode_states_actions(self, order_dict, builder_train, builder_validation):
-        train_states_actions = self._decoder_states_actions(order_dict['broker'], 
+        train_states_actions = self._decoder_states_actions(order_dict['train_states_actions'], 
                                                             builder_train) 
 
         try:
-            validation_states_actions = self._decoder_states_actions(order_dict['broker'], 
+            validation_states_actions = self._decoder_states_actions(order_dict['validation_states_actions'], 
                                                                      builder_validation)
         except KeyError:
             validation_states_actions = None
