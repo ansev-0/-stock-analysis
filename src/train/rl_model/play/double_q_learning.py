@@ -8,8 +8,8 @@ import numpy as np
 
 class PlayDoubleQlearning(metaclass=ABCMeta):
 
-    def __init__(self, q_eval, env, states_price, states_commision):
 
+    def __init__(self, q_eval, env, states_price, states_commision):
         
         self._q_eval = q_eval
         self.env = env
@@ -38,8 +38,8 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
         pass
 
     def reset(self):
-        self.env.reset()
-        self.states_env.reset()
+        init_state = self.env.reset()
+        self.states_env.reset(init_state=init_state)
 
 
     def choose_action(self, current_states, random_probability):
@@ -48,7 +48,9 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
 
 
     def _current_state(self):
-        return self.states_price[self.env.states_actions.time], self.states_commision[self.env.states_actions.time], self.states_env.values
+        return self.states_price[self.env.states_actions.time], \
+            self.states_commision[self.env.states_actions.time], \
+            self.states_env.values
 
     def _agent_choose_action(self, current_state):
         state = list(map(lambda state: state[np.newaxis, :], current_state))

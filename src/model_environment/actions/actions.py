@@ -17,9 +17,10 @@ class StatesActions(States, BasicActions):
         return self._price_incr * self.n_stocks - self._commision_costs
 
     def reset(self):
-        super().reset()
+        init_states = super().reset()
         self._commision_costs = self.init.commision
         self._action_done = False
+        return init_states
 
     def step(self):
         if not self._action_done and self.time != 0:
