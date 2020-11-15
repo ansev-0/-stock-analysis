@@ -31,7 +31,7 @@ class DynamicRewards(ImportRewards, BuildNode):
             else class_object(**self.decode_node_params(**params))
 
     def _build_object_with_components(self, class_object, params):
-        return self._builder_with_components(class_object, **self.decode_node_params(**params))
+        return self._builder_with_components(class_object, self.decode_node_params(**params))
         
 
 

@@ -45,6 +45,7 @@ class RunQlearningEnv(RunEnv):
                                                      price = price,
                                                      frac=real_frac,
                                                      max_purchases=current_max_purchases,
+                                                     max_purchases_next_time=self.states_actions.max_purchases,
                                                      max_sales=current_max_sales)   
         else:
             rewards = self.reward_action_not_done.reward(current_profit=current_profit, 
@@ -53,6 +54,7 @@ class RunQlearningEnv(RunEnv):
                                                          time=time,
                                                          price=price,
                                                          max_purchases=current_max_purchases,
+                                                         max_purchases_next_time=self.states_actions.max_purchases,
                                                          max_sales=current_max_sales)
 
 

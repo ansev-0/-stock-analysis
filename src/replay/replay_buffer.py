@@ -129,7 +129,8 @@ class ReplayBuffer:
 
 
     def _update_save_action_function(self):
-        self._save_action_function = self._discrete_save_action_function if self.discrete else lambda action: action
+        self._save_action_function = self._discrete_save_action_function \
+            if self.discrete else lambda action: action
 
     def _discrete_save_action_function(self, action):
         actions = np.zeros(self.action_memory.shape[1], dtype=np.int8)

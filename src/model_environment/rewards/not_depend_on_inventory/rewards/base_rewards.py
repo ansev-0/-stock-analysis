@@ -40,24 +40,16 @@ class BaseNotDependOnInventoryReward(NotDependOnInventoryReward, metaclass=ABCMe
         return self._commision
 
 
-    @gamma_pos_not_actions.setter
-    def gamma_pos_not_actions(self, gamma_pos_not_actions):
-        self._gamma_pos_not_actions = gamma_pos_not_actions
-        self._get_mapper_action_rewards()
-
     def _get_mapper_action_rewards(self):
 
         sell = self._get_sell_serie()
         buy = sell.mul(-1).rename('buy_rewards')
-        mapper = self._get_dict_mapper(sell, buy)
+        mapper = self._get_dict_mapper(sell.values, buy.values)
 
-        self._mapper_action_rewards = lambda action, time, n_stocks: mapper[action] - \
+        self._mapper_action_rewards = lambda action, time, n_stocks: mapper[action][time] * n_stocks - \
             self._commision(n_stocks=n_stocks, 
                             stock_price=self.time_values[time], 
                             time=time) if action != 'no_action' else 0
-
-
-    
 
     @staticmethod
     def _get_dict_mapper(*args):
