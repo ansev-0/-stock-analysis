@@ -43,7 +43,7 @@ class BufferStates(dict):
             self[key][index_pos] = value
 
 
-    def get_pos(self, index_pos, names_filter=None):
+    def get_pos(self, index_pos, names_filter=None, return_dict=False):
 
         '''
         Returns the position of the specified index.
@@ -52,7 +52,8 @@ class BufferStates(dict):
         if names_filter is None:
             names_filter = self._names_states
 
-        return {key : self[key][index_pos] for key in names_filter}
+        return {key : self[key][index_pos] for key in names_filter} \
+            if return_dict else list(map(lambda key: self[key][index_pos], names_filter))
 
 
 

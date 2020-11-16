@@ -105,11 +105,14 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         #agent play
         self._agent_training.play(random_probability)
         # replay sample of experience
-        memory = self._tuple_mem_features(
-            self._agent_training.memory.sample_buffer(self._batch_learn_size,
-                                                      sort=sort, 
-                                                      replace=replace)
-        )
+        #memory = self._tuple_mem_features(
+        #    self._agent_training.memory.sample_buffer(self._batch_learn_size,
+        #                                              sort=sort, 
+        #                                              replace=replace)
+        #)
+        memory = self._agent_training.memory.sample_buffer(self._batch_learn_size,
+                                                           sort=sort, 
+                                                           replace=replace)
         # agent learn
         return self.learn(memory, *args, **kwargs)
 
@@ -148,11 +151,12 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         if epoch % 5 == 0:
             self._q_eval.save(self._file_model)
 
-    @staticmethod
-    def _tuple_mem_features(memory):
-        return tuple(list(mem.values()) if isinstance(mem, dict) 
-                     else mem 
-                     for mem in memory)
+    #@staticmethod
+    #def _tuple_mem_features(memory):
+    #    return tuple(list(mem.values()) if isinstance(mem, dict) 
+    #                 else mem 
+    #                 for mem in memory)
+
     @staticmethod
     def _get_interface(interface):
         if interface is not None and not isinstance(interface, tuple) and not isinstance(interface, list):
