@@ -5,9 +5,8 @@ from src.tools.colors import ColorsIntensistyRGB
 
 class ShowOperations:
 
-    def __init__(self, serie, n_operations):
+    def __init__(self, serie):
         self.serie = serie
-        self.n_operations = n_operations
         self._fig = None
         self._ax = None
 
@@ -28,15 +27,9 @@ class ShowOperations:
         self._fig.canvas.draw_idle()
         plt.pause(0.5)
         
-        
-
-
     def update_figure(self, args_tuple, kwargs_tuple):
-
         if len(self._ax.lines) > 1:
             self._remove_marks()
-
-
         self._draw_marks(args_tuple, kwargs_tuple)
         
     def _draw_marks(self, args_tuple, kwargs_tuple):

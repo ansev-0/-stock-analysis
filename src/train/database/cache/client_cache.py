@@ -1,9 +1,13 @@
-from src.database.database import DataBaseAdminTrainCache
+from src.database.database import DataBaseAdminTrain
 
+<<<<<<< HEAD
 class DataBaseTrainCache(DataBaseAdminTrainCache):
 <<<<<<< HEAD
     
 =======
+=======
+class DataBaseTrainCache(DataBaseAdminTrain):
+>>>>>>> 3dd98a6d398fa313d6c0153b6c036235ba5ff2e6
 
 >>>>>>> ee145a6a2fdce0a7c8f4eea604abe763799e0474
     def __init__(self, type_train):

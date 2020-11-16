@@ -42,6 +42,8 @@ class ImportRewards:
     def _join_module(self, module):
         return f'{self._package}.{module}'
 
+        
+
 class ImportDictRewards(ImportRewards):
 
     def from_many_modules(self, module_f_class_dict):

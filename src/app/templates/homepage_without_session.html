@@ -1,0 +1,36 @@
+{% extends 'base/base.html'%}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage_without_session0001.css') }}">
+{% endblock %}
+
+<header> 
+    <h1 class="title_header"> Financial Opt <h1>
+</header>
+
+<form class="sinin" method='POST'>
+    <br>
+        <div class="row">
+            <div class="form-group col-xs-12">
+                <button type="submit" name='button' value="sin in" class="button_sinin"> Sing in </button>
+            </div>
+        </div>
+</form>
+
+<form class="sinup" method='POST'>
+
+    <br>
+        <div class="row">
+            <div class="form-group col-xs-12">
+                <button type="submit" name='button' value="sin up" class="button_sinup"> Sing up </button>
+            </div>
+        </div>
+
+</form>
+
+{% endblock %}
+

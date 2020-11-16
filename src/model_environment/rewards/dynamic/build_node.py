@@ -1,12 +1,9 @@
-from src.model_environment.rewards.node import RewardNode
+from src.model_environment.rewards.dynamic.dynamic_node import DynamicNode
 
 class BuildNode:
 
     def decode_node_params(self, **params):
-<<<<<<< HEAD
-        return {key : RewardNode(**value) if key == 'rewardnode'
-=======
-        return {key : RewardNode(**value) if 'rewardnode' in key
->>>>>>> ee145a6a2fdce0a7c8f4eea604abe763799e0474
+        return {key : DynamicNode(**value) if 'rewardnode' in key
                 else value 
                 for key, value in params.items()}
+                

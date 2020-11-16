@@ -19,7 +19,7 @@ class Forex(AlphaVantage):
         return from_symbol, to_symbol, interval, outputsize, FUNCTION
 
     @AlphaVantage._get_data
-    def get__daily(self, from_symbol, to_symbol, outputsize='compact'):
+    def get_daily(self, from_symbol, to_symbol, outputsize='compact'):
         FUNCTION = 'FX_DAILY'
         return from_symbol, to_symbol, outputsize, FUNCTION
 

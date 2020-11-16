@@ -42,11 +42,12 @@ class LearnDoubleQlearning:
         # fit q_eval
         q_target[batch_index, actions] = rewards + terminal_signals * self.gamma * q_next[batch_index, max_actions]
         fit = self.q_eval.fit(states, q_target, *args, **kwargs)
-
+        
         return fit
 
     def update_q_target(self):
         self.q_target.set_weights(self.q_eval.get_weights())
+        
 
 
     def _get_indices_from_discrete_actions(self, actions):

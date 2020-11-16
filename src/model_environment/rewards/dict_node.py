@@ -14,6 +14,10 @@ class DictNode(dict, metaclass=ABCMeta):
 
     def __init__(self, rewardnode=None, **kwargs):
         self.rewardnode = rewardnode
+
+        for reward in kwargs.values():
+            self._check_valid_item(reward)
+            
         super().__init__(**kwargs)
 
     @property
@@ -27,13 +31,8 @@ class DictNode(dict, metaclass=ABCMeta):
 
     def __setitem__(self, reward_name, reward):
 
-        if np.any([isinstance(reward, type_node) 
-                   for type_node in  self._type_node]):
+            self._check_valid_item(reward)
             super().__setitem__(reward_name, reward)
-
-        else:
-            valid_types = ' or '.join(map(str, self._type_node))
-            raise TypeError(f'You must pass an instance of {valid_types}')
 
     def get_rewards(self, *args, **kwargs):
         return {key : value.get_reward(*args, **kwargs) 
@@ -46,6 +45,15 @@ class DictNode(dict, metaclass=ABCMeta):
     def total_rewards(self, *args, **kwargs):
         return np.sum([reward.total_reward(*args, **kwargs) 
                        for reward in self.values()])
+
+    def _check_valid_item(self, reward):
+
+        if not np.any([isinstance(reward, type_node) 
+                   for type_node in  self._type_node]):
+
+            valid_types = ' or '.join(map(str, self._type_node))
+            raise TypeError(f'You must pass an instance of {valid_types}')
+
 
     
 

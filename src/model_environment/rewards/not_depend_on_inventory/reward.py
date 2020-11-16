@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractproperty
 from src.model_environment.rewards.node import RewardNode
+from src.model_environment.rewards.errors.is_node import check_valid_rewardnode
 import numpy as np
 
 class NotDependOnInventoryReward(metaclass=ABCMeta):
@@ -11,9 +12,9 @@ class NotDependOnInventoryReward(metaclass=ABCMeta):
     def mapper_action_rewards(self):
         pass
 
-    def get_reward(self, action, time, n_stocks):
+    def get_reward(self, action, time, n_stocks, *args, **kwargs):
         try:
-            return self.rewardnode(self.mapper_action_rewards[action][time] * n_stocks) 
+            return self.rewardnode(self.mapper_action_rewards(action, time, n_stocks)) 
 
         except KeyError as error:
             keys_str = ' or '.join(self.mapper_action_rewards.keys())
@@ -25,10 +26,6 @@ class NotDependOnInventoryReward(metaclass=ABCMeta):
 
     @rewardnode.setter
     def rewardnode(self, rewardnode):
-        self._check_valid_rewardnode(rewardnode)
+        check_valid_rewardnode(rewardnode)
         self._rewardnode = rewardnode if rewardnode is not None else RewardNode()
 
-    @staticmethod
-    def _check_valid_rewardnode(rewardnode):
-        if  rewardnode is not None and  not isinstance(rewardnode, RewardNode):
-            raise ValueError(f'You must pass a instance of {RewardNode}')

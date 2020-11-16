@@ -1,11 +1,10 @@
-from collections import defaultdict
-import pandas as pd
 from src.acquisition.to_database.stock_data.intraday.update_intraday \
      import UpdateIntraday
 from src.acquisition.acquisition.alphavantage import timeseries
 from src.acquisition.to_database.stock_data.save_many import SaveMany
 from src.acquisition.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
     import CheckErrorsFromAlphaVantage
+from src.acquisition.to_database.tools.to_database import CreateDictsWithSameId
 
 class UpdateIntradayAlphaVantage(UpdateIntraday):
     '''
@@ -45,6 +44,9 @@ class UpdateIntradayAlphaVantage(UpdateIntraday):
         # Create reader from AlphaVantage
         self.__reader = timeseries.TimeSeries(apikey=apikey, **kwargs)
 
+        # custom dict
+        self._create_dict_to_db = CreateDictsWithSameId('intraday')
+
     def to_database(self, company):
         '''
         This function save in DataBase the data of the specified company,
@@ -68,31 +70,11 @@ class UpdateIntradayAlphaVantage(UpdateIntraday):
         self.__check_alphavantage.check_frecuency_in_key_data(key_data)
         #Update collection
         #Get correct format
-        list_dicts_to_update = self.__create_dicts_with_same_id(data)
+        list_dicts_to_update = self._create_dict_to_db(data)
         #Call to update
         self.update(list_dicts_to_update=list_dicts_to_update, company=company)
 
         return None
-
-    @staticmethod
-    def __create_dicts_with_same_id(data):
-        '''
-        This function adapts the format of the json received from the Alphavantage API
-        to the format necessary to update the database using :
-
-        update
-        '''
-
-        cumulative_dict = defaultdict(dict)
-        for date, values in data.items():
-            cumulative_dict[date[:10]].update({date : {name[3:] : value
-                                                       for name, value in values.items()}})
-
-        return list(map(lambda items: {'_id' : pd.to_datetime(items[0]),
-                                       'data' : items[1]},
-                        cumulative_dict.items())
-                   )
-
 
     def __read_from_alphavantage(self, company):
         '''

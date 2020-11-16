@@ -32,6 +32,12 @@ class OutputModelActionAdapter:
     def __init__(self, load_default=True):
         self._adapter = self._load_default_actions() if load_default else {}
 
+    @property
+    def n_actions(self):
+        return len(self._adapter)
+
+    def __str__(self):
+        return self._adapter
 
     def __call__(self):
         return self._adapter
@@ -40,18 +46,34 @@ class OutputModelActionAdapter:
         self._add_fracs('buy', buy_fracs)
         self._add_fracs('sell', buy_fracs)
 
+    def add_buy_fracs(self, buy_fracs):
+        self._add_fracs('buy', buy_fracs)
+
+    def add_sell_fracs(self, sell_fracs):
+        self._add_fracs('sell', sell_fracs)
 
     def add_n_stocks(self, buy_n_stocks, sell_n_stocks):
-        self._add_fracs('buy', buy_n_stocks)
-        self._add_fracs('sell', sell_n_stocks)
+        self._add_amount('buy', buy_n_stocks)
+        self._add_amount('sell', sell_n_stocks)
+
+    def add_buy_n_stocks(self, buy_n_stocks):
+        self._add_amount('buy', buy_n_stocks)
+
+    def add_sell_n_stocks(self, sell_n_stocks):
+        self._add_amount('sell', sell_n_stocks)
+
+    def add_no_action(self):
+        self._adapter.update({len(self._adapter) : dict(zip(self._keys, ('no_action', 0, None)))})
 
 
     def _add_fracs(self, action, fracs):
+        fracs = fracs if isinstance(fracs, list) or isinstance(fracs, tuple) else (fracs, )
         self._adapter.update({i : dict(zip(self._keys,
                                            (action, None, frac)))
         for i, frac in enumerate(fracs, len(self._adapter))})
 
     def _add_amount(self, action, n_stocks):
+        n_stocks = n_stocks if isinstance(n_stocks, list) or isinstance(n_stocks, tuple) else (n_stocks, )
         self._adapter.update({i : dict(zip(self._keys,
                                            (action, n_stock, None)))
         for i, n_stock in enumerate(n_stocks, len(self._adapter))})

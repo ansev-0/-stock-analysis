@@ -14,3 +14,6 @@ dist/
 src/models/save.py
 /src/models/path.py
 /models
+/src/app/static/images/
+/src/app/config.py
+/src/acquisition/collector_eur_to_usd.py

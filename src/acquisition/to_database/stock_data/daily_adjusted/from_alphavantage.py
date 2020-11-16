@@ -1,8 +1,7 @@
-from collections import defaultdict
-import pandas as pd
 from src.acquisition.to_database.stock_data.daily_adjusted.update_daily_adjusted \
      import UpdateDailyAdj
-from src.acquisition.acquisition.alphavantage import timeseries
+from src.acquisition.acquisition.alphavantage.timeseries import TimeSeries
+from src.acquisition.to_database.tools.to_database import CreateDictsWithSameId
 from src.acquisition.to_database.stock_data.save_many import SaveMany
 
 
@@ -22,20 +21,19 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
 
     outputsize: str.
         valid parameters = 'compact' and 'full'
-        compact returns only the latest 100 data points in the intraday time series;
-        full returns the full-length intraday time series.
+        compact returns only the latest 100 data points in the daily time series;
+        full returns the full-length daily time series.
     '''
     def __init__(self, apikey, outputsize='full', new_database='create', **kwargs):
 
         #Get outputsize
         self._outputsize = outputsize
-
         #Create connection to the database
         super().__init__(new_database=new_database)
-
-
         # Create reader from AlphaVantage
-        self.__reader = timeseries.TimeSeries(apikey=apikey, **kwargs)
+        self.__reader = TimeSeries(apikey=apikey, **kwargs)
+        self._create_dict_to_db = CreateDictsWithSameId('daily')
+
 
     def to_database(self, company):
         '''
@@ -58,30 +56,12 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         data = response[key_data]
         #Update collection
         #Get correct format
-        list_dicts_to_update = self.__create_dicts_with_same_id(data)
+        list_dicts_to_update = self._create_dict_to_db(data)
         #Call to update
         self.update(list_dicts_to_update=list_dicts_to_update, company=company)
 
         return None
 
-    @staticmethod
-    def __create_dicts_with_same_id(data):
-        '''
-        This function adapts the format of the json received from the Alphavantage API
-        to the format necessary to update the database using :
-
-        update
-        '''
-
-        cumulative_dict = defaultdict(dict)
-        for date, values in data.items():
-            cumulative_dict[date[:7]].update({date : {name[3:] : value
-                                                       for name, value in values.items()}})
-
-        return list(map(lambda items: {'_id' : pd.to_datetime(items[0]),
-                                       'data' : items[1]},
-                        cumulative_dict.items())
-                   )
 
     def __read_from_alphavantage(self, company):
         '''

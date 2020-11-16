@@ -108,6 +108,7 @@ class ReplayBuffer:
         self.terminal_memory[self.mem_ctr] = 1-int(done)
         #incr counter
         self.mem_ctr += 1
+
         self.mem_ctr %= self.mem_size
 
     def sample_buffer(self, batch_size, sort=False, replace=True):
@@ -128,7 +129,8 @@ class ReplayBuffer:
 
 
     def _update_save_action_function(self):
-        self._save_action_function = self._discrete_save_action_function if self.discrete else lambda action: action
+        self._save_action_function = self._discrete_save_action_function \
+            if self.discrete else lambda action: action
 
     def _discrete_save_action_function(self, action):
         actions = np.zeros(self.action_memory.shape[1], dtype=np.int8)

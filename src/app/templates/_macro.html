@@ -1,0 +1,10 @@
+{% macro render_field(field) %}
+
+<dd class="text_name"> 
+    {{ field.label }}
+</dd> 
+
+<dd class="text_name"> {{field(**kwargs)|safe}}</dd>
+
+{% endmacro %}
+
