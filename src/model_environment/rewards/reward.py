@@ -34,10 +34,6 @@ class Reward:
         return self._dict_rewards
 
     @dict_rewards.setter
-    def dict_rewards(self, dict_rewards):
-        self._check_valid_dict_rewards(dict_rewards)
-        self._dict_rewards = dict_rewards
-
     @property
     def rewardnode(self):
         return self._rewardnode
