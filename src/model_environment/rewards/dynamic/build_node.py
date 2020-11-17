@@ -6,3 +6,4 @@ class BuildNode:
         return {key : DynamicNode(**value) if 'rewardnode' in key
                 else value 
                 for key, value in params.items()}
+                

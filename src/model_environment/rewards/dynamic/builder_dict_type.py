@@ -34,7 +34,7 @@ class DynamicDictNodeBuilder(BuildDictNode):
 
     def build(self, module_obj_dict):
         params, rewardnode = self.decode_node_params(**module_obj_dict)
-
+        
         return self.dict_node_class(
             rewardnode=rewardnode, 
             **combine_dicts(*self._dynamic_reward.\

@@ -1,6 +1,7 @@
 from src.model_environment.rewards.not_depend_on_inventory.rewards.base_rewards import BaseNotDependOnInventoryReward
 from src.tools.pandas_tools import monotic_blocks
 
+
 class MonoticCumulativeRewards(BaseNotDependOnInventoryReward):
 
     def _get_sell_serie(self):

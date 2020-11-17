@@ -19,5 +19,4 @@ class BuilderDictRewards(BuildDictNode):
                                                     self._builder_with_components).build(module_obj_dict)
                 for type_reward, module_obj_dict in params.items()}
         )
-                           
 
