@@ -17,4 +17,4 @@ src/models/save.py
 /src/app/static/images/
 /src/app/config.py
 /src/acquisition/collector_eur_to_usd.py
-/src/crontab/tasks/
+/src/crontab_tasks/tasks/
