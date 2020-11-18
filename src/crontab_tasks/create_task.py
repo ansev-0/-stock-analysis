@@ -11,6 +11,3 @@ class CreateRunTaskCronTab(TaskCronTab):
         job.day.every(1)
 
         return job
-
-cron = CreateRunTaskCronTab()
-tasks = ['forex_data_1min_acquisition', 'forex_data_daily_acquisition', 'stock_data_1min_acquisition', 'stock_data_daily_acquisition']
