@@ -10,9 +10,8 @@ class Reward:
                  rewardnode_current_profit=None, 
                  rewardnode_incr_profit=None):
 
-
-        self._dict_rewards = dict_rewards
-        self.reward_node_current_profit = rewardnode_current_profit
+        self.dict_rewards = dict_rewards
+        self.rewardnode_current_profit = rewardnode_current_profit
         self.rewardnode_incr_profit = rewardnode_incr_profit
         self.rewardnode = rewardnode
 
@@ -20,7 +19,11 @@ class Reward:
     def dict_rewards(self):
         return self._dict_rewards
 
-    
+    @dict_rewards.setter
+    def dict_rewards(self, dict_rewards):
+        self._check_valid_dict_rewards(dict_rewards)
+        self._dict_rewards = dict_rewards
+
     @property
     def rewardnode(self):
         return self._rewardnode
@@ -31,13 +34,14 @@ class Reward:
         self._rewardnode = self._valid_rewardnode(rewardnode)
 
     @property
-    def reward_node_current_profit(self):
-        return self._reward_node_current_profit
+    def rewardnode_current_profit(self):
+        return self._rewardnode_current_profit
 
-    @reward_node_current_profit.setter
-    def reward_node_current_profit(self, reward_node_current_profit):
-        check_valid_rewardnode(reward_node_current_profit)
-        self._reward_node_current_profit = self._valid_rewardnode(reward_node_current_profit)
+    @rewardnode_current_profit.setter
+    def rewardnode_current_profit(self, rewardnode_current_profit):
+        check_valid_rewardnode(rewardnode_current_profit)
+        self._rewardnode_current_profit = self._valid_rewardnode(rewardnode_current_profit)
+
 
     @property
     def rewardnode_incr_profit(self):
@@ -48,17 +52,17 @@ class Reward:
         check_valid_rewardnode(rewardnode_incr_profit)
         self._rewardnode_incr_profit = self._valid_rewardnode(rewardnode_incr_profit)
 
-
     def reset(self):
         if self.dict_rewards is not None:
             self.dict_rewards.reset() 
 
 
     def reward(self, current_profit, incr_profit, **kwargs):
-        return self.rewardnode(self._reward_from_dict_reward(current_profit=current_profit, **kwargs) + \
+
+        return self.rewardnode(self._reward_from_dict_reward(**kwargs) + \
                                self._rewardnode_current_profit(current_profit) + \
                                self._rewardnode_incr_profit(incr_profit), 
-                             **kwargs)
+                               **kwargs)
 
     def _reward_from_dict_reward(self, **kwargs):
         return self._dict_rewards.total_reward(**kwargs) \
