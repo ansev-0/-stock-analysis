@@ -59,7 +59,7 @@ class Reward:
 
     def reward(self, current_profit, incr_profit, **kwargs):
 
-        return self.rewardnode(self._reward_from_dict_reward(**kwargs) + \
+        return self.rewardnode(self._reward_from_dict_reward(current_profit=current_profit, **kwargs) + \
                                self._rewardnode_current_profit(current_profit) + \
                                self._rewardnode_incr_profit(incr_profit), 
                                **kwargs)
