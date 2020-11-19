@@ -1,15 +1,7 @@
 from src.database.database import DataBaseAdminTrain
 
-<<<<<<< HEAD
-class DataBaseTrainCache(DataBaseAdminTrainCache):
-<<<<<<< HEAD
-    
-=======
-=======
 class DataBaseTrainCache(DataBaseAdminTrain):
->>>>>>> 3dd98a6d398fa313d6c0153b6c036235ba5ff2e6
 
->>>>>>> ee145a6a2fdce0a7c8f4eea604abe763799e0474
     def __init__(self, type_train):
         super().__init__('train_cache')
         self.collection = type_train
@@ -23,9 +15,5 @@ class DataBaseTrainCache(DataBaseAdminTrain):
 
     @collection.setter
     def collection(self, type_train):
-<<<<<<< HEAD
-        self._collection = self._database[type_train]
-=======
         self._collection = self._database[type_train]
         
->>>>>>> ee145a6a2fdce0a7c8f4eea604abe763799e0474

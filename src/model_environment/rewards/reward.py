@@ -7,12 +7,12 @@ class Reward:
     def __init__(self, 
                  dict_rewards=None, 
                  rewardnode=None, 
-                 reward_node_current_profit=None, 
-                 reward_node_incr_profit=None):
+                 rewardnode_current_profit=None, 
+                 rewardnode_incr_profit=None):
 
 
-        self.dict_rewards = dict_rewards
-        self.reward_node_current_profit = reward_node_current_profit
+        self._dict_rewards = dict_rewards
+        self.reward_node_current_profit = rewardnode_current_profit
         self.rewardnode_incr_profit = rewardnode_incr_profit
         self.rewardnode = rewardnode
 
@@ -20,7 +20,7 @@ class Reward:
     def dict_rewards(self):
         return self._dict_rewards
 
-    @dict_rewards.setter
+    
     @property
     def rewardnode(self):
         return self._rewardnode
@@ -39,15 +39,9 @@ class Reward:
         check_valid_rewardnode(reward_node_current_profit)
         self._reward_node_current_profit = self._valid_rewardnode(reward_node_current_profit)
 
-
     @property
     def rewardnode_incr_profit(self):
         return self._rewardnode_incr_profit
-
-    @rewardnode_next_profit.setter
-    def rewardnode_next_profit(self, rewardnode_next_profit):
-        check_valid_rewardnode(rewardnode_next_profit)
-        self._rewardnode_next_profit = self._valid_rewardnode(rewardnode_next_profit)
 
     @rewardnode_incr_profit.setter
     def rewardnode_incr_profit(self, rewardnode_incr_profit):
