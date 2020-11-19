@@ -1,4 +1,5 @@
 class SaveMany:
+    
     def save(self, save_function, list_to_save):
         map(save_function, list_to_save)
 

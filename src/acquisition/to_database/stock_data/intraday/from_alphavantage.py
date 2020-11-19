@@ -1,7 +1,7 @@
 from src.acquisition.to_database.stock_data.intraday.update_intraday \
      import UpdateIntraday
 from src.acquisition.acquisition.alphavantage import timeseries
-from src.acquisition.to_database.stock_data.save_many import SaveMany
+from src.acquisition.to_database.save_many_stock_collection import SaveMany
 from src.acquisition.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
     import CheckErrorsFromAlphaVantage
 from src.acquisition.to_database.tools.to_database import CreateDictsWithSameId

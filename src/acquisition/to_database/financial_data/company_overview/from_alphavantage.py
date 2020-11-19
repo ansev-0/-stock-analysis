@@ -1,13 +1,13 @@
-from src.acquisition.to_database.stock_data.daily_adjusted.update_daily_adjusted \
-     import UpdateDailyAdj
-from src.acquisition.acquisition.alphavantage.timeseries import TimeSeries
-from src.acquisition.to_database.tools.to_database import CreateDictsWithSameId
+from src.acquisition.to_database.financial_data.company_overview.update_overview_database import UpdateOverview
+from src.acquisition.acquisition.alphavantage.fundamental_data import FundamentalData
 from src.acquisition.to_database.save_many_stock_collection import SaveMany
+from src.acquisition.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
+    import CheckErrorsFromAlphaVantage
 
 
-class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
+class UpdateOverviewAlphaVantage(UpdateOverview):
     '''
-    This class is an interface to save the daily adjusted data of the Alphavantage API
+    This class is an interface to save the intraday data of the Alphavantage API
 
     Parameters
     ----------
@@ -17,23 +17,13 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
 
     new_database: str
         valid parameters = 'create' and 'not create'
-        if there is no database, action to be taken.
 
-    outputsize: str.
-        valid parameters = 'compact' and 'full'
-        compact returns only the latest 100 data points in the daily time series;
-        full returns the full-length daily time series.
     '''
-    def __init__(self, apikey, outputsize='full', new_database='create', **kwargs):
-
-        #Get outputsize
-        self._outputsize = outputsize
+    def __init__(self, apikey, new_database='create', **kwargs):
         #Create connection to the database
         super().__init__(new_database=new_database)
         # Create reader from AlphaVantage
-        self.__reader = TimeSeries(apikey=apikey, **kwargs)
-        self._create_dict_to_db = CreateDictsWithSameId('daily')
-
+        self.__reader = FundamentalData(apikey=apikey, **kwargs)
 
     def to_database(self, company):
         '''
@@ -41,7 +31,6 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         when an API error is obtained, the error returns,
         if no error is obtained, nothing returns (None)
         '''
-
         #Get response from reader Api Alphavantage
         response = self.__read_from_alphavantage(company=company)
 
@@ -56,12 +45,17 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         data = response[key_data]
         #Update collection
         #Get correct format
-        list_dicts_to_update = self._create_dict_to_db(data)
+        list_dicts_to_update = self._to_valid_format(data)
         #Call to update
         self.update(list_dicts_to_update=list_dicts_to_update, company=company)
 
         return None
 
+
+    def _to_valid_format(self, data):
+        # rename 
+        return {key if key != 'LatestQuarter' else '_id' : value 
+                for key, value in data.items()}
 
     def __read_from_alphavantage(self, company):
         '''
@@ -69,19 +63,12 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         returns a dictionary if the answer does not contain errors,
         and a list if there are errors.
         '''
-        return self.__reader.get_daily_adjusted(symbol=company,
-                                                outputsize=self._outputsize)
-
-    @classmethod
-    def full(cls, apikey, **kwargs):
-        return cls(apikey=apikey, outputsize='full', **kwargs)
-
-    @classmethod
-    def compact(cls, apikey, **kwargs):
-        return cls(apikey=apikey, outputsize='compact', **kwargs)
+        return self.__reader.get_company_overview(symbol=company)
 
 
-class UpdateDailyAdjAlphaVantageMany(UpdateDailyAdjAlphaVantage):
+
+
+class UpdateIntradayAlphaVantageMany(UpdateIntradayAlphaVantage):
 
     __save_many=SaveMany()
     
@@ -90,4 +77,4 @@ class UpdateDailyAdjAlphaVantageMany(UpdateDailyAdjAlphaVantage):
 
     def to_database_ignoring_errors(self, list_company):
         return self.__save_many.save(self.to_database, list_company)
-
+        
