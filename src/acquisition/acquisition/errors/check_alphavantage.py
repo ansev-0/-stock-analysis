@@ -1,6 +1,7 @@
 from src.acquisition.acquisition.errors import check_errors
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import map_dict_from_underscore
+from numpy import isin
 
 class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
     '''
@@ -13,7 +14,8 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
                           'CURRENCY': self._cryptocurrencis,
                           'FX': self._time_series,
                           'DIGITAL': self._time_series,
-                          'SECTOR': self._sector_performance
+                          'SECTOR': self._sector_performance,
+                          'OVERVIEW' : self._fundamental_data,
                           }
 
 
@@ -33,6 +35,11 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
             raise AlphaVantageError('json received invalid to type inquiry: {}'
                                     .format(query['function']),
                                     {'query': query, 'json_keys': json_keys})
+
+
+    @staticmethod
+    def _fundamental_data(json_keys):
+        return "symbol" in tuple(map(lambda key: key.lower(), json_keys))
 
     @staticmethod
     def _time_series(json_keys):

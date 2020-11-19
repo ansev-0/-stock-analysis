@@ -68,7 +68,7 @@ class UpdateOverviewAlphaVantage(UpdateOverview):
 
 
 
-class UpdateIntradayAlphaVantageMany(UpdateIntradayAlphaVantage):
+class UpdateOverviewAlphaVantageMany(UpdateOverviewAlphaVantage):
 
     __save_many=SaveMany()
     
