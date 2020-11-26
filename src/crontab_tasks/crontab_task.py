@@ -1,5 +1,6 @@
 from crontab import CronTab
 import os
+from datetime import datetime
 
 class TaskCronTab(CronTab):
 
@@ -14,4 +15,8 @@ class TaskCronTab(CronTab):
 
 
 
-
+for job in TaskCronTab():
+    print(job)
+    print(job.is_enabled())
+    print(job.is_valid())
+    print(job.schedule(date_from=datetime.now()).get_prev())

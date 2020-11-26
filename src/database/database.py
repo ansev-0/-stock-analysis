@@ -65,4 +65,10 @@ class DataBaseAdminBrokers(DataBase):
     '''
     pass
 
+class DataBaseAdminCronTab(DataBase):
+    '''
+    This class is used to create the client related to the CronTab.
+    '''
+    pass
+
 
