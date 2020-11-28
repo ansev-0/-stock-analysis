@@ -30,7 +30,7 @@ class UpdateFlagLastTimeDoneCrontab(UpdateFlagLastDoneCronTab):
 class UpdateFlagMinTimeToNextDoneCrontab(UpdateFlagLastDoneCronTab):
 
     def update_min_time(self, task_id, time, **kwargs):
-        return self.update_one({'_id' : task_id}, {'last_time' : time}, **kwargs)
+        return self.update_one({'_id' : task_id}, {'time_to_next_flag' : time}, **kwargs)
 
     def update_many_min_times(self, task_ids, time):
-        return self.update_many({'_id' : {'$in' : task_ids}}, {'last_time' : time})
+        return self.update_many({'_id' : {'$in' : task_ids}}, {'time_to_next_flag' : time})
