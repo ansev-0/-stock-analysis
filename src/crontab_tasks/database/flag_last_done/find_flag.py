@@ -1,6 +1,6 @@
 from src.crontab_tasks.database.flag_last_done.database import FlagsLastDoneCronTab
 from datetime import datetime
-from pandas import to_datetime
+from pandas import to_timedelta
 
 class FindFlagLastDoneCronTab(FlagsLastDoneCronTab):
 
@@ -22,9 +22,8 @@ class FindFlagLastDoneCronTab(FlagsLastDoneCronTab):
 
     def find_modules_need_exec(self, modules=None):
         filter_dict = modules if modules is not None else  {}
-        return [module for module in self.find_many(filter_dict) if self._need_exec(module)]
+        return [module['_id'] for module in self.find_many(filter_dict) 
+                if self._need_exec(module)]
 
     def _need_exec(self, module):
-        return to_datetime(module['time_to_next_flag']) + module['last_time'] > datetime.now()
-
-
+        return to_timedelta(module['time_to_next_flag']) + module['last_time'] < datetime.now()
