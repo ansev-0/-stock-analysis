@@ -38,9 +38,3 @@ class CreateFlagLastDoneCronTab(InsertFlagLastDoneCronTab):
     #private methods of instance
     def _get_dict_to_insert(self, module):
         return combine_dicts(self._default_dict_params, {'_id' : module})
-
-
-create = CreateFlagLastDoneCronTab()
-create.create_one('forex_data_daily_acquistion')
-pass
-
