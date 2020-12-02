@@ -14,9 +14,12 @@ class TaskCronTab(CronTab):
         return f'python3 {path}'
 
 
+#cron = TaskCronTab()
+#for job in cron:
+#    
+#    print(job)
+#    print(job.is_enabled())
+#    print(job.is_valid())
+#    print(job.schedule(date_from=datetime.now()).get_prev())
 
-for job in TaskCronTab():
-    print(job)
-    print(job.is_enabled())
-    print(job.is_valid())
-    print(job.schedule(date_from=datetime.now()).get_prev())
+

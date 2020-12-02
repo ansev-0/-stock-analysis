@@ -34,3 +34,9 @@ class UpdateFlagMinTimeToNextDoneCrontab(UpdateFlagLastDoneCronTab):
 
     def update_many_min_times(self, task_ids, time):
         return self.update_many({'_id' : {'$in' : task_ids}}, {'time_to_next_flag' : time})
+
+
+class UpdateFlagErrorsCrontab(UpdateFlagLastDoneCronTab):
+    def update_errors(self, task_id, errors, **kwargs):
+        return self.update_one({'_id' : task_id}, {'errors' : errors}, **kwargs)
+

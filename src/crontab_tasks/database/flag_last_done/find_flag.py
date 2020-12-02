@@ -20,8 +20,12 @@ class FindFlagLastDoneCronTab(FlagsLastDoneCronTab):
     def find_modules(self, modules, **kwargs):
         return self.find({'_id' : {'$in' : modules}}, **kwargs)
 
+    def module_need_exec(self, module):
+        dict_module = self.find_module(module)
+        return self._need_exec(dict_module)
+
     def find_modules_need_exec(self, modules=None):
-        filter_dict = modules if modules is not None else  {}
+        filter_dict = modules if modules is not None else {}
         return [module['_id'] for module in self.find_many(filter_dict) 
                 if self._need_exec(module)]
 

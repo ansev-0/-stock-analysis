@@ -8,4 +8,6 @@ class InsertFlagLastDoneCronTab(FlagsLastDoneCronTab):
 
     def insert_many(self, list_dict_to_insert, **kwargs):
         return self.collection.insert_many(list_dict_to_insert, **kwargs)
+
+
         

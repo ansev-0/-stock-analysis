@@ -19,3 +19,4 @@ src/models/save.py
 /src/acquisition/collector_eur_to_usd.py
 /src/crontab_tasks/tasks/
 /.vscode/
+/config.txt
