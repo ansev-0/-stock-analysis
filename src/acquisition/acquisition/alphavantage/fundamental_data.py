@@ -9,8 +9,13 @@ class FundamentalData(AlphaVantage):
     '''
 
     @AlphaVantage._get_data
-    def get_company_overview(self, symbol):
+    def get_overview(self, symbol):
         FUNCTION = 'OVERVIEW'
+        return symbol, FUNCTION
+
+    @AlphaVantage._get_data
+    def get_balance_sheet(self, symbol):
+        FUNCTION = 'BALANCE_SHEET'
         return symbol, FUNCTION
 
     @AlphaVantage._get_data

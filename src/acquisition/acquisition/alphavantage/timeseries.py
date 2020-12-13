@@ -24,6 +24,7 @@ class TimeSeries(AlphaVantage):
 
     @AlphaVantage._get_data
     def get_weekly(self, symbol):
+
         FUNCTION = 'TIME_SERIES_WEEKLY'
         return symbol, FUNCTION
 
@@ -41,7 +42,6 @@ class TimeSeries(AlphaVantage):
     def get_monthly_adjusted(self, symbol):
         FUNCTION = 'TIME_SERIES_MONTHLY_ADJUSTED'
         return symbol, FUNCTION
-
 
     @AlphaVantage._get_data
     def get_quote_endpoint(self, symbol):

@@ -6,7 +6,7 @@ class CheckErrorsSaveStockDataFromApi(CheckErrorsSaveFromApi):
 
     @staticmethod
     def check_list_queries(list_queries):
-        if not isinstance(list_queries, list):
+        if not isinstance(list_queries, (list, tuple)):
             raise ToDataBaseError('You must pass a list of stocks names', TypeError)
     
     @classmethod

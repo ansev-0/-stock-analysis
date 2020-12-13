@@ -3,7 +3,7 @@ from src.exceptions.to_database_exceptions import ToDataBaseError
 
 class CheckErrorsSaveFromApi(DataBaseAdminAcquisition):
 
-    REQUIRED_METHODS = ['to_database_getting_errors', 'to_database_ignoring_errors']
+    REQUIRED_METHODS = ('to_database_getting_errors', 'to_database_ignoring_errors')
     
     def __init__(self, api, collection):
         #self.__database = DataBase()

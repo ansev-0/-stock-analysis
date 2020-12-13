@@ -1,7 +1,7 @@
 from src.acquisition.to_database.stock_data.intraday.update_intraday \
      import UpdateIntraday
 from src.acquisition.acquisition.alphavantage import timeseries
-from src.acquisition.to_database.save_many_stock_collection import SaveMany
+from src.acquisition.to_database.save_many_stock_collection import UpdateManyStockData
 from src.acquisition.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
     import CheckErrorsFromAlphaVantage
 from src.acquisition.to_database.tools.to_database import CreateDictsWithSameId
@@ -128,13 +128,6 @@ class UpdateIntradayAlphaVantage(UpdateIntraday):
 
 
 
-class UpdateIntradayAlphaVantageMany(UpdateIntradayAlphaVantage):
-
-    __save_many=SaveMany()
-    
-    def to_database_getting_errors(self, list_company):
-        return self.__save_many.save_and_return_errors(self.to_database, list_company)
-
-    def to_database_ignoring_errors(self, list_company):
-        return self.__save_many.save(self.to_database, list_company)
+class UpdateIntradayAlphaVantageMany(UpdateIntradayAlphaVantage, UpdateManyStockData):
+    pass
         

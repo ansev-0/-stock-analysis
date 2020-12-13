@@ -4,6 +4,7 @@ from src.crontab_tasks.database.flag_last_done.create_flag import CreateFlagLast
 from src.crontab_tasks.database.flag_last_done.find_and_update import FindAndUpdateErrorsCronTab
 from datetime import datetime
 
+
 class TaskManager:
 
     _find_flags = FindFlagLastDoneCronTab()
@@ -11,9 +12,10 @@ class TaskManager:
     _create_flags = CreateFlagLastDoneCronTab()
     _find_and_update_errors_flags = FindAndUpdateErrorsCronTab()
 
-    def __init__(self, attemps=1):
+    def __init__(self, attemps=1, time_sleep=10):
         self._errors = None
         self.attemps = attemps
+        self.time_sleep = time_sleep
         
     @property
     def errors(self):
@@ -38,6 +40,8 @@ class TaskManager:
                 #if not errors update last time dome
                 self._update_errors(name_module) 
                 return self._update_flags.update_flag(name_module)
+            
+            time.sleep(self.time_sleep)
         else:
             self._update_errors(name_module)
 

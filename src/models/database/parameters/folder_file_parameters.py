@@ -76,5 +76,3 @@ class FolderProperties:
                      ):
             
             raise TypeError(f'Path {self._path} has not only {self._ext} files')
-    
-

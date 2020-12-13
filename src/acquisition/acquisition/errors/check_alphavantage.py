@@ -2,6 +2,7 @@ from src.acquisition.acquisition.errors import check_errors
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import map_dict_from_underscore
 from numpy import isin
+from pandas import to_datetime
 
 class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
     '''
@@ -16,6 +17,10 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
                           'DIGITAL': self._time_series,
                           'SECTOR': self._sector_performance,
                           'OVERVIEW' : self._fundamental_data,
+                          'BALANCE' : self._fundamental_data,
+                          'INCOME' : self._fundamental_data,
+                          'CASH' : self._fundamental_data,
+                          'EARNINGS' : self._fundamental_data,
                           }
 
 
@@ -39,11 +44,11 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
 
     @staticmethod
     def _fundamental_data(json_keys):
-        return "symbol" in tuple(map(lambda key: key.lower(), json_keys))
+        return "symbol" not in tuple(map(lambda key: key.lower(), json_keys))
 
     @staticmethod
     def _time_series(json_keys):
-        return (json_keys[0] != 'Meta Data') or (len(json_keys) != 2)
+        return ((json_keys[0] != 'Meta Data') or (len(json_keys) != 2)) & self._not_time_dict(json_keys)
 
     @staticmethod
     def _stock_time_series_global(json_keys):
@@ -60,6 +65,15 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
     @staticmethod
     def _sector_performance(json_keys):
         return (json_keys[0] != 'Meta Data') or (len(json_keys) != 11)
+
+    @staticmethod
+    def _not_time_dict(json_keys):
+        try:
+            to_datetime(json_keys)
+            return False
+        except Exception:
+            return True
+
 
 
 

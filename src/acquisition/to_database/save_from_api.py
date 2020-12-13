@@ -4,7 +4,7 @@ from src.acquisition.acquisition_orders.orders import AcquisitionOrders
 
 class SaveDataFromApi(metaclass=ABCMeta):
 
-    def __init__(self, api, collection, data_collector):
+    def __init__(self, api, collections, data_collector):
         self.api = api
         #check api supported
         self.check_errors.check_api_supported()
@@ -13,7 +13,7 @@ class SaveDataFromApi(metaclass=ABCMeta):
         #Check object has methods to save
         self.check_errors.check_methods_supported(self.to_database)
         #create connect with orders
-        self.acquistion_orders = AcquisitionOrders(collection=collection)
+        self.acquistion_orders = AcquisitionOrders(collection=collections)
         #Create object to report incidents saving data
         self.aquisition_incidents = AcquisitionIncidents()
 

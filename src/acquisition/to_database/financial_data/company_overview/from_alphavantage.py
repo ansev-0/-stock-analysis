@@ -1,13 +1,12 @@
 from src.acquisition.to_database.financial_data.company_overview.update_overview_database import UpdateOverview
 from src.acquisition.acquisition.alphavantage.fundamental_data import FundamentalData
 from src.acquisition.to_database.save_many_stock_collection import SaveMany
-from src.acquisition.to_database.stock_data.intraday.errors.check_errors_api.check_from_alphavantage \
-    import CheckErrorsFromAlphaVantage
+
 
 
 class UpdateOverviewAlphaVantage(UpdateOverview):
     '''
-    This class is an interface to save the intraday data of the Alphavantage API
+    This class is an interface to save the OVERVIEW data of the Alphavantage API
 
     Parameters
     ----------
@@ -36,18 +35,15 @@ class UpdateOverviewAlphaVantage(UpdateOverview):
 
         if isinstance(response, tuple):
             return response
-        #Get data
-        # list(response) get keys of response dict,
-        # the seconds key contains the data,
-        # this is test  in AlphaVantage.__read() by:
+
+        # response is test  in AlphaVantage.__read() by:
         #acquistion.errors_response.ErrorsResponseApiAlphavantage().
-        key_data = list(response)[1]
-        data = response[key_data]
+
         #Update collection
         #Get correct format
-        list_dicts_to_update = self._to_valid_format(data)
+        list_dicts_to_update = self._to_valid_format(response)
         #Call to update
-        self.update(list_dicts_to_update=list_dicts_to_update, company=company)
+        self.update(company=company, dict_to_update=list_dicts_to_update)
 
         return None
 
@@ -63,7 +59,7 @@ class UpdateOverviewAlphaVantage(UpdateOverview):
         returns a dictionary if the answer does not contain errors,
         and a list if there are errors.
         '''
-        return self.__reader.get_company_overview(symbol=company)
+        return self.__reader.get_overview(symbol=company)
 
 
 

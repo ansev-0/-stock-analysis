@@ -9,8 +9,8 @@ password = f.read()
 init_mongo = cron.new(command=f'sleep 60 && echo {password} | sudo -S -k mongod --config /etc/mongodb.conf')
 init_mongo.every_reboot()
 
-tasks = ('forex_data_1min_acquisition', 'forex_data_daily_acquisition',
-         'stock_data_1min_acquisition', 'stock_data_daily_acquisition')
+tasks = ('forex_data_1min_acquisition.py', 'forex_data_daily_acquisition.py',
+         'stock_data_1min_acquisition.py', 'stock_data_daily_acquisition.py')
 
 for module in tasks:
     job = cron.add_daily_task(module)

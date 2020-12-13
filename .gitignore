@@ -20,3 +20,7 @@ src/models/save.py
 /src/crontab_tasks/tasks/
 /.vscode/
 /config.txt
+/*.pyc
+/src/*.pyc
+/src/**/*.pyc
+/src/*/*.pyc

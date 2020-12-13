@@ -1,6 +1,6 @@
 from functools import wraps
 import time
-from src.acquisition.acquisition.reader import Reader
+from src.acquisition.acquistion.readers.alphavantage_reader import AlphavantageReader
 from src.acquisition.acquisition.errors.check_alphavantage import ErrorsResponseApiAlphavantage
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import switch_none
@@ -19,13 +19,15 @@ class AlphaVantage:
         self.apikey = apikey
         self.config(delays)
         self.__check_response = ErrorsResponseApiAlphavantage()
-        self._reader = Reader(base_url=self._AV_URL, **kwargs)
+        self._reader = AlphavantageReader(base_url=self._AV_URL, **kwargs)
         self.show_status = ApiShowStatus()
 
     @property
     def default_params(self):
-        return {'datatype' : 'json',
-                'apikey' : self.apikey}
+        return {
+                #'datatype' : 'json',
+                'apikey' : self.apikey
+                }
 
     def config(self, delays=None):
         self.delays = switch_none(delays, [60, 20])
@@ -36,6 +38,7 @@ class AlphaVantage:
         while count_attemps < self.attemps:
             error_response = None
             status_code = None
+
             if count_attemps != 0:
                 #try again
                 delay = self.delays[count_attemps-1]
@@ -44,31 +47,30 @@ class AlphaVantage:
 
             count_attemps += 1 #attemp n
             self.show_status.notify_try_connect('Alphavantage')
-            response = self._reader.read(query)
+            response = self._reader(query)
 
-            try:
-                json = response.json()
-                
-            except AttributeError:
+            if not isinstance(response, dict):
                 error_response = response
             else: 
                 
                 try:
-                    self.__check_response.pass_test(json, query)
+                    self.__check_response.pass_test(response, query)
                 except AlphaVantageError as error:
                     self.show_status.notify_error_format(error)
                     status_code = response.status_code
-                    error_response = json.copy()
+                    error_response = response.copy()
 
 
                 else:
                     #connect successful, save useful data
                     self.show_status.notify_json_received_succesfully()
-                    return json
+                    return response
         else:
             return self.__build_tuple_error(query=query,
-                                                status_code=status_code,
-                                                error=error_response)
+                                            status_code=status_code,
+                                            error=error_response)
+
+
 
     @classmethod
     def _get_data(cls, func):
