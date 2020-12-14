@@ -41,14 +41,12 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
                                     .format(query['function']),
                                     {'query': query, 'json_keys': json_keys})
 
+    def _time_series(self, json_keys):
+        return ((json_keys[0] != 'Meta Data') or (len(json_keys) != 2)) & self._not_time_dict(json_keys)
 
     @staticmethod
     def _fundamental_data(json_keys):
         return "symbol" not in tuple(map(lambda key: key.lower(), json_keys))
-
-    @staticmethod
-    def _time_series(json_keys):
-        return ((json_keys[0] != 'Meta Data') or (len(json_keys) != 2)) & self._not_time_dict(json_keys)
 
     @staticmethod
     def _stock_time_series_global(json_keys):

@@ -1,6 +1,6 @@
 from collections import defaultdict
 from pandas import to_datetime
-
+from re import sub
 
 class CreateDictsWithSameId:
 
@@ -18,8 +18,10 @@ class CreateDictsWithSameId:
 
         cumulative_dict = defaultdict(dict)
         for date, values in data.items():
-            cumulative_dict[date[:self._return_index_from_frecuency()]].update({date : {name[3:] : value
-                            for name, value in values.items()}})
+            cumulative_dict[date[:self._return_index_from_frecuency()]]\
+                .update({date : {sub(r'^[\d+]. ', '', name) : value
+                            for name, value in values.items()}
+                         })
 
         return list(map(lambda items: {'_id' : to_datetime(items[0]),
                                        'data' : items[1]},

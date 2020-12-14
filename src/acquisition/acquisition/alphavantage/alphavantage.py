@@ -1,6 +1,6 @@
 from functools import wraps
 import time
-from src.acquisition.acquistion.readers.alphavantage_reader import AlphavantageReader
+from src.acquisition.acquisition.readers.alphavantage_reader import AlphavantageReader
 from src.acquisition.acquisition.errors.check_alphavantage import ErrorsResponseApiAlphavantage
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import switch_none

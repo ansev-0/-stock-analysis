@@ -12,6 +12,12 @@ class TimeSeries(AlphaVantage):
         FUNCTION = 'TIME_SERIES_INTRADAY'
         return symbol, interval, outputsize, FUNCTION
 
+
+    @AlphaVantage._get_data
+    def get_extended_intraday(self, symbol, interval, slice, adjusted=False):
+        FUNCTION = 'TIME_SERIES_INTRADAY_EXTENDED'
+        return symbol, interval, slice, adjusted, FUNCTION
+
     @AlphaVantage._get_data
     def get_daily(self, symbol, outputsize='compact'):
         FUNCTION = 'TIME_SERIES_DAILY'
@@ -47,4 +53,3 @@ class TimeSeries(AlphaVantage):
     def get_quote_endpoint(self, symbol):
         FUNCTION = 'GLOBAL_QUOTE'
         return symbol, FUNCTION
-    

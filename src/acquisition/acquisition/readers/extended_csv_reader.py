@@ -23,7 +23,7 @@ class ReaderExtendedCSV(Reader):
             return error
 
         else:
-            self.show_status.notify_not_error()
+            self._show_status.notify_not_error()
             return response
 
     def _encode_dict_params(self, dict_params):
