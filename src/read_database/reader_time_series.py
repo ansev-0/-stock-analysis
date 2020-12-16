@@ -12,7 +12,7 @@ class TimeSeriesDataFromDataBase(ReaderDataBase):
     def __init__(self, db_name, format_output='dataframe'):
 
         super().__init__(db_name)
-        self.func_transform_dataframe = self.__get_function_transform_dataframe(format_output)
+        self.func_transform_dataframe = self._get_function_transform_dataframe(format_output)
         self.datetime_index = DateTimeIndexDataBase()
 
     @property
@@ -40,7 +40,7 @@ class TimeSeriesDataFromDataBase(ReaderDataBase):
                                                  projection={'_id' : 0})
         if dict_data:
             dataframe = (
-                self.__build_dataframe(dict_data=dict_data, start=start, end=end, **kwargs))
+                self._build_dataframe(dict_data=dict_data, start=start, end=end, **kwargs))
             return self.func_transform_dataframe(dataframe=dataframe, **kwargs)
         return dict_data
 
@@ -53,6 +53,12 @@ class TimeSeriesDataFromDataBase(ReaderDataBase):
 
     def __get_datetime_database(self, date):
         return self.datetime_index.get(date, self._db_name)
+
+    def _build_dataframe(self, dict_data, start, end, format_index=None, **kwargs):
+        return self._builder_dataframe.build_dataframe_from_timeseries_dict(dataframe=dict_data,
+                                                                            datetime_index=True,
+                                                                            format_index=format_index,
+                                                                            ascending=True).loc[start:end]  
 
 
 class DateTimeIndexDataBase:

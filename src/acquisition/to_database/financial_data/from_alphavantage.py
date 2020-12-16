@@ -1,6 +1,7 @@
 from src.acquisition.to_database.financial_data.update_financial_feature_database import UpdateFinancialFeatureData
 from src.acquisition.acquisition.alphavantage.fundamental_data import FundamentalData
 from src.acquisition.to_database.save_many_stock_collection import SaveMany
+from pandas import to_datetime
 from abc import ABCMeta, abstractmethod
 
 
@@ -60,8 +61,9 @@ class UpdateFinancialFeatureAlphaVantage(metaclass=ABCMeta):
 
     def _list_to_valid_format(self, list_data):
         # rename 
-        return [{( key : value) if key != 'fiscalDateEnding' 
-                 else ('_id' : pd.to_datetime(value)) 
+        return [{(key if key != 'fiscalDateEnding'  else '_id') : \
+                 (value if key != 'fiscalDateEnding' else to_datetime(value))
+
                  for key, value in data.items()} 
                 for data in list_data]
     

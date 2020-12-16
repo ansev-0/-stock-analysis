@@ -1,5 +1,4 @@
 from src.read_database.reader import ReaderDataBase
-from src.tools.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 from src.tools.reduce_tools import combine_dicts
 import pandas as pd
 
@@ -32,28 +31,31 @@ class FinancialDataFromDataBase(ReaderDataBase):
                                                 )
         if dict_data:
             dataframe = (
-                self.__build_dataframe(dict_data=dict_data, start=start, end=end, **kwargs))
+                self._build_dataframe(dict_data=dict_data, start=start, end=end, **kwargs))
             return self.func_transform_dataframe(dataframe=dataframe, **kwargs)
         return dict_data
 
         
     def _get_dict_from_database(self, data, start, end, **kwargs):
-        consult_result = super()._get_dict_from_database(data, start, end, **kwargs)
+        consult_result = list(super()._get_dict_from_database(data, start, end, **kwargs))
+        
         try:
-            return combine_dicts(*[{d['_id'] : {key : value for key, value in d.items() 
-                                                if key != '_id'}} 
-                                    for d in consult_result])
+            return combine_dicts(*({d['_id'].strftime(format='%Y-%m-%d %H:%M:%S') : {key : value 
+                                                                                     for key, value in d.items() 
+                                                                                     if key != '_id'}} 
+                                   for d in super()._get_dict_from_database(data, start, end, **kwargs)))
 
-        except TypeError:
+        except TypeError as error:
             return None
+
+    def _build_dataframe(self, dict_data, start, end, format_index=None, **kwargs):
+        return self._builder_dataframe.build_dataframe_from_financial_timeseries_dict(dataframe=dict_data,
+                                                                                      datetime_index=True,
+                                                                                      format_index=format_index,
+                                                                                      ascending=True).loc[start:end]  
 
     @staticmethod
     def __get_datetime_index(value):
         if isinstance(value, str):
             return pd.to_datetime(value)
         return value
-
-#reader = FinancialDataFromDataBase('balance_sheet_quarterly')
-#output = reader.get('IBM', '01/01/2019', '09/12/2020')
-#pass
-#print(output)
