@@ -80,5 +80,3 @@ class SaveFinancialDataFromApi(SaveDataFromApi):
     def __get_income_statement_collector(cls, api):
         return {'alphavantage' : UpdateIncomeStatementAlphaVantageMany}[api]
 
-api = SaveFinancialDataFromApi.cash_flow_alphavantage('O39L8VIVYYJYUN3P')
-api.save_reporting_errors(2)

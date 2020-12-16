@@ -1,8 +1,8 @@
-from src.read_database.reader import DataFromDataBase
+from src.read_database.reader_time_series import TimeSeriesDataFromDataBase
 from src.exceptions.readbase_exceptions import GetFromDataBaseError
 
 
-class ForexDataFromDataBase(DataFromDataBase):
+class ForexDataFromDataBase(TimeSeriesDataFromDataBase):
     '''
     This class is used for reading forex_data databases.
     

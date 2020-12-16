@@ -13,7 +13,7 @@ class SaveDataFromApi(metaclass=ABCMeta):
         #Check object has methods to save
         self.check_errors.check_methods_supported(self.to_database)
         #create connect with orders
-        self.acquistion_orders = AcquisitionOrders(collection=collections)
+        self.acquistion_orders = AcquisitionOrders(collection=self._collection_name(collections))
         #Create object to report incidents saving data
         self.aquisition_incidents = AcquisitionIncidents()
 
@@ -96,6 +96,11 @@ class SaveDataFromApi(metaclass=ABCMeta):
                                                         .report.__code__.co_varnames[-2:],
                                                         tuple_error))
                                                 )
+
+    def _collection_name(self, collections):
+        return f'extended_{collections}' if 'extended' in self.to_database.__class__.__name__.lower() \
+            else collections
+
     def __check_and_report_errors(self, attemps, errors):
         new_errors = errors
         count_attemps = 1

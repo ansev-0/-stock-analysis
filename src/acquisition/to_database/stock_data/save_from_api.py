@@ -3,7 +3,9 @@ from src.view.acquisition.to_database.stock_data.show_status.status_save_stock_d
 from src.acquisition.to_database.stock_data.errors.check_save_from_api \
     import CheckErrorsSaveStockDataFromApi
 from src.acquisition.to_database.stock_data.intraday import from_alphavantage as intraday_alphavantage
+from src.acquisition.to_database.stock_data.extended_intraday import from_alphavantage as extended_intraday_alphavantage
 from src.acquisition.to_database.stock_data.daily_adjusted import from_alphavantage as dailyadj_alphavantage
+
 
 
 class SaveStockDataFromApi(SaveDataFromApi):
@@ -30,6 +32,15 @@ class SaveStockDataFromApi(SaveDataFromApi):
                    data_collector=class_collector(frecuency=frecuency,
                                                   apikey=apikey, **kwargs),
                    collection='stock_data_intraday')
+
+    @classmethod
+    def extended_intraday_alphavantage(cls, frecuency, apikey, **kwargs):
+
+        return cls(api='alphavantage',
+                   data_collector=extended_intraday_alphavantage.UpdateExtendedIntradayAlphaVantageMany(frecuency=frecuency,
+                                                                                                        apikey=apikey, **kwargs),
+                   collection='stock_data_intraday')
+
     @classmethod
     def dailyadj_alphavantage(cls, apikey, **kwargs):
         class_collector = cls.__get_dailyadj_collector('alphavantage')

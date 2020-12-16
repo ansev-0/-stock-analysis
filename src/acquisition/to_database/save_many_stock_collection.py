@@ -1,8 +1,10 @@
 from abc import ABCMeta, abstractmethod
+
 class SaveMany:
     
     def save(self, save_function, list_to_save):
-        map(save_function, list_to_save)
+        map(lambda arg: save_function(*arg) if isinstance(arg, tuple) else save_function(arg), 
+            list_to_save)
 
     def save_and_return_errors(self, save_function, list_to_save):
         '''
@@ -10,7 +12,10 @@ class SaveMany:
         '''
         return {key : value 
                 for key, value in zip(list_to_save,
-                                      map(save_function, list_to_save))
+                                      map(lambda arg: save_function(*arg) if isinstance(arg, tuple) \
+                                          else save_function(arg),
+                                          list_to_save)
+                                     )
                 if value is not None}
 
 

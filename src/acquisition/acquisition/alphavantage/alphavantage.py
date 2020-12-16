@@ -15,6 +15,7 @@ class AlphaVantage:
     '''
 
     _AV_URL = "https://www.alphavantage.co/query?"
+    
     def __init__(self, apikey, delays=None, **kwargs):
         self.apikey = apikey
         self.config(delays)
@@ -57,8 +58,7 @@ class AlphaVantage:
                     self.__check_response.pass_test(response, query)
                 except AlphaVantageError as error:
                     self.show_status.notify_error_format(error)
-                    status_code = response.status_code
-                    error_response = response.copy()
+                    error_response = error
 
 
                 else:
@@ -66,9 +66,7 @@ class AlphaVantage:
                     self.show_status.notify_json_received_succesfully()
                     return response
         else:
-            return self.__build_tuple_error(query=query,
-                                            status_code=status_code,
-                                            error=error_response)
+            return query, str(error_response)
 
 
 
@@ -84,6 +82,4 @@ class AlphaVantage:
 
         return read_url
 
-    @staticmethod
-    def __build_tuple_error(query, status_code, error):
-        return query, {'status code' : status_code, 'response': error}
+

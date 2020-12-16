@@ -1,8 +1,8 @@
 from src.exceptions.readbase_exceptions import GetFromDataBaseError
-from src.read_database.reader import DataFromDataBase
+from src.read_database.reader_time_series import TimeSeriesDataFromDataBase
 
 
-class StockDataFromDataBase(DataFromDataBase):
+class StockDataFromDataBase(TimeSeriesDataFromDataBase):
     '''
     This class is used for reading stock_data databases.
     '''
