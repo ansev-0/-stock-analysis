@@ -30,6 +30,14 @@ class ReaderDataBase(DataBaseAdminDataReader):
     def _get_dict_from_dataframe(dataframe, orient='index', **kwargs):
         dataframe.index = dataframe.index.astype(str)
         return dataframe.to_dict(orient=orient)     
+
+    @classmethod
+    def _dataframe(cls, **kwargs):
+        return cls(format_output='dataframe', **kwargs)
+
+    @classmethod
+    def _dict(cls, **kwargs):
+        return cls(format_output='dict', **kwargs)
         
 
                                           

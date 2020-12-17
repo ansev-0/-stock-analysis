@@ -6,9 +6,10 @@ class FinancialDataFromDataBase(ReaderDataBase):
     '''
     This class is used for reading time series databases.
     '''
+    
+
 
     def __init__(self, db_name, format_output='dataframe'):
-
         super().__init__(db_name, format_output)
 
     def get(self, collection, start, end, **kwargs):
@@ -59,3 +60,87 @@ class FinancialDataFromDataBase(ReaderDataBase):
         if isinstance(value, str):
             return pd.to_datetime(value)
         return value
+
+
+    @classmethod
+    def income_statement_quarterly_dataframe(cls):
+        return cls._dataframe(db_name='income_statement_quarterly')
+
+    @classmethod
+    def income_statement_annual_dict(cls):
+        return cls._dict(db_name='income_statement_annual')
+
+    @classmethod
+    def income_statement_quarterly_dict(cls):
+        return cls._dict(db_name='income_statement_quarterly')
+
+    @classmethod
+    def income_statement_annual_dataframe(cls):
+        return cls._dataframe(db_name='income_statement_annual')
+
+
+    @classmethod
+    def balance_sheet_quarterly_dataframe(cls):
+        return cls._dataframe(db_name='balance_sheet_quarterly')
+
+    @classmethod
+    def balance_sheet_annual_dict(cls):
+        return cls._dict(db_name='balance_sheet_annual')
+
+    @classmethod
+    def balance_sheet_quarterly_dict(cls):
+        return cls._dict(db_name='balance_sheet_quarterly')
+
+    @classmethod
+    def balance_sheet_annual_dataframe(cls):
+        return cls._dataframe(db_name='balance_sheet_annual')
+
+    @classmethod
+    def cash_flow_quarterly_dataframe(cls):
+        return cls._dataframe(db_name='cash_flow_quarterly')
+
+    @classmethod
+    def cash_flow_annual_dict(cls):
+        return cls._dict(db_name='cash_flow_annual')
+
+    @classmethod
+    def cash_flow_quarterly_dict(cls):
+        return cls._dict(db_name='cash_flow_quarterly')
+
+    @classmethod
+    def cash_flow_annual_dataframe(cls):
+        return cls._dataframe(db_name='cash_flow_annual')
+
+    @classmethod
+    def earnings_quarterly_dataframe(cls):
+        return cls._dataframe(db_name='earnings_quarterly')
+
+    @classmethod
+    def earnings_annual_dict(cls):
+        return cls._dict(db_name='earnings_annual')
+
+    @classmethod
+    def earnings_quarterly_dict(cls):
+        return cls._dict(db_name='earnings_quarterly')
+
+    @classmethod
+    def earnings_annual_dataframe(cls):
+        return cls._dataframe(db_name='earnings_annual')
+
+
+    @classmethod
+    def stock_overview_quarterly_dataframe(cls):
+        return cls._dataframe(db_name='stock_overview_quarterly')
+
+    @classmethod
+    def stock_overview_annual_dict(cls):
+        return cls._dict(db_name='stock_overview_annual')
+
+    @classmethod
+    def stock_overview_quarterly_dict(cls):
+        return cls._dict(db_name='stock_overview_quarterly')
+
+    @classmethod
+    def stock_overview_annual_dataframe(cls):
+        return cls._dataframe(db_name='stock_overview_annual')
+

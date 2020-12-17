@@ -9,27 +9,21 @@ class StockDataFromDataBase(TimeSeriesDataFromDataBase):
 
     @classmethod
     def intraday_dataframe(cls, freq):
-        return cls.__dataframe(db_name=f'stock_data_intraday_{freq}')
+        return cls._dataframe(db_name=f'stock_data_intraday_{freq}')
 
     @classmethod
     def dailyadj_dataframe(cls):
-        return cls.__dataframe(db_name='stock_data_daily_adjusted')
+        return cls._dataframe(db_name='stock_data_daily_adjusted')
 
     @classmethod
     def intraday_dict(cls, freq):
-        return cls.__dict(db_name=f'stock_data_intraday_{freq}')
+        return cls._dict(db_name=f'stock_data_intraday_{freq}')
 
     @classmethod
     def dailyadj_dict(cls):
-        return cls.__dict(db_name='stock_data_daily_adjusted')
+        return cls._dict(db_name='stock_data_daily_adjusted')
 
-    @classmethod
-    def __dataframe(cls, **kwargs):
-        return cls(format_output='dataframe', **kwargs)
 
-    @classmethod
-    def __dict(cls, **kwargs):
-        return cls(format_output='dict', **kwargs)
 
 
 
