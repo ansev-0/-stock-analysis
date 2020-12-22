@@ -8,10 +8,6 @@ class FinancialDataFromDataBase(ReaderDataBase):
     '''
     
 
-
-    def __init__(self, db_name, format_output='dataframe'):
-        super().__init__(db_name, format_output)
-
     def get(self, collection, start, end, **kwargs):
 
         '''
@@ -143,4 +139,3 @@ class FinancialDataFromDataBase(ReaderDataBase):
     @classmethod
     def stock_overview_annual_dataframe(cls):
         return cls._dataframe(db_name='stock_overview_annual')
-

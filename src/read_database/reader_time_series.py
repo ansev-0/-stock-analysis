@@ -1,5 +1,4 @@
 from src.read_database.reader import ReaderDataBase
-from src.tools.builder_formats.dataframe import build_dataframe_from_timeseries_dict
 from src.tools.mappers import map_dict_from_underscore
 from src.tools.reduce_tools import combine_dicts
 import pandas as pd
@@ -11,8 +10,7 @@ class TimeSeriesDataFromDataBase(ReaderDataBase):
 
     def __init__(self, db_name, format_output='dataframe'):
 
-        super().__init__(db_name)
-        self.func_transform_dataframe = self._get_function_transform_dataframe(format_output)
+        super().__init__(db_name, format_output)
         self.datetime_index = DateTimeIndexDataBase()
 
     @property
