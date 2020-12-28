@@ -11,7 +11,7 @@ class TaskCronTab(CronTab):
 
     def _build_path(self, module):
         path = os.path.join(self._task_folder, module)
-        return f'python3.7 {path}'
+        return f'python3 {path}'
 
 
 cron = TaskCronTab()

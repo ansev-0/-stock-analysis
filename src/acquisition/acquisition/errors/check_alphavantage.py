@@ -42,7 +42,7 @@ class ErrorsResponseApiAlphavantage(check_errors.ErrorsResponseApi):
                                     {'query': query, 'json_keys': json_keys})
 
     def _time_series(self, json_keys):
-        return ((json_keys[0] != 'Meta Data') or (len(json_keys) != 2)) & self._not_time_dict(json_keys)
+        return self._not_time_dict(json_keys) & ((len(json_keys) != 2) or (json_keys[0] != 'Meta Data')) 
 
     @staticmethod
     def _fundamental_data(json_keys):

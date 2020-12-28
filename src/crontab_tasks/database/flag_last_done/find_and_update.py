@@ -11,3 +11,4 @@ class FindAndUpdateErrorsCronTab(UpdateFlagErrorsCrontab, FindFlagLastDoneCronTa
             current_errors = []
         
         return self.update_errors(task_id, errors + current_errors, **kwargs)
+

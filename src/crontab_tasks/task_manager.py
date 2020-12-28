@@ -3,7 +3,7 @@ from src.crontab_tasks.database.flag_last_done.update_flag import UpdateFlagLast
 from src.crontab_tasks.database.flag_last_done.create_flag import CreateFlagLastDoneCronTab
 from src.crontab_tasks.database.flag_last_done.find_and_update import FindAndUpdateErrorsCronTab
 from datetime import datetime
-
+import time
 
 class TaskManager:
 
@@ -34,10 +34,10 @@ class TaskManager:
                 task()
             except Exception as error:
                 #add error from attemp
-                self._errors.append({'time_error' : datetime.now(), 'message' : error})
+                self._errors.append({'time_error' : datetime.now(), 'message' : str(error)})
 
             else:
-                #if not errors update last time dome
+                #if not errors update last time done
                 self._update_errors(name_module) 
                 return self._update_flags.update_flag(name_module)
             
