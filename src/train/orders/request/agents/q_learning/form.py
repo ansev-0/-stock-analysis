@@ -7,7 +7,8 @@ class FormQlearning(dict):
                      'actions',
                      'conf_build_agent', 'conf_call_agent', 
                      'path', 'cache_id_train', 'cache_id_validation',
-                     'cache_id_commision_train', 'cache_id_commision_validation')
+                     'cache_id_commision_train', 'cache_id_commision_validation',
+                     'cache_id_financial_train', 'cache_id_financial_validation')
                      
     def __init__(self, **kwargs):
 

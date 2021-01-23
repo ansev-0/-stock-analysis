@@ -4,6 +4,7 @@ from src.train.orders.request.agents.q_learning.tasks_for_request.conf_build_age
 from src.train.orders.request.agents.q_learning.tasks_for_request.id import IdTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.path import PathTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.stock_data.stock_data import StockDataTask
+from src.train.orders.request.agents.q_learning.tasks_for_request.financial_data.financial_data import FinancialDataTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.broker_commision.broker_commision import BrokerCommisionTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.stock_name import StockNameTask
 from src.train.orders.database.agents.create.train_order import CreateTrainOrderAgent
@@ -13,6 +14,7 @@ class MakeQlearningRequest:
 
     _make_stock_name_task = StockNameTask()
     _make_stock_data_task = StockDataTask()
+    _make_financial_data_task = FinancialDataTask()
     _make_based_on_task = BasedOnTask()
     _make_path_task = PathTask()
     _make_id_task = IdTask()
@@ -55,6 +57,10 @@ class MakeQlearningRequest:
                 if key in ('stock_name', 'data_train_limits',
                            'data_validation_limits', 'delays')}
             )
+
+        # make financial data task and save ids
+        form['cache_id_financial_train'], form['cache_id_financial_validation'] = \
+            self._make_financial_data_task(form['stock_name'], idx_train, idx_val)
 
         # get commision cache
         _make_broker_commision_task = BrokerCommisionTask(form['broker'])

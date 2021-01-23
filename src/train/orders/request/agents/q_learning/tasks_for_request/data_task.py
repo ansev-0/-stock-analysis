@@ -28,7 +28,7 @@ class DataTask(metaclass=ABCMeta):
                          dayofyear=df.index.dayofyear)\
             .loc[:, ('weekday', 'dayofyear') + self.features]
 
-    def _to_cache(self, data):
+    def _to_cache(self, data, is_financial=False):
 
             return self._create_agent_cache(
                 **dict(
@@ -37,7 +37,8 @@ class DataTask(metaclass=ABCMeta):
                             data
                             )
                         )
-            )[0]
+            )[0] if not is_financial \
+            else self._create_agent_cache({'time_values' : data})[0]
 
 
     def remove(self, id_cache):

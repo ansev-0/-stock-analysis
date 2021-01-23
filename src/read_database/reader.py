@@ -22,9 +22,8 @@ class ReaderDataBase(DataBaseAdminDataReader):
                                         **kwargs)
 
     def _get_function_transform_dataframe(self, format_output):
-        if format_output == 'dict':
-            return self.__get_dict_from_dataframe
-        return lambda dataframe, **kwargs: dataframe
+        return self.__get_dict_from_dataframe if format_output == 'dict' \
+        else lambda dataframe, **kwargs: dataframe
 
     @staticmethod
     def _get_dict_from_dataframe(dataframe, orient='index', **kwargs):

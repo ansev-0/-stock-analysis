@@ -68,8 +68,6 @@ class AlphaVantage:
         else:
             return query, str(error_response)
 
-
-
     @classmethod
     def _get_data(cls, func):
 
@@ -81,5 +79,6 @@ class AlphaVantage:
             return self.__read(query=query)
 
         return read_url
+
 
 
