@@ -21,6 +21,8 @@ for job in cron:
     print(job.is_enabled())
     print(job.is_valid())
     print(job.schedule(date_from=datetime.now()).get_next())
+    #cron.remove(job)
+#cron.write()
 
 
 

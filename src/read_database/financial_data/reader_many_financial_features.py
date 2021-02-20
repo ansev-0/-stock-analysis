@@ -52,21 +52,21 @@ class ManyFinancialFeaturesFromDataBase:
 
 
     def get(self, collection, start, end, **kwargs):
-        concat_df = \
-        pd.concat(
-            list(
-                filter(lambda dataframe: isinstance(dataframe, 
-                                                    pd.DataFrame),
-                    map(lambda client: client.get(collection, 
-                                                  start, 
-                                                  end, 
-                                                  **kwargs),
-                    self._clients)
-                    )
-            ),
-            axis=1,
-            join='inner'
-        )
+        
+        list_results = [data.add_prefix(f'{self._DEFAULT_FEATURES[i]}_') for i, data in 
+                
+                         enumerate(map(lambda client: client.get(collection, 
+                                                                start, 
+                                                                end, 
+                                                                **kwargs),
+                                        self._clients))
+                        if isinstance(data, pd.DataFrame)]
+
+        concat_df = pd.concat(list_results, axis=1, join='inner') if list_results else None
+
+        if list_results is None:
+            return None
+        
         return concat_df if self.format_output == 'dataframe' else concat_df.to_dict(orient='index')
 
 

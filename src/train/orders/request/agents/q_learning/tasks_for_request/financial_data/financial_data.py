@@ -11,6 +11,8 @@ class FinancialDataTask(DataTask):
 
         return tuple(
             map(lambda index : self._to_cache(self.data_from_db(symbol, index),
-                              is_financial=True), indexes)
+                                              is_financial=True), indexes)
         )
             
+    def _data_preparation(self):
+        pass

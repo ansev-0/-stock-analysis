@@ -6,7 +6,7 @@ class DataBase:
     '''
     
     def __init_subclass__(cls):
-        cls._client = MongoClient(host='192.168.1.37', port=27017)
+        cls._client = MongoClient(host='192.168.1.57', port=27017)
         
     def __init__(self, database_name):
         try:
@@ -24,6 +24,13 @@ class DataBaseAdminAcquisition(DataBase):
     '''
     This class is used to create the client
     to connect to the databases related to the acquisition of external data.
+    '''
+    pass
+
+class DataBaseAdminAssets(DataBase):
+    '''
+    This class is used to create the client
+    to connect to the databases related to assets.
     '''
     pass
 
@@ -68,6 +75,13 @@ class DataBaseAdminBrokers(DataBase):
 class DataBaseAdminCronTab(DataBase):
     '''
     This class is used to create the client related to the CronTab.
+    '''
+    pass
+
+class DataBaseAdminTwitterRequests(DataBase):
+    '''
+    This class is used to create the client
+    to connect to the databases related to Twitter API.
     '''
     pass
 

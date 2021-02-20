@@ -25,7 +25,6 @@ class BrokerCommisionTask:
                 if isinstance(data, dict) else {'value' : data} \
                 for commision_type, data in self._need_broker_exchange.items()}
 
-
     @property
     def broker(self):
         return self._broker

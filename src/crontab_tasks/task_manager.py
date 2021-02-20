@@ -9,13 +9,13 @@ class TaskManager:
 
     _find_flags = FindFlagLastDoneCronTab()
     _update_flags = UpdateFlagLastTimeDoneCrontab()
-    _create_flags = CreateFlagLastDoneCronTab()
     _find_and_update_errors_flags = FindAndUpdateErrorsCronTab()
 
-    def __init__(self, attemps=1, time_sleep=10):
+    def __init__(self, attemps=1, time_sleep=10, freq=None):
         self._errors = None
         self.attemps = attemps
         self.time_sleep = time_sleep
+        self._create_flags = CreateFlagLastDoneCronTab(freq)
         
     @property
     def errors(self):

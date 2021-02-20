@@ -36,9 +36,11 @@ class DataTask(metaclass=ABCMeta):
                             ('sequences', 'time_values'), 
                             data
                             )
-                        )
+                       )
             )[0] if not is_financial \
-            else self._create_agent_cache({'time_values' : data})[0]
+            else self._create_agent_cache(**{'data' : data.to_numpy(), 
+                                             'index' : data.index.to_numpy(), 
+                                             'columns' : data.columns.to_numpy()})[0]
 
 
     def remove(self, id_cache):

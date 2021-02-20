@@ -24,3 +24,5 @@ src/models/save.py
 /src/*.pyc
 /src/**/*.pyc
 /src/*/*.pyc
+twitter_app.json
+/twitter_app.json
