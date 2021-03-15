@@ -4,7 +4,7 @@ from datetime import datetime
 
 class TaskCronTab(CronTab):
 
-    _task_folder = '/home/antonio/financialworks/src/crontab_tasks/tasks'
+    _task_folder = 'src/crontab_tasks/tasks'
 
     def __init__(self, user=True, **kwargs):
         super().__init__(user=user, **kwargs)
@@ -15,6 +15,7 @@ class TaskCronTab(CronTab):
 
 
 cron = TaskCronTab()
+print(cron.intab)
 for job in cron:
     
     print(job)

@@ -1,6 +1,6 @@
 from tweepy.api import API
+from tweepy import OAuthHandler
 from src.tools.path import get_financial_path
-import tweepy
 import json
 import os
 
@@ -25,7 +25,7 @@ class TwitterAPIAuthJson(API):
                               else self._validate_credentials(credentials))
 
     def _get_auth(self, dict_credentials):
-        auth = tweepy.OAuthHandler(
+        auth = OAuthHandler(
             **self._filter_credentials_by(dict_credentials, 
                                           ('consumer_key', 'consumer_secret', 'callback'))
         )

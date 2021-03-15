@@ -7,6 +7,7 @@ from src.acquisition.to_database.stock_data.intraday.errors.check_errors_api.che
 from src.acquisition.to_database.tools.to_database import CreateDictsWithSameId
 
 class UpdateExtendedIntradayAlphaVantage(UpdateIntraday):
+
     '''
     This class is an interface to save the extended intraday data of the Alphavantage API
 
@@ -23,24 +24,20 @@ class UpdateExtendedIntradayAlphaVantage(UpdateIntraday):
     new_database: str
         valid parameters = 'create' and 'not create'
         if there is no database for the specified frequency, action to be taken.
-
-
     '''
-    def __init__(self, frecuency, apikey, new_database='create', **kwargs):
 
+    def __init__(self, frecuency, apikey, new_database='create', **kwargs):
 
         #Create connection to the database
         super().__init__(frecuency=frecuency, new_database=new_database)
-
         #Check not error in frecuency
         self.__check_alphavantage = CheckErrorsFromAlphaVantage(frecuency=self._frecuency)
         self.__check_alphavantage.check_frecuency_in_api()
-
         # Create reader from AlphaVantage
         self.__reader = timeseries.TimeSeries(apikey=apikey, **kwargs)
-
         # custom dict
         self._create_dict_to_db = CreateDictsWithSameId('intraday')
+
 
     def to_database(self, company, slice):
         '''
@@ -98,3 +95,6 @@ class UpdateExtendedIntradayAlphaVantage(UpdateIntraday):
 class UpdateExtendedIntradayAlphaVantageMany(UpdateExtendedIntradayAlphaVantage, UpdateManyStockData):
     pass
         
+#from pymongo import MongoClient
+#orders = MongoClient()['acquisition_orders']['stock_data_intraday'].find_one({'_id' : 'alphavantage'})['orders']
+#UpdateExtendedIntradayAlphaVantageMany.slice_1min(apikey='O39L8VIVYYJYUN3P').to_database_getting_errors([(order, 'year1month1') for order in orders])

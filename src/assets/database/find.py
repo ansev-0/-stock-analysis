@@ -32,8 +32,6 @@ class FindAssetInDataBase(AssetsDatabase):
         return Asset(**self._filter_id(result)) \
             if return_asset else result
 
-
-
     @staticmethod
     def _filter_id(result):
         return {key : value for key, value in result.items() 

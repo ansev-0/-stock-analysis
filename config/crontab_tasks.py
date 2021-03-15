@@ -1,10 +1,10 @@
 from src.crontab_tasks.create_task import CreateRunTaskCronTab
+import json
 
 cron = CreateRunTaskCronTab()
 
-f = open('/home/antonio/financialworks/config.txt')
-password = f.read()
-
+with open('config.json') as file: 
+    password = json.load(file)['password']
 #init mongodb
 init_mongo = cron.new(command=f'sleep 60 && echo {password} | sudo -S -k mongod --config /etc/mongodb.conf')
 init_mongo.every_reboot()
