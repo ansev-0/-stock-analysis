@@ -8,6 +8,11 @@ class CreateRunTaskCronTab(TaskCronTab):
         prefix = prefix if prefix is not None else ''
         return super().new(command=f'{prefix}{path}', **kwargs)
 
+    def add_monthly_task(self, module, **kwargs):
+        job = self.add_task(module, **kwargs)
+        job.every(1).month()
+        return job
+
     def add_daily_task(self, module, **kwargs):
         job = self.add_task(module, **kwargs)
         job.every(1).days()

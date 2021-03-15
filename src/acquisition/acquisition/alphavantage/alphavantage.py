@@ -59,8 +59,6 @@ class AlphaVantage:
                 except AlphaVantageError as error:
                     self.show_status.notify_error_format(error)
                     error_response = error
-
-
                 else:
                     #connect successful, save useful data
                     self.show_status.notify_json_received_succesfully()

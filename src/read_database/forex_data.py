@@ -25,7 +25,6 @@ class ForexDataFromDataBase(TimeSeriesDataFromDataBase):
         '''
         return super().get(f'{from_symbol}_TO_{to_symbol}', start, end, **kwargs)
 
-
     @classmethod
     def intraday_dataframe(cls, freq):
         return cls.__dataframe(db_name=f'forex_data_intraday_{freq}')

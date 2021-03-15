@@ -10,8 +10,13 @@ with open('config.json') as file:
 init_mongo = cron.new(command=f'sleep 60 && echo {password} | sudo -S -k mongod --config /etc/mongod.conf')
 init_mongo.every_reboot()
 
-tasks = ('forex_data_1min_acquisition.py', 'forex_data_daily_acquisition.py',
-         'stock_data_1min_acquisition.py', 'stock_data_daily_acquisition.py')
+tasks = (
+         'forex_data_1min_acquisition.py', 'forex_data_daily_acquisition.py',
+         'stock_data_1min_acquisition.py', 'stock_data_daily_acquisition.py', 
+         'balance_sheet_acquisition.py', 'cash_flow_acquisition.py', 
+         'earnings_acquisition.py', 'income_statement_acquisition.py',
+         'overview_acquisition.py'
+         )
 
 for module in tasks:
     job = cron.add_daily_task(module)

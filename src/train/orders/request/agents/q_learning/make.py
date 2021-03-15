@@ -52,10 +52,11 @@ class MakeQlearningRequest:
         # make stock name task
         self._make_stock_name_task(form['stock_name'])
         # make stock data task
-        idx_train, idx_val, self._cache_id_train, self._cache_id_validation = self._make_stock_data_task(
-             **{key : value for key, value in form.items()
-                if key in ('stock_name', 'data_train_limits',
-                           'data_validation_limits', 'delays')}
+        idx_train, idx_val, self._cache_id_train, self._cache_id_validation = \
+            self._make_stock_data_task(
+                **{key : value for key, value in form.items()
+                    if key in ('stock_name', 'data_train_limits',
+                               'data_validation_limits', 'delays')}
             )
 
         # make financial data task and save ids

@@ -24,11 +24,6 @@ class StockDataFromDataBase(TimeSeriesDataFromDataBase):
         return cls._dict(db_name='stock_data_daily_adjusted')
 
 
-
-
-
-
-
 class ManyStockDataFromDataBase(StockDataFromDataBase):
 
     def get_fixed_dates(self, stock_labels, start, end, **kwargs):
@@ -58,7 +53,6 @@ class ManyStockDataFromManyDataBase:
                           start,
                           end,
                           **kwargs)
-
 
     def get_from_dict(self, dict_list_kparams, **kwargs):
         return self.__get(lambda reader, params, **kwargs : \

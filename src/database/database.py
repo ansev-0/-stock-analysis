@@ -27,6 +27,13 @@ class DataBaseAdminAcquisition(DataBase):
     '''
     pass
 
+class DataBaseAdminAssets(DataBase):
+    '''
+    This class is used to create the client
+    to connect to the databases related to assets.
+    '''
+    pass
+
 
 class DataBaseAdminDataReader(DataBase):
     '''
@@ -68,6 +75,13 @@ class DataBaseAdminBrokers(DataBase):
 class DataBaseAdminCronTab(DataBase):
     '''
     This class is used to create the client related to the CronTab.
+    '''
+    pass
+
+class DataBaseAdminTwitterRequests(DataBase):
+    '''
+    This class is used to create the client
+    to connect to the databases related to Twitter API.
     '''
     pass
 
