@@ -7,7 +7,7 @@ with open('config.json') as file:
     password = json.load(file)['password']
 
 #init mongodb
-init_mongo = cron.new(command=f'sleep 60 && echo {password} | sudo -S -k mongod --config /etc/mongod.conf')
+init_mongo = cron.new(command=f'sleep 60 && echo {password} | sudo -S -k mongod --dbpath /var/log/mongodb --bind_ip 192.168.1.51')
 init_mongo.every_reboot()
 
 tasks = (

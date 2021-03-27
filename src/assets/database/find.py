@@ -10,11 +10,9 @@ class FindAssetInDataBase(AssetsDatabase):
         return self._find_one_output(result, return_asset)
 
     def many(self, return_asset, *args, **kwargs):
-        list_result = list(self._collection.find(*args, **kwargs))
-        if not list_result:
-            return None
-        return [Asset(**self._filter_id(result)) for result in list_result]\
-             if return_asset else list_result
+        return [Asset(**self._filter_id(result)) 
+                for result in self._collection.find(*args, **kwargs)]\
+        if return_asset else self._collection.find(*args, **kwargs)
 
     def find_label(self, label, return_asset, **kwargs):
         return self._find_one_by_tag('label', label, return_asset, **kwargs)

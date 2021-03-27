@@ -61,4 +61,81 @@ class Asset:
     def _set_new_value(self, where, value):
         value = value if isinstance(value, list) else [value]
         where = where + value if where is not None else value
-        
+
+import numpy as np        
+assets = (
+    {
+     'name' : 'Apple',
+     'label' : 'AAPL',
+     'enemy_assets' : np.nan,
+     'stakeholders' : np.nan,
+     'products' : ('iphone', 'apple watch', 'iPad', 'iPod', 'Mac', 'iCloud', 'HomePod', 'AirPlay', 'Apple TV'),
+     'relate_words' : np.nan,
+
+     },
+
+    {
+     'name' : 'Google',
+     'label' : 'GOOGL',
+     'enemy_assets' : np.nan,
+     'stakeholders' : np.nan,
+     'products' : ('google drive', 'gmail', 'google photos', 'google news', 'google chrome', 'google chromecast', 'google store', ),
+     'relate_words' : np.nan
+
+     },
+
+    {
+     'name' : 'Twitter',
+     'label' : 'TWTR',
+     'enemy_assets' : np.nan,
+     'stakeholders' : np.nan,
+     'products' : np.nan,
+     'relate_words' : np.nan
+
+     },
+
+
+    {
+     'name' : 'Nvidia',
+     'label' : 'NVDA',
+     'enemy_assets' : ('AMD',),
+     'stakeholders' : np.nan,
+     'products' : ('nvidia gpu', 'nvidia geforce', 'nvidia titan', 
+                   'nvidia quadro', 'nvidia jetson', 
+                   'nvidia gpu cloud', 'nvidia shield', ),
+     'relate_words' : np.nan
+
+     },
+
+    {
+     'name' : 'AMD',
+     'label' : 'AMD',
+     'enemy_assets' : ('NVDA'),
+     'stakeholders' : np.nan,
+     'products' : ('amd rayzen', 'amd gpu', 'amd radeon', 'amd epyc', 'amd instinct', 'amd cpu', ),
+     'relate_words' : np.nan
+
+     },
+
+    {
+     'name' : 'Amazon',
+     'label' : 'AMZN',
+     'enemy_assets' : np.nan,
+     'stakeholders' : np.nan,
+     'products' : ('aws', 'amazon prime', 'amazon music', 'amazon photos', ),
+     'relate_words' : np.nan
+
+     },
+
+    {
+     'name' : 'Tesla',
+     'label' : 'TSLA',
+     'enemy_assets' : np.nan,
+     'stakeholders' : ('Elon Musk', ),
+     'products' : ('tesla car', 'tesla electric car', 'tesla solar', ),
+     'relate_words' : np.nan
+
+     },
+
+
+)

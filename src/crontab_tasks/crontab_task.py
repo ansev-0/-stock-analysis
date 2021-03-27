@@ -18,12 +18,14 @@ cron = TaskCronTab()
 print(cron.intab)
 for job in cron:
     
-    print(job)
-    print(job.is_enabled())
-    print(job.is_valid())
+    #print(job)
+    #print(job.is_enabled())
+    #print(job.is_valid())
     print(job.schedule(date_from=datetime.now()).get_next())
+    print(job.command)
+    print(type(job.schedule(date_from=datetime.now()).get_next()))
     #cron.remove(job)
-#cron.write()
+#.write()
 
 
 

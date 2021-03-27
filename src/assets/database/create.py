@@ -11,3 +11,6 @@ class CreateAssetInDataBase(AssetsDatabase):
         return self._collection.insert_many([asset.key_words if self._is_asset(asset)
                                              else asset
                                              for asset in assets])
+
+#from src.assets.asset import assets
+#CreateAssetInDataBase().many(assets)

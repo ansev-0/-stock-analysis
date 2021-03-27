@@ -104,8 +104,8 @@ class UpdateExtendedIntradayAlphaVantageMany(UpdateExtendedIntradayAlphaVantage,
 #years = range(1, 2+1)
 #months = range(1, 12 +1)
 #slices = [f'year{year}month{month}' for month in months for year in years]
+#'
 #combs = list(product(orders, slices))
+#
 #obj = UpdateExtendedIntradayAlphaVantageMany.slice_1min(appkey)
-#obj.to_database_getting_errors(combs)
-
-        
+#obj.to_database_getting_errors(combs[-500:])

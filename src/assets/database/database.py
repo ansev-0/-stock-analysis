@@ -5,6 +5,7 @@ class AssetsDatabase(DataBaseAdminAssets):
 
     def __init__(self):
         super().__init__('assets')
+        self._collection = self._database['basic']
 
     def list_assets_labels(self, **kwargs):
         return self._database.list_collection_names(**kwargs)
