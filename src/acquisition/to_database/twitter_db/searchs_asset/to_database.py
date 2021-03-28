@@ -6,7 +6,9 @@ from tweepy.error import RateLimitError
 from pandas import to_datetime
 from datetime import datetime
 from tweepy.models import SearchResults
+from collections import defaultdict
 import os
+from datetime import datetime
 
 class TwitterSearchToDataBases:
 
@@ -20,17 +22,22 @@ class TwitterSearchToDataBases:
     
     _flatten_response = FlattenResponse(_decode_map)
     _NAME_CREDENTIALS = 'twitter_s'
-    _LIMIT_CREDENTIALS = 2
+    _LIMIT_CREDENTIALS = 5
 
-    def __init__(self):
-        self._crendential_index = -1
+    def __init__(self, crendential_index=-1):
+        self._crendential_index = crendential_index
+        self._api_status = {}
+
 
     def __call__(self, *args, **kwargs):
         # make request
         response = self._make_request(*args, **kwargs)
         #check bad response
         if not response or isinstance(response, str):
-            return response
+            output = dict(self._api_status), l_response
+            #reset dict _api_status
+            self._api_status = {}
+            return output
 
         l_response = []
         for obj_response in response:
@@ -41,8 +48,13 @@ class TwitterSearchToDataBases:
             )
             #save response in list
             l_response.append(obj_response)
+        # get output
+        output = dict(self._api_status), l_response
+        #reset dict _api_status
+        self._api_status = {}
 
-        return l_response
+        return output
+        
 
     def _update(self, flatten_response, list_to_update):
         for collection_to_update in list_to_update:
@@ -55,17 +67,26 @@ class TwitterSearchToDataBases:
     def _make_request(self, *args, **kwargs):
 
         try:
-            return self._twitter_search.get_full_text(*args, **kwargs)
+            output = self._twitter_search.get_full_text(*args, **kwargs)
+            self._api_status[f'{self._NAME_CREDENTIALS}{self._crendential_index}'] = True
+            return output
 
         except RateLimitError:
-            if self._update_credentials()
+            if self._update_credentials():
                 return self._make_request(*args, **kwargs)
-            else return []
-
+            else:
+                 return []
         except Exception as error:
-            return str(error)
+            str_error = str(error)
 
-    def _update_credentials(self):
+            if self._update_credentials(str_error):
+                return self._make_request(*args, **kwargs)
+            else:
+                 return str(str_error)
+
+    def _update_credentials(self, error=None):
+        #put saturated
+        self._api_status[f'{self._NAME_CREDENTIALS}{self._crendential_index}'] = error if error is None else False
         self._crendential_index += 1
         if self._crendential_index > self._LIMIT_CREDENTIALS:
             return False

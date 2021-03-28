@@ -19,22 +19,22 @@ class FindTwitterApiJobsDataBase(TwitterApiJobsDataBase):
                                     else {'$in' : word})}, **kwargs)
 
     def before_date(self, before_date, **kwargs):
-        return self.many({'created_at_end' {'$lt' : before_date}}, **kwargs)
+        return self.many({'created_at_end' : {'$lt' : before_date}}, **kwargs)
 
     def after_date(self, after_date, **kwargs):
-        return self.many({'created_at_end' {'$gt' : after_date}}, **kwargs)
+        return self.many({'created_at_end' : {'$gt' : after_date}}, **kwargs)
 
     def before_id(self, before_id, **kwargs):
-        return self.many({'created_at_end' {'$lt' : before_id}}, **kwargs)
+        return self.many({'created_at_end' : {'$lt' : before_id}}, **kwargs)
 
     def after_id(self, after_id, **kwargs):
-        return self.many({'created_at_end' {'$gt' : after_id}}, **kwargs)
+        return self.many({'created_at_end' : {'$gt' : after_id}}, **kwargs)
 
     def between_dates(self, init_date, end_date, **kwargs):
-        return self.many({'created_at_end' {'$lt' : end_date, '$gt' : init_date}}, **kwargs)
+        return self.many({'created_at_end' : {'$lt' : end_date, '$gt' : init_date}}, **kwargs)
 
     def between_ids(self, init_id, end_id, **kwargs):
-        return self.many({'created_at_end' {'$lt' : end_id, '$gt' : init_id}}, **kwargs)
+        return self.many({'created_at_end' : {'$lt' : end_id, '$gt' : init_id}}, **kwargs)
 
 class FindTwitterApiStatusDataBase(TwitterApiStatusDataBase):
 

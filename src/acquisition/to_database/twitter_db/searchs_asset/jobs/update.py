@@ -16,7 +16,7 @@ class UpdateDateJob(CronTwitterJob):
     def _update_cron(self, dict_job, datetime):
         for job in self._cron_tasks:
             job.schedule(date_from=datetime.now()).get_next()
-            if self.is_this_job(dict_job, job)
+            if self.is_this_job(dict_job, job):
                 # add new job
                 self._cron_tasks.add_datetime_task(job.command, datetime)
                 # remove

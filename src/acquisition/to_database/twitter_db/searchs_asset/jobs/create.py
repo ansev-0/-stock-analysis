@@ -6,7 +6,7 @@ class NewJob(CronTwitterJob):
     
     _cron_tasks = CreateRunTaskCronTab()
     _db_create = CreateTwitterApiJobsDataBase()
-    _name_cron_job = 'twitter_search_job.py'
+    
 
     def one(self, dict_job, datetime):
         # create in db
