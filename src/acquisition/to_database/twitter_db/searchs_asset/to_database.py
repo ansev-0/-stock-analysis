@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 
 class TwitterSearchToDataBases:
-
+    
     twitter_search = TwitterSearchPopular()
     _twitter_select_db = TwitterSelectDbToUpdate()
     _decode_map = ('id', 'created_at', 'full_text', 
@@ -21,6 +21,7 @@ class TwitterSearchToDataBases:
                               'friends_count', 'favourites_count')})
     
     _flatten_response = FlattenResponse(_decode_map)
+    
     _NAME_CREDENTIALS = 'twitter_s'
     _LIMIT_CREDENTIALS = 5
 
@@ -68,8 +69,7 @@ class TwitterSearchToDataBases:
 
         try:
             output = self.twitter_search.get_full_text(*args, **kwargs)
-
-            self._api_status[f'{self._NAME_CREDENTIALS}{self._crendential_index}'] = True
+            self._api_status[self._current_key_status] = True
             return output
 
         except RateLimitError:
@@ -85,9 +85,16 @@ class TwitterSearchToDataBases:
             else:
                  return str(str_error)
 
+    @property
+    def _current_key_status(self):
+        return f'{self._NAME_CREDENTIALS}{self._crendential_index}' \
+                         if self._crendential_index >= 0 \
+                         else self.twitter_search.DEFAULT_CREDENTIAL_NAME
+
     def _update_credentials(self, error=None):
         #put saturated
-        self._api_status[f'{self._NAME_CREDENTIALS}{self._crendential_index}'] = error if error is None else False
+        self._api_status[self._current_key_status] = error if error is None else False
+        
         self._crendential_index += 1
         if self._crendential_index > self._LIMIT_CREDENTIALS:
             return False
@@ -103,6 +110,3 @@ class TwitterSearchToDataBases:
     @staticmethod
     def _get_day_id(created_at):
         return to_datetime(created_at.date())
-
-    
-

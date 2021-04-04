@@ -7,9 +7,10 @@ import os
 class TwitterAPIAuthJson(API):
 
     PATH_PREDENTIALS = 'twitter_credentials'
+    DEFAULT_CREDENTIAL_NAME = 'twitter_app'
     TWITTER_CREDENTIALS = os.path.join(get_financial_path(), PATH_PREDENTIALS)
     _DEFAULT_CREDENTIALS_PATH = os.path.join(TWITTER_CREDENTIALS,
-                                             'twitter_app.json')
+                                             f'{DEFAULT_CREDENTIAL_NAME}.json')
 
     def __init__(self, credentials=None, *args, **kwargs):
        
