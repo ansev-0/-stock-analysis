@@ -52,5 +52,5 @@ class RecurrentSearch:
                 response)
         )
 
-recurrent = RecurrentSearch(50, 50, 25000)
-recurrent('google')
+#recurrent = RecurrentSearch(50, 50, 25000)
+#recurrent('google')

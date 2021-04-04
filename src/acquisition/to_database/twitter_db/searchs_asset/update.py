@@ -10,6 +10,7 @@ class UpdateSearchAsset(DataBaseAdminTwitterRequests):
     def collection(self):
         return self._collection
 
+    @DataBaseAdminTwitterRequests.try_and_wakeup
     def one(self, _id, dict_to_update):
         return self._collection.update_one({'_id' : _id}, 
                                            self._update_dict(dict_to_update), 

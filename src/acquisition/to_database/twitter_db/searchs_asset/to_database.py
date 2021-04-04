@@ -12,7 +12,7 @@ from datetime import datetime
 
 class TwitterSearchToDataBases:
 
-    _twitter_search = TwitterSearchPopular()
+    twitter_search = TwitterSearchPopular()
     _twitter_select_db = TwitterSelectDbToUpdate()
     _decode_map = ('id', 'created_at', 'full_text', 
                    'retweet_count', 'favorite_count', 
@@ -67,7 +67,8 @@ class TwitterSearchToDataBases:
     def _make_request(self, *args, **kwargs):
 
         try:
-            output = self._twitter_search.get_full_text(*args, **kwargs)
+            output = self.twitter_search.get_full_text(*args, **kwargs)
+
             self._api_status[f'{self._NAME_CREDENTIALS}{self._crendential_index}'] = True
             return output
 
@@ -90,7 +91,7 @@ class TwitterSearchToDataBases:
         self._crendential_index += 1
         if self._crendential_index > self._LIMIT_CREDENTIALS:
             return False
-        self._twitter_search.auth = os.path.join(self._twitter_search.TWITTER_CREDENTIALS, 
+        self.twitter_search.auth = os.path.join(self.twitter_search.TWITTER_CREDENTIALS, 
                                                  f'{self._NAME_CREDENTIALS}{self._crendential_index}')
         return True                                          
 
@@ -102,3 +103,6 @@ class TwitterSearchToDataBases:
     @staticmethod
     def _get_day_id(created_at):
         return to_datetime(created_at.date())
+
+    
+

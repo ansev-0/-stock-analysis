@@ -12,19 +12,15 @@ class TwitterAPIAuthJson(API):
                                              'twitter_app.json')
 
     def __init__(self, credentials=None, *args, **kwargs):
-        self._auth = None
-        self.auth = credentials
-        super().__init__(self._auth, *args, **kwargs)
+       
+        self._credentials = self._auth_from_credentials(credentials) if credentials is not None \
+            else self._default_credentials
+        super().__init__(self._credentials, *args, **kwargs)
 
 
     @property
-    def auth(self):
-        return self._auth
-
-    @auth.setter
-    def auth(self, auth):
-        self._auth = self._auth_from_credentials(auth) if credentials is not None \
-            else self._default_credentials
+    def auth_credentials(self):
+        return self._credentials
 
     @property
     def _default_credentials(self):

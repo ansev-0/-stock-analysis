@@ -1,4 +1,4 @@
-from src.databse.database import DataBaseAdminCronTab
+from src.database.database import DataBaseAdminCronTab
 
 class TwitterApiJobsDataBase(DataBaseAdminCronTab):
 

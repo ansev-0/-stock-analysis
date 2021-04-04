@@ -1,6 +1,9 @@
 class RuleTrend:
 
-    def ___init__(self, retweet_count_f, favorite_count_f, user_followers_f, repeat_f):
+    def __init__(self, retweet_count_f=5e-4, 
+                        favorite_count_f=1e-4, 
+                        user_followers_f=1e-5, 
+                        repeat_f=0.95):
 
         self.retweet_count_f = retweet_count_f
         self.favorite_count_f = favorite_count_f
@@ -8,16 +11,25 @@ class RuleTrend:
         self.repeat_f = repeat_f
 
     def __call__(self, word, list_response):
+        #calculate factor
         factor = sum(list(map(self._calculate_ind, list_response)))
+
+        return self._not_empty_response(word, list_response, factor) \
+            if isinstance(list_response, list) and len(list_response) > 0 \
+                else [self._build_dict_job(word, id1, id2, factor)]
+
+    def _build_dict_job(self, word, id1, id2, factor):
+        return {'word' : word,
+                'id2' : id2,
+                'id1' : id1,
+                'factor_priority' : factor,
+                 }
+
+    def _not_empty_response(word, list_response, factor):
         indices = [None, *self._get_indices(list_response), None, None]
 
-        return [
-            {'word' : word,
-             'id2' : id2,
-             'id1' : id1,
-             'factor_priority' : factor * (self.repeat_f ** n),
-                 }
-            for n, (id2, id1) in enumerate(zip(indices[:-1], indices[1:]))]
+        return [self._build_dict_job(word, id1, id2, factor * (self.repeat_f ** n))
+                for n, (id2, id1) in enumerate(zip(indices[:-1], indices[1:]))]
             
     def _calculate_ind(self, response):
         return self.retweet_count_f * response.retweet_count + \
@@ -26,3 +38,4 @@ class RuleTrend:
 
     def _get_indices(self, list_response):
         return sorted(list(map(lambda response : response.id, list_response)), reverse=True)
+        

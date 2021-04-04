@@ -3,16 +3,13 @@ from src.acquisition.to_database.twitter_db.searchs_asset.jobs.database.database
 
 class FindTwitterApiJobsDataBase(TwitterApiJobsDataBase):
 
+    @TwitterApiJobsDataBase.try_and_wakeup
     def one(self, *args, **kwargs):
         return self._collection.find_one(*args, **kwargs)
 
+    @TwitterApiJobsDataBase.try_and_wakeup
     def many(self, *args, **kwargs):
         return self._collection.find(*args, **kwargs)
-
-    def priority(self, priority, **kwargs):
-        return self.many({'priority' : (priority 
-                                        if isinstance(priority, (str, int, float)) 
-                                        else {'$in' : priority})}, **kwargs)
 
     def word(self, word, **kwargs):
         return self.many({'word' : (word if isinstance(word, str) 
@@ -38,10 +35,11 @@ class FindTwitterApiJobsDataBase(TwitterApiJobsDataBase):
 
 class FindTwitterApiStatusDataBase(TwitterApiStatusDataBase):
 
+    @TwitterApiStatusDataBase.try_and_wakeup
     def one(self, api_user, **kwargs):
         return self._collection.find_one({'api_user' : api_user}, 
                                          **kwargs)
-
+    @TwitterApiStatusDataBase.try_and_wakeup
     def many(self, api_users, **kwargs):
         return self._collection.find({'api_user' : {'$in' : api_users}}, 
                                      **kwargs)

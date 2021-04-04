@@ -19,9 +19,14 @@ class CreateRunTaskCronTab(TaskCronTab):
         job = self.add_task(module, **kwargs)
         job.every(1).days()
         return job
+        
+    def add_every_minute_task(self, minutes, module, **kwargs):
+        job = self.add_task(module, **kwargs)
+        job.minute.every(minutes)
+        return job
 
     def add_reboot_task(self, module, **kwargs):
-        job = self.add_task(module, prefix="sleep 90 & ", **kwargs)
+        job = self.add_task(module, prefix="sleep 90 && ", **kwargs)
         job.every_reboot()
         return job
 

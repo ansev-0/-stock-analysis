@@ -6,7 +6,7 @@ class TwitterSelectDbToUpdate:
     _find_assets = FindAssetInDataBase()
     
     def __init__(self):
-        self._assets = list(self._find_assets.many({}, projection={'_id' : False}))
+        self._assets = list(self._find_assets.many(False, {}, projection={'_id' : False}))
 
     def __call__(self, full_text_tweet):
 
@@ -29,5 +29,4 @@ class TwitterSelectDbToUpdate:
             return cum_list + [new_param in full_text_tweet]
         else:
             return cum_list + [False]
-
-
+TwitterSelectDbToUpdate()
