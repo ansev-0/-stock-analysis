@@ -2,8 +2,15 @@ from src.crontab_tasks.database.flag_last_done.find_flag import FindFlagLastDone
 from src.crontab_tasks.database.flag_last_done.update_flag import UpdateFlagLastTimeDoneCrontab
 from src.crontab_tasks.database.flag_last_done.create_flag import CreateFlagLastDoneCronTab
 from src.crontab_tasks.database.flag_last_done.find_and_update import FindAndUpdateErrorsCronTab
+from src.tools.mongodb import restart_connect_mongodb
 from datetime import datetime
+import json
+import os
 import time
+from src.tools.path import get_financial_path
+from src.exceptions.to_database_exceptions import ToDataBaseError
+from pymongo.errors import ServerSelectionTimeoutError
+
 
 class TaskManager:
 
@@ -11,20 +18,32 @@ class TaskManager:
     _update_flags = UpdateFlagLastTimeDoneCrontab()
     _find_and_update_errors_flags = FindAndUpdateErrorsCronTab()
 
-    def __init__(self, attemps=1, time_sleep=10, freq=None):
-        self._errors = None
+    def __init__(self, attemps=1, time_sleep=10, freq=None, attempt_connection_refused=4):
+
+        self._errors = []
         self.attemps = attemps
         self.time_sleep = time_sleep
         self._create_flags = CreateFlagLastDoneCronTab(freq)
+        self.attempt_connection_refused = attempt_connection_refused
         
     @property
     def errors(self):
         return self._errors
 
     def __call__(self, name_module, task):
+        self._try_connect_and_run(name_module, task, 0)
 
-        if self._need_exec(name_module):
-            self._run_task(task, name_module)
+    def _try_connect_and_run(self, name_module, task, number_of_try):
+        
+        try:
+            if self._need_exec(name_module):
+                self._run_task(task, name_module)
+
+        except ServerSelectionTimeoutError as error:
+            
+            if number_of_try <= self.attempt_connection_refused:
+                restart_connect_mongodb()
+                self._try_connect_and_run(name_module, task, number_of_try + 1)
 
 
     def _run_task(self, task, name_module):
@@ -36,6 +55,21 @@ class TaskManager:
                 #add error from attemp
                 self._errors.append({'time_error' : datetime.now(), 'message' : str(error)})
 
+            except ToDataBaseError as error:
+                self._errors.append({'time_error' : datetime.now(), 'message' : str(error)})
+            
+            except ServerSelectionTimeoutError as error:
+                try:
+                    restart_connect_mongodb()
+                    task()
+
+                except Exception as error:
+                    self._errors.append({'time_error' : datetime.now(), 'message' : str(error)})
+
+                else:
+                    #if not errors update last time done
+                    self._update_errors(name_module)
+                    return self._update_flags.update_flag(name_module)
             else:
                 #if not errors update last time done
                 self._update_errors(name_module) 
@@ -46,10 +80,8 @@ class TaskManager:
             self._update_errors(name_module)
 
     def _update_errors(self, name_module):
-        #update errors for task in db
-        if self._errors is not None:
-            self._find_and_update_errors_flags(name_module, self._errors)
-            self._errors = None
+        self._find_and_update_errors_flags(name_module, self._errors)
+        self._errors = []
 
 
     def _need_exec(self, module):
@@ -61,6 +93,3 @@ class TaskManager:
             # if task not exist create it an run
             self._create_flags.create_one(module)
             return True
-             
-        
-        

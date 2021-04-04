@@ -5,15 +5,22 @@ import json
 import os
 
 class TwitterAPIAuthJson(API):
-    
-    _FINANCIAL_PATH = get_financial_path()
-    _DEFAULT_CREDENTIALS_PATH = os.path.join(_FINANCIAL_PATH, 
+
+    PATH_PREDENTIALS = 'twitter_credentials'
+    TWITTER_CREDENTIALS = os.path.join(get_financial_path(), PATH_PREDENTIALS)
+    _DEFAULT_CREDENTIALS_PATH = os.path.join(TWITTER_CREDENTIALS,
                                              'twitter_app.json')
 
     def __init__(self, credentials=None, *args, **kwargs):
-        self._auth = self._auth_from_credentials(credentials) \
-            if credentials is not None else self._default_credentials
-        super().__init__(self._auth, *args, **kwargs)
+       
+        self._credentials = self._auth_from_credentials(credentials) if credentials is not None \
+            else self._default_credentials
+        super().__init__(self._credentials, *args, **kwargs)
+
+
+    @property
+    def auth_credentials(self):
+        return self._credentials
 
     @property
     def _default_credentials(self):

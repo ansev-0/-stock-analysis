@@ -1,4 +1,7 @@
 from pymongo import MongoClient
+from src.tools.mongodb import restart_connect_mongodb
+from pymongo.errors import ServerSelectionTimeoutError
+from functools import wraps
 
 class DataBase:
     '''
@@ -6,7 +9,7 @@ class DataBase:
     '''
     
     def __init_subclass__(cls):
-        cls._client = MongoClient(host='192.168.1.37', port=27017)
+        cls._client = MongoClient(host='127.0.0.1', port=27017)
         
     def __init__(self, database_name):
         try:
@@ -14,7 +17,22 @@ class DataBase:
         except Exception as error:
             print(f'It was not possible to create database connection {database_name}\n', error)
 
-            
+    @classmethod
+    def try_and_wakeup(cls, function, attemps=2):
+
+        @wraps(function)
+        def _try_except_server_selection_time_error(self, *args, **kwargs):
+
+            for _ in range(attemps):
+                try:
+                    return function(self, *args, **kwargs)
+
+                except ServerSelectionTimeoutError as error:
+                    restart_connect_mongodb()
+            raise error
+
+        return _try_except_server_selection_time_error
+
     @property
     def database(self):
         return self._database
@@ -84,5 +102,4 @@ class DataBaseAdminTwitterRequests(DataBase):
     to connect to the databases related to Twitter API.
     '''
     pass
-
 

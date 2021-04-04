@@ -4,6 +4,7 @@ class UpdateAssetInDataBase(AssetsDatabase):
 
     _UPDATE_KEYS = ('label', 'name')
 
+    @AssetsDatabase.try_and_wakeup
     def one(self, asset, **kwargs):
 
         key_words = asset.key_words if self._is_asset(asset) else asset
@@ -11,7 +12,7 @@ class UpdateAssetInDataBase(AssetsDatabase):
         return self._collection.update_one(where, 
                                            self._build_set(key_words), 
                                            **kwargs)
-
+    @AssetsDatabase.try_and_wakeup
     def many(self, *args, **kwargs):
         return self._collection.update_many(*args, **kwargs)
 

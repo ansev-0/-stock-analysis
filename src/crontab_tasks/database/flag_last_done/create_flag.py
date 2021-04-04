@@ -18,7 +18,7 @@ class CreateFlagLastDoneCronTab(InsertFlagLastDoneCronTab):
     @time_to_next_flag.setter
     def time_to_next_flag(self, time_to_next_flag):
         self._time_to_next_flag = time_to_next_flag \
-            if time_to_next_flag is not None else str(to_timedelta('1D'))
+            if time_to_next_flag is not None else str(to_timedelta('0 days 23:00:00'))
 
     #private properties
     @property
