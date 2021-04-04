@@ -34,7 +34,7 @@ class TwitterSearchToDataBases:
         response = self._make_request(*args, **kwargs)
         #check bad response
         if not response or isinstance(response, str):
-            output = dict(self._api_status), l_response
+            output = dict(self._api_status), response
             #reset dict _api_status
             self._api_status = {}
             return output
