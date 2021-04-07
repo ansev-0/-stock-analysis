@@ -16,20 +16,20 @@ class RuleTrend:
 
         return self._not_empty_response(word, list_response, factor) \
             if isinstance(list_response, list) and len(list_response) > 0 \
-                else [self._build_dict_job(word, id1, id2, factor)]
+                else [self._build_dict_job(word, since_id, max_id, factor)]
 
-    def _build_dict_job(self, word, id1, id2, factor):
+    def _build_dict_job(self, word, since_id, max_id, factor):
         return {'word' : word,
-                'id2' : id2,
-                'id1' : id1,
+                'max_id' : max_id,
+                'since_id' : since_id,
                 'factor_priority' : factor,
                  }
 
-    def _not_empty_response(word, list_response, factor):
+    def _not_empty_response(self, word, list_response, factor):
         indices = [None, *self._get_indices(list_response), None, None]
 
-        return [self._build_dict_job(word, id1, id2, factor * (self.repeat_f ** n))
-                for n, (id2, id1) in enumerate(zip(indices[:-1], indices[1:]))]
+        return [self._build_dict_job(word, since_id, max_id, factor * (self.repeat_f ** n))
+                for n, (max_id, since_id) in enumerate(zip(indices[:-1], indices[1:]))]
             
     def _calculate_ind(self, response):
         return self.retweet_count_f * response.retweet_count + \

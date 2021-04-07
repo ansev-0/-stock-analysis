@@ -16,18 +16,20 @@ class TaskCronTab(CronTab):
 
 
 
+
 #cron = TaskCronTab()
 #print(cron.intab)
 #for job in cron:
 #    
 #    print(job)
-#    #print(job.is_enabled())
+#    print(job.is_enabled())
 #    #print(job.is_valid())
 #    print(job.schedule(date_from=datetime.now()).get_next())
-#    #print(job.command)
+#    if '_id' in job.command:
+#        cron.remove(job)
 #    #print(type(job.schedule(date_from=datetime.now()).get_next()))
 #    #cron.remove(job)
-##cron.write()
+#cron.write()
 
 
 

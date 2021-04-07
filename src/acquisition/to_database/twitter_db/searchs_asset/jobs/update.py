@@ -15,13 +15,15 @@ class UpdateDateJob(CronTwitterJob):
 
     def _update_cron(self, dict_job, date_job):
         # add new job
-        self._cron_tasks.add_datetime_task(job.command, date_job)
+        args_job = self._get_args(dict_job)
+        
+        self._cron_tasks.add_datetime_task(f'{self._name_cron_job} {args_job}' , date_job)
         # remove old
-        self._remove_job(dict_job['_id'])
+        self.remove_job(dict_job['_id'])
 
-    def _remove_job(self, _id):
+    def remove_job(self, _id):
         for job in self._cron_tasks:
-            if _id in job.command:
+            if str(_id) in job.command:
                 self._cron_tasks.remove(job)
 
     def _update_in_db(self, dict_job, date_job):

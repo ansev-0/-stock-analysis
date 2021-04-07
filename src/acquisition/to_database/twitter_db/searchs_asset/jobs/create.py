@@ -17,4 +17,6 @@ class CreateNewJob(CronTwitterJob):
         # create cron job
         args_job = self._get_args(dict_job)
         self._cron_tasks.add_datetime_task(f'{self._name_cron_job} {args_job}', datetime)
+        # write job
+        self._cron_tasks.write()
 

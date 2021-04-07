@@ -11,7 +11,9 @@ class UpdateTwitterApiJobsDataBase(TwitterApiJobsDataBase):
     def many(self, where, dict_to_update, **kwargs):
         return self._collection.update_many(where, self._set_update(dict_to_update), **kwargs)
 
-    
+    def set_mutex_error(self, id_job):
+        return self.one({'_id' : id_job}, {'status' : 'mutex error'})
+
     def set_running(self, id_job):
         return self.one({'_id' : id_job}, {'status' : 'running'})
 

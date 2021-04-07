@@ -29,4 +29,3 @@ class TwitterSelectDbToUpdate:
             return cum_list + [new_param in full_text_tweet]
         else:
             return cum_list + [False]
-TwitterSelectDbToUpdate()

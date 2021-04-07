@@ -1,11 +1,12 @@
+from datetime import datetime
+
 class CronTwitterJob:
     
     _name_cron_job = 'twitter_search_job.py'
 
     @staticmethod
-    def _get_args(self, dict_job):
-        return ' --_id {_id} --word {word} --id1 {id1} --id2{id2}'\
-            .format(dict_job['_id'], dict_job['word'], dict_job['id1'], dict_job['id2'])
+    def _get_args(dict_job):
+        return ' '.join([f'--{key} {dict_job[key]}' for key in ('_id', 'word', 'since_id', 'max_id')])
 
     @property
     def _new_id(self):
