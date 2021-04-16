@@ -8,6 +8,7 @@ from src.acquisition.to_database.twitter_db.searchs_asset.jobs.database.delete i
 from src.acquisition.to_database.twitter_db.searchs_asset.jobs.create import CreateNewJob
 from src.acquisition.to_database.twitter_db.searchs_asset.jobs.database.update import UpdateTwitterApiJobsDataBase
 from src.acquisition.to_database.twitter_db.searchs_asset.jobs.mutex import MutexSearchsTwitterJob
+
 import os
 import pandas as pd
 import time
@@ -25,19 +26,17 @@ class JobManager:
     _update_status = UpdateTwitterApiStatusDataBase()
     _mutex = MutexSearchsTwitterJob()
 
-    def __init__(self, time_step='530MS', delay_start_job = '5T', try_catch_mutex_time='5T', delay_try_mutex=0.2):
-        self.time_step = pd.to_timedelta(time_step)
-        self._delay_start_job = pd.to_timedelta(delay_start_job)
+
+    def __init__(self, try_catch_mutex_time='5T', delay_try_mutex=0.2, delay_job='1T', delay_step=0.05):
+        
         self._try_catch_mutex_time = pd.to_timedelta(try_catch_mutex_time)
         self.delay_try_mutex = delay_try_mutex
+        self.delay_job = pd.to_timedelta(delay_job)
+        self.delay_step = delay_step
 
-    @property
-    def date_starts_job(self):
-        return datetime.now() + self._delay_start_job
-    
-    def __call__(self, word, _id, *args, **kwargs):
+    def __call__(self, task=None, **kwargs):
         try:
-            return self._manage(word, _id, *args, **kwargs)
+            return self._manage(task=task, **kwargs)
 
         except Exception as error:
 
@@ -53,39 +52,66 @@ class JobManager:
             self._mutex.release()
             #
 
+    @staticmethod
+    def _decode_dict_job(task):
+        return task['word'], task['_id'], task['since_id'], task['max_id']
 
+    def _get_new_job(self):
 
-    def _manage(self, word, _id, *args, **kwargs):
-        # set job running
-        self._update_status_job.set_running(_id)
-        # run job
-        dict_status_api, response = self._twitter_search_to_db(word, *args, **kwargs)
-        # notify end job
-        self._notify_end_job(_id, isinstance(response, (tuple, list)))
-        # remove job crontab
-        self._update_job.remove_job(_id)
-        # manage status
-        self._manage_dict_status_api(dict_status_api)
-        #try catch mutex
-        if not self._try_catch_mutex():
-            self._set_mutex_error(_id)
-            return None
-        # get next jobs by rule
-        next_jobs = self._rule_trend(word, response)
-        # date starts jobs
-        date_starts_jobs = self.date_starts_job
-        # get current_jobs 
-        cuurent_jobs = self._get_current_jobs(date_starts_jobs)
-        # queue all jobs
-        jobs = self._queue_jobs_with_current_jobs(cuurent_jobs + next_jobs)
-        # set pending status 
-        jobs = self._set_pending_status(jobs)
-        # assign dates
-        jobs = self._assign_dates(jobs, date_starts_jobs)
-        # update jobs
-        self._push_jobs(jobs)
-        # release mutex
-        self._mutex.release()
+        while True:
+            jobs = self._get_current_jobs()
+            max_delay_created = max(list(map(lambda job: datetime.now() - job['created_at'], jobs)))
+            try:
+                
+                jobs = filter(lambda job: datetime.now() - job['created_at'] > self.delay_job, 
+                              jobs)
+
+                jobs = sorted(jobs, key=lambda x: x['created_at'], reverse=True)
+                jobs = sorted(jobs, key=lambda x: x['factor_priority'], reverse=True)
+                init_job = jobs[0]
+
+            except IndexError:
+                time.sleep((self.delay_job - max_delay_created).total_seconds())
+            else:
+                time.sleep(self.delay_step)
+                return self._decode_dict_job(init_job)
+
+    def _manage(self, task=None, **kwargs):
+
+        
+        word, _id, since_id, max_id = self._decode_dict_job(task) \
+                if task is not None else self._get_new_job()
+
+        while True:
+            # set job running
+            self._update_status_job.set_running(_id)
+            # run job
+            dict_status_api, response = self._twitter_search_to_db(word, since_id=since_id, max_id=max_id, **kwargs)
+            # notify end job
+            self._notify_end_job(_id, isinstance(response, (tuple, list)))
+            # manage status
+            self._manage_dict_status_api(dict_status_api)
+            #try catch mutex
+            if not self._try_catch_mutex():
+                self._set_mutex_error(_id)
+                return None
+            # get next jobs by rule
+            next_jobs = self._rule_trend(word, since_id, max_id, response)
+            # get current_jobs 
+            cuurent_jobs = self._get_current_jobs()
+            # queue all jobs
+            jobs = self._queue_jobs_with_current_jobs(cuurent_jobs + next_jobs)
+            # set pending status 
+            jobs = self._set_pending_status(jobs)
+            # update jobs
+            self._push_jobs(jobs)
+            # release mutex
+            self._mutex.release()
+            #get next task
+            word, _id, since_id, max_id = self._get_new_job()
+            
+
+    
 
     def _set_mutex_error(self, id_job):
         self._update_status_job.set_mutex_error(id_job)
@@ -107,19 +133,17 @@ class JobManager:
 
     def _push_jobs(self, jobs):
         for job in jobs:
-            if '_id' in job[0]:
-                self._update_job.one(*job)
+            #if '_id' in job[0]:
+            if '_id' in job:
+                self._update_job.one(job)
+                #self._update_job.one(*job)
             else:
-                self._create_job.one(*job)
+                self._create_job.one(job)
+                #self._create_job.one(*job)
 
-    def _assign_dates(self, jobs, date_start):
-        return [(job, date_start + (self.time_step * i)) 
-                for i, job in enumerate(jobs)]
-
-    def _get_current_jobs(self, date_start_jobs):
+    def _get_current_jobs(self):
         try:
-            return list(self._find_api_jobs.many({'status' : 'pending', 
-                                                  'date': {'$gt' : date_start_jobs}}))
+            return list(self._find_api_jobs.many({'status' : {'$in' : ['pending', 'error']}}))
         except Exception as error:
             return []
 
@@ -152,7 +176,7 @@ class JobManager:
         date_now = datetime.now()
         for job in jobs:
             if 'last_update' in job:
-                job['factor_priority'] += (job['last_update'] - date_now).total_seconds()
+                job['factor_priority'] += (date_now - job['last_update']).total_seconds() / 5
         return jobs
 
     def _update_jobs(self, jobs):

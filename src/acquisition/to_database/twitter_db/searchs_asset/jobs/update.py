@@ -8,9 +8,11 @@ class UpdateDateJob(CronTwitterJob):
     _cron_tasks = CreateRunTaskCronTab()
     _db_update = UpdateTwitterApiJobsDataBase()
     
-    def one(self, dict_job, datetime):
-        self._update_cron(dict_job, datetime)
-        self._update_in_db(dict_job, datetime)
+    def one(self, dict_job):
+        #self._update_cron(dict_job, datetime)
+        self._update_in_db(dict_job, 
+                           #datetime
+                           )
 
 
     def _update_cron(self, dict_job, date_job):
@@ -26,11 +28,13 @@ class UpdateDateJob(CronTwitterJob):
             if str(_id) in job.command:
                 self._cron_tasks.remove(job)
 
-    def _update_in_db(self, dict_job, date_job):
+    def _update_in_db(self, dict_job, 
+                      #date_job
+                      ):
         # build dict to replace
         dict_to_replace = dict_job.copy()
         # replace date
-        dict_to_replace['date'] = date_job
+        #dict_to_replace['date'] = date_job
         #update last update
         dict_to_replace['last_update'] = datetime.now()
         # update database

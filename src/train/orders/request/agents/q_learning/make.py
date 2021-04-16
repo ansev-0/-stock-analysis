@@ -26,7 +26,7 @@ class MakeQlearningRequest:
         self._path_model = None
 
     def __call__(self, form_dict):
-        #get valid form
+        # get valid form
         form = FormQlearning(**form_dict)
         try:
             valid_form_dict = self._form_making_tasks(form)
@@ -47,8 +47,8 @@ class MakeQlearningRequest:
         if self._path_model is not None:
             PathTask().remove(self._path_model)
 
-    def _form_making_tasks(self, form):
 
+    def _form_making_tasks(self, form):
         # make stock name task
         self._make_stock_name_task(form['stock_name'])
         # make stock data task

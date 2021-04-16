@@ -62,80 +62,98 @@ class Asset:
         value = value if isinstance(value, list) else [value]
         where = where + value if where is not None else value
 
-import numpy as np        
-assets = (
-    {
-     'name' : 'Apple',
-     'label' : 'AAPL',
-     'enemy_assets' : np.nan,
-     'stakeholders' : np.nan,
-     'products' : ('iphone', 'apple watch', 'iPad', 'iPod', 'Mac', 'iCloud', 'HomePod', 'AirPlay', 'Apple TV'),
-     'relate_words' : np.nan,
-
-     },
-
-    {
-     'name' : 'Google',
-     'label' : 'GOOGL',
-     'enemy_assets' : np.nan,
-     'stakeholders' : np.nan,
-     'products' : ('google drive', 'gmail', 'google photos', 'google news', 'google chrome', 'google chromecast', 'google store', ),
-     'relate_words' : np.nan
-
-     },
-
-    {
-     'name' : 'Twitter',
-     'label' : 'TWTR',
-     'enemy_assets' : np.nan,
-     'stakeholders' : np.nan,
-     'products' : np.nan,
-     'relate_words' : np.nan
-
-     },
-
-
-    {
-     'name' : 'Nvidia',
-     'label' : 'NVDA',
-     'enemy_assets' : ('AMD',),
-     'stakeholders' : np.nan,
-     'products' : ('nvidia gpu', 'nvidia geforce', 'nvidia titan', 
-                   'nvidia quadro', 'nvidia jetson', 
-                   'nvidia gpu cloud', 'nvidia shield', ),
-     'relate_words' : np.nan
-
-     },
-
-    {
-     'name' : 'AMD',
-     'label' : 'AMD',
-     'enemy_assets' : ('NVDA'),
-     'stakeholders' : np.nan,
-     'products' : ('amd rayzen', 'amd gpu', 'amd radeon', 'amd epyc', 'amd instinct', 'amd cpu', ),
-     'relate_words' : np.nan
-
-     },
-
-    {
-     'name' : 'Amazon',
-     'label' : 'AMZN',
-     'enemy_assets' : np.nan,
-     'stakeholders' : np.nan,
-     'products' : ('aws', 'amazon prime', 'amazon music', 'amazon photos', ),
-     'relate_words' : np.nan
-
-     },
-
-    {
-     'name' : 'Tesla',
-     'label' : 'TSLA',
-     'enemy_assets' : np.nan,
-     'stakeholders' : ('Elon Musk', ),
-     'products' : ('tesla car', 'tesla electric car', 'tesla solar', ),
-     'relate_words' : np.nan
-
-     },
-
-
-)
+#import numpy as np        
+#assets_d = (
+#    {
+#     'name' : 'Apple',
+#     'label' : 'AAPL',
+#     'enemy_assets' : np.nan,
+#     'stakeholders' : np.nan,
+#     'products' : ('iphone', 'apple watch', 'iPad', 'iPod', 'Mac', 'iCloud', 'HomePod', 'AirPlay', 'Apple TV'),
+#     'relate_words' : np.nan,
+#
+#     },
+#
+#    {
+#     'name' : 'Google',
+#     'label' : 'GOOGL',
+#     'enemy_assets' : np.nan,
+#     'stakeholders' : np.nan,
+#     'products' : ('google drive', 'gmail', 'google photos', 'google news', 'google chrome', 'google chromecast', 'google store', ),
+#     'relate_words' : np.nan
+#
+#     },
+#
+#    {
+#     'name' : 'Twitter',
+#     'label' : 'TWTR',
+#     'enemy_assets' : np.nan,
+#     'stakeholders' : np.nan,
+#     'products' : np.nan,
+#     'relate_words' : np.nan
+#
+#     },
+#
+#
+#    {
+#     'name' : 'Nvidia',
+#     'label' : 'NVDA',
+#     'enemy_assets' : ('AMD',),
+#     'stakeholders' : np.nan,
+#     'products' : ('nvidia gpu', 'nvidia geforce', 'nvidia titan', 
+#                   'nvidia quadro', 'nvidia jetson', 
+#                   'nvidia gpu cloud', 'nvidia shield', ),
+#     'relate_words' : np.nan
+#
+#     },
+#
+#    {
+#     'name' : 'AMD',
+#     'label' : 'AMD',
+#     'enemy_assets' : ('NVDA'),
+#     'stakeholders' : np.nan,
+#     'products' : ('amd rayzen', 'amd gpu', 'amd radeon', 'amd epyc', 'amd instinct', 'amd cpu', ),
+#     'relate_words' : np.nan
+#
+#     },
+#
+#    {
+#     'name' : 'Amazon',
+#     'label' : 'AMZN',
+#     'enemy_assets' : np.nan,
+#     'stakeholders' : np.nan,
+#     'products' : ('aws', 'amazon prime', 'amazon music', 'amazon photos', ),
+#     'relate_words' : np.nan
+#
+#     },
+#
+#    {
+#     'name' : 'Tesla',
+#     'label' : 'TSLA',
+#     'enemy_assets' : np.nan,
+#     'stakeholders' : ('Elon Musk', ),
+#     'products' : ('tesla car', 'tesla electric car', 'tesla solar', ),
+#     'relate_words' : np.nan
+#
+#     },
+#
+#
+#)
+#
+#from pymongo import MongoClient
+#my_d2 = \
+#tuple(
+#    {
+#'name' : np.nan,
+#'label' : d,
+#'enemy_assets' : np.nan,
+#'stakeholders' : np.nan,
+#'products' : np.nan,
+#'relate_words' : np.nan
+#    }
+#
+#for d in MongoClient()['acquisition_orders']['stock_data_intraday'].find_one({'_id' : 'alphavantage'})['orders']
+#
+#)
+#
+#assets = list(assets_d)  + list(my_d2)

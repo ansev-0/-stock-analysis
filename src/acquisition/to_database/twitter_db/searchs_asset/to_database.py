@@ -23,7 +23,7 @@ class TwitterSearchToDataBases:
     _flatten_response = FlattenResponse(_decode_map)
     
     _NAME_CREDENTIALS = 'twitter_s'
-    _LIMIT_CREDENTIALS = 5
+    _LIMIT_CREDENTIALS = 8
 
     def __init__(self, crendential_index=-1):
         self._crendential_index = crendential_index
@@ -35,7 +35,7 @@ class TwitterSearchToDataBases:
         response = self._make_request(*args, **kwargs)
         #check bad response
         if not response or isinstance(response, str):
-            output = dict(self._api_status), response
+            output = dict(self._api_status.copy()), response
             #reset dict _api_status
             self._api_status = {}
             return output
@@ -50,7 +50,7 @@ class TwitterSearchToDataBases:
             #save response in list
             l_response.append(obj_response)
         # get output
-        output = dict(self._api_status), l_response
+        output = dict(self._api_status.copy()), l_response
         #reset dict _api_status
         self._api_status = {}
 
@@ -69,6 +69,7 @@ class TwitterSearchToDataBases:
 
         try:
             output = self.twitter_search.get_full_text(*args, **kwargs)
+            self._check_valid_response(output)
             self._api_status[self._current_key_status] = True
             return output
 
@@ -85,6 +86,11 @@ class TwitterSearchToDataBases:
             else:
                  return str(str_error)
 
+    @staticmethod
+    def _check_valid_response(list_response):
+        if any(map(lambda resp: isinstance(resp, str), list_response)):
+            raise ValueError('Invalid response')
+
     @property
     def _current_key_status(self):
         return f'{self._NAME_CREDENTIALS}{self._crendential_index}' \
@@ -97,9 +103,11 @@ class TwitterSearchToDataBases:
         
         self._crendential_index += 1
         if self._crendential_index > self._LIMIT_CREDENTIALS:
+            #reset credentials
+            self._crendential_index = -1
             return False
-        self.twitter_search.auth = os.path.join(self.twitter_search.TWITTER_CREDENTIALS, 
-                                                 f'{self._NAME_CREDENTIALS}{self._crendential_index}')
+        self.twitter_search.auth_credentials = os.path.join(self.twitter_search.TWITTER_CREDENTIALS, 
+                                                            f'{self._NAME_CREDENTIALS}{self._crendential_index}.json')
         return True                                          
 
     @staticmethod

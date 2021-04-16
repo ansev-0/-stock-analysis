@@ -23,6 +23,11 @@ class TwitterAPIAuthJson(API):
     def auth_credentials(self):
         return self._credentials
 
+    @auth_credentials.setter
+    def auth_credentials(self, credentials):
+        self._credentials = self._auth_from_credentials(credentials)
+
+
     @property
     def _default_credentials(self):
         return self._get_auth(self._load_json_credentials(self._DEFAULT_CREDENTIALS_PATH))

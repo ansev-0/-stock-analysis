@@ -20,6 +20,7 @@ class UpdateTwitterApiJobsDataBase(TwitterApiJobsDataBase):
     
     def set_error(self, id_job):
         return self.one({'_id' : id_job}, {'status' : 'error'})
+        
 
     
     def set_done(self, id_job):
