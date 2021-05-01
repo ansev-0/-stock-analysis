@@ -4,6 +4,7 @@ from src.train.orders.request.agents.q_learning.tasks_for_request.conf_build_age
 from src.train.orders.request.agents.q_learning.tasks_for_request.id import IdTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.path import PathTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.stock_data.stock_data import StockDataTask
+from src.train.orders.request.agents.q_learning.tasks_for_request.stock_data_intraday.stock_data import StockDataTaskIntraday
 from src.train.orders.request.agents.q_learning.tasks_for_request.financial_data.financial_data import FinancialDataTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.broker_commision.broker_commision import BrokerCommisionTask
 from src.train.orders.request.agents.q_learning.tasks_for_request.stock_name import StockNameTask
@@ -14,6 +15,10 @@ class MakeQlearningRequest:
 
     _make_stock_name_task = StockNameTask()
     _make_stock_data_task = StockDataTask()
+    _make_stock_data_intraday_1min_task = StockDataTaskIntraday.delay900lag1()
+    _make_stock_data_intraday_5min_task = StockDataTaskIntraday.delay512lag5()
+    _make_stock_data_intraday_30min_task = StockDataTaskIntraday.delay256lag30()
+    _make_stock_data_intraday_180min_task = StockDataTaskIntraday.delay128lag180()
     _make_financial_data_task = FinancialDataTask()
     _make_based_on_task = BasedOnTask()
     _make_path_task = PathTask()
@@ -52,12 +57,21 @@ class MakeQlearningRequest:
         # make stock name task
         self._make_stock_name_task(form['stock_name'])
         # make stock data task
-        idx_train, idx_val, self._cache_id_train, self._cache_id_validation = \
+        shape_0_train, shape_0_val, idx_train, idx_val, self._cache_id_train, self._cache_id_validation = \
             self._make_stock_data_task(
                 **{key : value for key, value in form.items()
                     if key in ('stock_name', 'data_train_limits',
                                'data_validation_limits', 'delays')}
             )
+        # make stock data intraday
+        form['cache_id_stock_intraday_1_train'], form['cache_id_stock_intraday_1_validation'] = \
+            self._make_stock_data_intraday_1min_task(form['stock_name'], shape_0_train, shape_0_val, idx_train, idx_val)
+        form['cache_id_stock_intraday_5_train'], form['cache_id_stock_intraday_5_validation'] = \
+            self._make_stock_data_intraday_5min_task(form['stock_name'], shape_0_train, shape_0_val, idx_train, idx_val)
+        form['cache_id_stock_intraday_30_train'], form['cache_id_stock_intraday_30_validation'] = \
+            self._make_stock_data_intraday_30min_task(form['stock_name'], shape_0_train, shape_0_val, idx_train, idx_val)
+        form['cache_id_stock_intraday_180_train'], form['cache_id_stock_intraday_180_validation'] = \
+            self._make_stock_data_intraday_180min_task(form['stock_name'], shape_0_train, shape_0_val, idx_train, idx_val)
 
         # make financial data task and save ids
         form['cache_id_financial_train'], form['cache_id_financial_validation'] = \

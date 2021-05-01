@@ -21,13 +21,13 @@ class TwitterSelectDbToUpdate:
     def _reduce_func(cum_list, new_param, full_text_tweet):
 
         if isinstance(new_param, list):
-            list_bool = [param in full_text_tweet 
+            list_bool = [param.lower() in full_text_tweet.lower() 
                          for param in new_param 
                          if isinstance(param, str)]
             return cum_list + (list_bool if list_bool else [False])
 
         elif isinstance(new_param, str):
-            return cum_list + [new_param in full_text_tweet]
+            return cum_list + [new_param.lower() in full_text_tweet.lower()]
         else:
             return cum_list + [False]
 #TwitterSelectDbToUpdate()

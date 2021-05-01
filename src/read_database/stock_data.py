@@ -89,3 +89,4 @@ class ManyStockDataFromManyDataBase:
     def dictionary(cls, db_names):
         return cls(db_names, format_output='dict')
     
+

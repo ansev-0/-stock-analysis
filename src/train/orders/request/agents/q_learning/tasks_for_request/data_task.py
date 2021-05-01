@@ -29,19 +29,15 @@ class DataTask(metaclass=ABCMeta):
             .loc[:, ('weekday', 'dayofyear') + self.features]
 
     def _to_cache(self, data, is_financial=False):
-
-            return self._create_agent_cache(
-                **dict(
-                        zip(
-                            ('sequences', 'time_values'), 
-                            data
-                            )
-                       )
-            )[0] if not is_financial \
-            else self._create_agent_cache(**{'data' : data.to_numpy(), 
-                                             'index' : data.index.to_numpy(), 
-                                             'columns' : data.columns.to_numpy()})[0]
-
+            dict_to_cache = self._not_financial_dict(data) if not is_financial \
+                else {'data' : data[0], 
+                      'index' : data[1].to_numpy(), 
+                      'columns' : data[2].to_numpy()}
+            return self._create_agent_cache(**dict_to_cache)[0]
+    @staticmethod
+    def _not_financial_dict(data):
+        return dict(zip(('sequences', 'time_values'), data)) \
+            if isinstance(data, (tuple, list)) else {'sequences' : data}
 
     def remove(self, id_cache):
         return self._remove_cache.delete_id(id_cache)

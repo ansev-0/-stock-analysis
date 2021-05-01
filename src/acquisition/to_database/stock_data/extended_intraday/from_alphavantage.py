@@ -96,16 +96,16 @@ class UpdateExtendedIntradayAlphaVantageMany(UpdateExtendedIntradayAlphaVantage,
     pass
 
 
-#from itertools import product
-#from pymongo import MongoClient      
-#client = MongoClient('192.168.1.51', 27017)
-#orders = client['acquisition_orders']['stock_data_intraday'].find_one({'_id' : 'alphavantage'})['orders']
-#
-#years = range(1, 2+1)
-#months = range(1, 12 +1)
-#slices = [f'year{year}month{month}' for month in months for year in years]
-#'
-#combs = list(product(orders, slices))
-#
-#obj = UpdateExtendedIntradayAlphaVantageMany.slice_1min(appkey)
-#obj.to_database_getting_errors(combs[-500:])
+from itertools import product
+from pymongo import MongoClient      
+client = MongoClient()
+orders = client['acquisition_orders']['stock_data_intraday'].find_one({'_id' : 'alphavantage'})['orders']
+
+years = range(1, 2+1)
+months = range(1, 12 +1)
+slices = [f'year{year}month{month}' for month in months for year in years]
+
+combs = list(product(orders, slices))
+appkey = 'O39L8VIVYYJYUN3P'
+obj = UpdateExtendedIntradayAlphaVantageMany.slice_1min(appkey)
+obj.to_database_getting_errors(combs[500:])

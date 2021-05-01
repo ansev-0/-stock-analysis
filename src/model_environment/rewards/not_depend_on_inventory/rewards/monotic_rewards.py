@@ -7,7 +7,7 @@ class MonoticCumulativeRewards(BaseNotDependOnInventoryReward):
     def _get_sell_serie(self):
         diff = self.time_values.diff(-1)
         blocks = monotic_blocks(diff, diff_serie=True)
-        return diff[::-1].groupby(blocks, sort=False).cumsum()[::-1].dropna().rename('sell_rewards')
+        return diff[::-1].groupby(blocks, sort=False).cumsum()[::-1].fillna(0).rename('sell_rewards')
 
         
 class MonoticCumulativeRewardsNotAction(MonoticCumulativeRewards):

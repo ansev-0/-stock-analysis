@@ -15,7 +15,7 @@ class DecodeCommisionCache:
     def _build_serie_from_db(self, cache_id):
         return pd.Series(
             self._find_in_cache.find_by_id(cache_id, 
-                                           projection={'time_values' : 1})['time_values'])[:-1]
+                                           projection={'time_values' : 1})['time_values'])
 
     def _decode_param(self, param, dict_param):
         #check valid type commision

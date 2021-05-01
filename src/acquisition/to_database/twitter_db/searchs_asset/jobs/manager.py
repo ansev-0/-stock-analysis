@@ -27,7 +27,7 @@ class JobManager:
     _mutex = MutexSearchsTwitterJob()
 
 
-    def __init__(self, try_catch_mutex_time='5T', delay_try_mutex=0.2, delay_job='1T', delay_step=0.05):
+    def __init__(self, try_catch_mutex_time='5T', delay_try_mutex=0.2, delay_job='1T', delay_step=0.5):
         
         self._try_catch_mutex_time = pd.to_timedelta(try_catch_mutex_time)
         self.delay_try_mutex = delay_try_mutex
@@ -39,7 +39,7 @@ class JobManager:
             return self._manage(task=task, **kwargs)
 
         except Exception as error:
-
+            _id = kwargs['_id']
             folder = 'errors_manager'
             os.makedirs(folder, exist_ok=True)
             with open(os.path.join(folder, f'file{_id}.txt'), 'w+') as file:
@@ -180,8 +180,8 @@ class JobManager:
         return jobs
 
     def _update_jobs(self, jobs):
-        for dict_job, datetime in jobs:
-            self._update_job.one(dict_job, datetime)
+        for dict_job in jobs:
+            self._update_job.one(dict_job)
 
 
 #manager = JobManager()

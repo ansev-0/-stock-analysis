@@ -2,6 +2,8 @@
 from src.train.rl_model.learn.double_q_learning import LearnDoubleQlearning
 from src.train.rl_model.play.double_q_learning import  PlayAndRememberDoubleQlearning, PlayValidationDoubleQlearning
 from keras.models import load_model
+import tensorflow as tf
+from tensorflow.compat.v1.keras.backend import set_session
 
 class TrainAgentDoubleQlearning(LearnDoubleQlearning):
 
@@ -43,18 +45,35 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
               epochs,
               train_data, 
               train_commision,
+              train_financial,
+              states_price_intraday_1_train,
+              states_price_intraday_5_train,
+              states_price_intraday_30_train,
+              states_price_intraday_180_train,
               env_train, 
               mem_size=None,
               batch_learn_size=None,
               validation_data=None, 
+              validation_financial=None,
               validation_commision=None,
               env_validation=None, 
+              states_price_intraday_1_validation=None,
+              states_price_intraday_5_validation=None,
+              states_price_intraday_30_validation=None,
+              states_price_intraday_180_validation=None,
               freq_update=1, 
               sort=True,
               replace=False,
               validation_random=False,
               *args, 
               **kwargs):
+              
+        config = tf.compat.v1.ConfigProto()
+        config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+        config.log_device_placement = True  # to log device placement (on which device the operation ran)
+                                    # (nothing gets printed in Jupyter, only if you run it standalone)
+        sess = tf.compat.v1.Session(config=config)
+        set_session(sess)  # set this TensorFlow session as the default session for Keras
 
         mem_size = train_data.shape[0] - 1 if mem_size is None else mem_size
         self._batch_learn_size = train_data.shape[0] - 1 if batch_learn_size is None else mem_size
@@ -62,12 +81,18 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         self._agent_training = PlayAndRememberDoubleQlearning(mem_size=mem_size, 
                                                               q_eval=self.q_eval, env=env_train,
                                                               states_price=train_data,
+                                                              states_financial=train_financial,
                                                               states_commision=train_commision,
+                                                              states_price_intraday_1=states_price_intraday_1_train,
+                                                              states_price_intraday_5=states_price_intraday_5_train,
+                                                              states_price_intraday_30=states_price_intraday_30_train,
+                                                              states_price_intraday_180=states_price_intraday_180_train,
                                                             )
 
 
         #set validation func
-        self._set_validation_func(validation_data, validation_commision, env_validation) 
+        self._set_validation_func(validation_data, validation_financial, validation_commision, env_validation,
+                                 states_price_intraday_1_validation, states_price_intraday_5_validation, states_price_intraday_30_validation, states_price_intraday_180_validation) 
         # do epochs
         self._epochs(epochs, sort, replace, freq_update, validation_random, *args, **kwargs)
         #reset agent
@@ -119,12 +144,19 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
     def _validation(self, *args):
         self._agent_validation.play(*args)
 
-    def _set_validation_func(self, validation_data, validation_commision, env_validation):
+    def _set_validation_func(self, validation_data, validation_financial, validation_commision, env_validation,
+                            states_price_intraday_1_validation, states_price_intraday_5_validation, states_price_intraday_30_validation, states_price_intraday_180_validation):
+        
         if validation_data is not None and env_validation is not None:
             self._agent_validation = PlayValidationDoubleQlearning(q_eval=self.q_eval, 
                                                                    env=env_validation, 
                                                                    states_price=validation_data,
-                                                                   states_commision=validation_commision)
+                                                                   states_financial=validation_financial,
+                                                                   states_commision=validation_commision,
+                                                                   states_price_intraday_1=states_price_intraday_1_validation,
+                                                                   states_price_intraday_5=states_price_intraday_5_validation,
+                                                                   states_price_intraday_30=states_price_intraday_30_validation,
+                                                                   states_price_intraday_180=states_price_intraday_180_validation)
             self._validation_func = self._validation
         else:
             self._validation_func = lambda probability, *args, **kwargs: None

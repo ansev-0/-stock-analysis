@@ -15,7 +15,7 @@ class StockDataTask(DataTask):
                                            data_validation_limits, 
                                            delays)
 
-        return (*data_prep[-2:], *tuple(self._to_cache(data) for data in data_prep[:2]))
+        return (*data_prep[2:], *tuple(self._to_cache(data) for data in data_prep[:2]))
             
 
     def _data_preparation(self, stock_name, data_train_limits, data_validation_limits, delays):
@@ -30,9 +30,10 @@ class StockDataTask(DataTask):
         validation_features = self._get_features(validation_data)
         #embed sequences
         transform_features = TransformData(delays)
-
-        return transform_features(train_features),\
-            transform_features(validation_features),\
+        train_, validation_ = transform_features(train_features), transform_features(validation_features)
+        
+        return train_, validation_,\
+            train_[0].shape[0], validation_[0].shape[0],\
             train_features.index, validation_features.index
 
 

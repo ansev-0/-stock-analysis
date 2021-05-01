@@ -8,10 +8,9 @@ class TimeSeries(AlphaVantage):
 
     '''
     @AlphaVantage._get_data
-    def get_intraday(self, symbol, interval, outputsize='compact'):
+    def get_intraday(self, symbol, interval, outputsize='compact', adjusted=False):
         FUNCTION = 'TIME_SERIES_INTRADAY'
-        return symbol, interval, outputsize, FUNCTION
-
+        return symbol, interval, outputsize, adjusted, FUNCTION
 
     @AlphaVantage._get_data
     def get_extended_intraday(self, symbol, interval, slice, adjusted=False):

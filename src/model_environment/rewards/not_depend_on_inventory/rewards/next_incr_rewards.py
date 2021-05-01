@@ -3,7 +3,7 @@ from src.model_environment.rewards.not_depend_on_inventory.rewards.base_rewards 
 class NextIncrRewards(BaseNotDependOnInventoryReward):
 
     def _get_sell_serie(self):
-        return self.time_values.diff(-1).dropna().rename('sell_rewards')
+        return self.time_values.diff(-1).fillna(0).rename('sell_rewards')
 
 
 class NextIncrRewardsNotAction(NextIncrRewards):

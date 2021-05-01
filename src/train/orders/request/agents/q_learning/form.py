@@ -8,6 +8,10 @@ class FormQlearning(dict):
                      'conf_build_agent', 'conf_call_agent', 
                      'path', 'cache_id_train', 'cache_id_validation',
                      'cache_id_commision_train', 'cache_id_commision_validation',
+                     'cache_id_stock_intraday_1_train', 'cache_id_stock_intraday_1_validation',
+                     'cache_id_stock_intraday_5_train', 'cache_id_stock_intraday_5_validation',
+                     'cache_id_stock_intraday_30_train', 'cache_id_stock_intraday_30_validation',
+                     'cache_id_stock_intraday_180_train', 'cache_id_stock_intraday_180_validation',
                      'cache_id_financial_train', 'cache_id_financial_validation')
                      
     def __init__(self, **kwargs):

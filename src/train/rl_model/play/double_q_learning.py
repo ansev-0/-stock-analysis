@@ -1,21 +1,28 @@
-
-
 from abc import ABCMeta, abstractmethod
 from src.portfolio.state import StatePortfolio
 from src.replay.replay_buffer import ReplayBuffer
+from src.tools.financial import FinancialArray
 import numpy as np
-
 
 class PlayDoubleQlearning(metaclass=ABCMeta):
 
 
-    def __init__(self, q_eval, env, states_price, states_commision):
+    def __init__(self, q_eval, env, states_price, states_commision, states_financial, 
+                 states_price_intraday_1, states_price_intraday_5, states_price_intraday_30, states_price_intraday_180):
         
         self._q_eval = q_eval
         self.env = env
-        self._shape_env_features = self.q_eval.get_layer('states_env').output_shape[1:]
+        self._shape_env_features = self.q_eval.get_layer('states_env').output_shape[0][1:]
         self._states_env = StatePortfolio(self._shape_env_features)
         self.states_price = states_price
+        self.states_financial = states_financial
+        self.states_price_intraday_1 = states_price_intraday_1
+        self.states_price_intraday_5 = states_price_intraday_5
+        self.states_price_intraday_30 = states_price_intraday_30
+        self.states_price_intraday_180 = states_price_intraday_180
+        
+        assert isinstance(self.states_financial, FinancialArray)
+
         self.states_commision = states_commision
 
 
@@ -50,7 +57,12 @@ class PlayDoubleQlearning(metaclass=ABCMeta):
     def _current_state(self):
         return self.states_price[self.env.states_actions.time], \
             self.states_commision[self.env.states_actions.time], \
-            self.states_env.values
+            self.states_financial[self.env.states_actions.time],\
+            self.states_env.values,\
+            self.states_price_intraday_1[self.env.states_actions.time],\
+            self.states_price_intraday_5[self.env.states_actions.time],\
+            self.states_price_intraday_30[self.env.states_actions.time],\
+            self.states_price_intraday_180[self.env.states_actions.time],
 
     def _agent_choose_action(self, current_state):
         state = list(map(lambda state: state[np.newaxis, :], current_state))
@@ -95,7 +107,12 @@ class PlayAndRememberDoubleQlearning(PlayDoubleQlearning):
         self.memory =  ReplayBuffer(mem_size, 
                                     (self.states_price.shape[1:], 
                                      self.states_commision.shape[1:], 
-                                     self.shape_env_features),
+                                     self.states_financial.shape[1:],
+                                     self.shape_env_features,
+                                     self.states_price_intraday_1.shape[1:],
+                                     self.states_price_intraday_5.shape[1:],
+                                     self.states_price_intraday_30.shape[1:],
+                                     self.states_price_intraday_180.shape[1:],),
                                     len(self.env.action_spaces),
                                     discrete=False)
 
@@ -135,6 +152,7 @@ class PlayValidationDoubleQlearning(PlayDoubleQlearning):
         #reset env and states_env
         self.reset()
         current_state = self._current_state()
+        #assert not any(list(map(lambda x: np.isnan(x).any(), current_state)))
 
         for _ in range(len(self.env.states_actions.time_states_values)):
             #choose action
