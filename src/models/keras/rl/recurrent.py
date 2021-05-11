@@ -1,10 +1,11 @@
-from keras.layers import Dense, Input, LSTM, Conv1D, Concatenate, Dropout, BatchNormalization, Multiply, Flatten
+from keras.layers import Dense, Input, LSTM, Conv1D, Concatenate, Dropout, BatchNormalization, Multiply, Flatten, LayerNormalization, TimeDistributed, MaxPool1D
 from src.models.keras.tools.wavenet import CausalSimpleWaveBlock
 from keras.models import load_model, Model
 from keras.optimizers import Adam
 from keras.regularizers import L1L2
 import tensorflow.keras.backend as K
 from keras.layers import Lambda
+from tensorflow.keras.constraints import max_norm
 
 def build_dqn(lr, n_actions, 
               input_dims_serie, input_dims_commision, input_dims_portfolio, 
@@ -21,7 +22,7 @@ def build_dqn(lr, n_actions,
                                  return_sequences=True, 
                                  bias_regularizer=L1L2(0.001, 0.001))(input_commision)
 
-    fc2_portfolio = Conv1D(50, padding = 'causal', kernel_size=2, bias_regularizer=L1L2(0.001, 0.001))(input_portfolio_status)
+    fc2_portfolio = Conv1D(50, padding ='causal', kernel_size=2, bias_regularizer=L1L2(0.001, 0.001))(input_portfolio_status)
 
     lstm_portfolio_input = Concatenate(axis=2)([lstm2_tensor, fc2_portfolio, lstm_commision_tensor])
     lstm3_tensor = LSTM(lstm2_units, bias_regularizer=L1L2(0.001, 0.001))(lstm_portfolio_input)
@@ -103,21 +104,21 @@ def build_dqn_financial(lr,
     #commision
     lstm_commision_tensor = LSTM(lstm_units_commision, 
                                  return_sequences=True, 
-                                 bias_regularizer=L1L2(0.001, 0.001))(input_commision)
+                                 )(input_commision)
     lstm2_commision_tensor = LSTM(lstm_units_commision,  
-                                  bias_regularizer=L1L2(0.001, 0.001))(lstm_commision_tensor)                         
+                                  )(lstm_commision_tensor)                         
     # env status
     fc2_portfolio_data = squeeze_f(input_portfolio_status)
     fc2_portfolio_data = Dense(50,
-                              bias_regularizer=L1L2(0.001, 0.001)
                               )(fc2_portfolio_data)
+        
     
     ## financial status
     financial_status = LSTM(50, 
                             return_sequences=True, 
-                            bias_regularizer=L1L2(0.001, 0.001))(input_financial_status)
+                            )(input_financial_status)
     financial_status2 = LSTM(50,  
-                             bias_regularizer=L1L2(0.001, 0.001))(financial_status)
+                             )(financial_status)
     #
     
     
@@ -162,7 +163,7 @@ def build_intraday_dqn_financial(lr,
     #squeeze function
 
     intraday_features = 9
-    wavenet = CausalSimpleWaveBlock(100, 2, 10)
+    #wavenet = CausalSimpleWaveBlock(100, 2, 10)
 
     squeeze_f = Lambda(lambda x: K.squeeze(x, axis=1))
 
@@ -177,52 +178,75 @@ def build_intraday_dqn_financial(lr,
     input_intraday_180 = Input(shape = (128, intraday_features), name='intraday_180')
 
     #data
-    lstm1_tensor = LSTM(lstm1_units, return_sequences=True, bias_regularizer=L1L2(0.001, 0.001))(input_daily_serie)
-    lstm2_tensor = LSTM(lstm2_units, bias_regularizer=L1L2(0.001, 0.001))(lstm1_tensor)
+
+    #cnn_input_daily = TimeDistributed(MaxPool1D(pool_size=2))(cnn_input_daily)
+    #cnn_input_daily = TimeDistributed(Flatten())(cnn_input_daily)
+    lstm1_tensor = LSTM(lstm1_units, return_sequences=True)(input_daily_serie)
+    lstm2_tensor = LSTM(lstm2_units)(lstm1_tensor)
+
     #commision
     lstm_commision_tensor = LSTM(lstm_units_commision, 
-                                 return_sequences=True, 
-                                 bias_regularizer=L1L2(0.001, 0.001))(input_commision)
-    lstm2_commision_tensor = LSTM(lstm_units_commision,  
-                                  bias_regularizer=L1L2(0.001, 0.001))(lstm_commision_tensor)                         
+                                 return_sequences=True)(input_commision)
+    lstm2_commision_tensor = LSTM(lstm_units_commision)(lstm_commision_tensor)
+    
     # env status
     fc2_portfolio_data = squeeze_f(input_portfolio_status)
-    fc2_portfolio_data = Dense(50,
-                              bias_regularizer=L1L2(0.001, 0.001)
-                              )(fc2_portfolio_data)
+    fc2_portfolio_data = Dense(50)(fc2_portfolio_data)
+    
 
-    output_1min_arr = wavenet(input_intraday_1)
-    output_1min = Flatten()(output_1min_arr)
+    output_1min_arr = LSTM(lstm1_units, 
+                                 return_sequences=True)(input_intraday_1)
+    output_1min = LSTM(lstm2_units)(output_1min_arr)
+    
 
-    output_5min_arr = wavenet(input_intraday_5)
-    output_5min = Flatten()(output_5min_arr)
+    output_5min_arr = LSTM(lstm1_units, 
+                                 return_sequences=True)(input_intraday_5)
+    output_5min = LSTM(lstm2_units)(output_5min_arr)
 
-    output_30min_arr = LSTM(100, return_sequences=True)(input_intraday_30)
-    output_30min = LSTM(100)(output_30min_arr)
 
-    output_180min_arr = LSTM(100, return_sequences=True)(input_intraday_180)
-    output_180min = LSTM(100)(output_180min_arr)
+    output_30min_arr = LSTM(lstm1_units, return_sequences=True)(input_intraday_30)
+    output_30min = LSTM(lstm2_units)(output_30min_arr)
+
+    output_180min_arr = LSTM(lstm1_units, return_sequences=True)(input_intraday_180)
+    output_180min = LSTM(lstm2_units)(output_180min_arr)
+
 
     intraday_tensor = Concatenate(axis=1)([output_1min, output_5min, output_30min, output_180min])
-    intraday_data = Dense(256)(intraday_tensor)
-    intraday_data2 = Dense(512)(intraday_data)
-    intraday_data3 = Dense(100)(intraday_data2)
-    
+    intraday_data = Dense(512)(intraday_tensor)
+    intraday_data2 = Dense(50)(intraday_data)
+
+
+    data = Concatenate(axis=1)([lstm2_tensor, intraday_data2])     
+    data = Dense(512)(data)
+    data = Dense(100)(data)
+    data = Concatenate(axis=1)([data, lstm2_tensor])  
+
+
     ## financial status
+    input_financial_status_1 = LayerNormalization(axis=1)(input_financial_status)
     financial_status = LSTM(50, 
                             return_sequences=True, 
-                            bias_regularizer=L1L2(0.001, 0.001))(input_financial_status)
+                            )(input_financial_status_1)
     financial_status2 = LSTM(50,  
-                             bias_regularizer=L1L2(0.001, 0.001))(financial_status)
+                             )(financial_status)
+    financial_status2=LayerNormalization(axis=1)(financial_status2)
+    financial_status2 = Dense(256)(financial_status2)
     #
     
-    tensor_2d = Concatenate(axis=1)([lstm2_tensor, lstm2_commision_tensor, intraday_data3, fc2_portfolio_data, financial_status2])
+    tensor_2d = Concatenate(axis=1)([data, lstm2_commision_tensor])
+    tensor_2d = Dense(50)(tensor_2d)
+
+    tensor_2d = Concatenate(axis=1)([tensor_2d, financial_status2])
+    tensor_2d = Dense(50)(tensor_2d)
+
+    tensor_2d = Concatenate(axis=1)([tensor_2d, fc2_portfolio_data, lstm2_tensor])
 
     #output
+    dense_all = Dense(1024)(tensor_2d)
     dense_all = Dense(512)(tensor_2d)
-    output_fc = Dense(output_fc_dims, activation = 'linear', bias_regularizer=L1L2(0.001, 0.001))(dense_all)
+    output_fc = Dense(output_fc_dims, activation = 'linear')(dense_all)
     output_fc = Dropout(0.1)(output_fc)
-    output = Dense(n_actions, activation = 'linear', bias_regularizer=L1L2(0.001, 0.001))(output_fc)
+    output = Dense(n_actions, activation = 'linear')(output_fc)
     output = Dropout(0.1)(output)
 
     model = Model(inputs = [input_daily_serie, input_commision, input_financial_status, 

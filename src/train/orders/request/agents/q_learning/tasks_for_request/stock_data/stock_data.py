@@ -31,7 +31,9 @@ class StockDataTask(DataTask):
         #embed sequences
         transform_features = TransformData(delays)
         train_, validation_ = transform_features(train_features), transform_features(validation_features)
-        
+        print('First incr : ', train_[0][0, [-3, -2, -1], -2])
+        print(list(train_[1])[:1])
+
         return train_, validation_,\
             train_[0].shape[0], validation_[0].shape[0],\
             train_features.index, validation_features.index

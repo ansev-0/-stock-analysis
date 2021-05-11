@@ -34,7 +34,7 @@ class FinancialDataFromDataBase(ReaderDataBase):
 
         
     def _get_dict_from_database(self, data, start, end, **kwargs):
-        consult_result = list(super()._get_dict_from_database(data, start, end, **kwargs))
+        
         
         try:
             return combine_dicts(*({d['_id'].strftime(format='%Y-%m-%d %H:%M:%S') : {key : value 

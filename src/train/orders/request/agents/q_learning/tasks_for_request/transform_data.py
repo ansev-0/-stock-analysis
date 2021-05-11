@@ -22,7 +22,9 @@ class TransformData:
         return sequences, close_values.rename(str).to_dict()
 
     def get_sequences(self, features):
-        return np.diff(self._mbed(features[:-1]), axis=1)
+        sequences = self._mbed(features[:-1])
+        print(sequences[0, [-5, -4, -3, -2, -1], -2])
+        return np.diff(sequences, axis=1)
 
 
 class TransformDataIntraday:

@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from src.train.database.cache.agents.create import CreateAgentTrainCache
 from src.train.database.cache.agents.delete import RemoveAgentTrainCache
+import numpy as np
 
 class DataTask(metaclass=ABCMeta):
 
@@ -24,10 +25,13 @@ class DataTask(metaclass=ABCMeta):
         pass
 
     def _get_features(self, df):
-        return df.assign(weekday=df.index.weekday, 
-                         dayofyear=df.index.dayofyear)\
+        df = df.assign(weekday=df.index.weekday, 
+                         dayofyear=df.index.dayofyear,
+                         )\
             .loc[:, ('weekday', 'dayofyear') + self.features]
-
+        if 'volume' in df.columns:
+            return df.assign(volume=np.log1p(df['volume']))
+        return df
     def _to_cache(self, data, is_financial=False):
             dict_to_cache = self._not_financial_dict(data) if not is_financial \
                 else {'data' : data[0], 

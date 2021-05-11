@@ -36,8 +36,11 @@ class StockDataTaskIntraday(DataTask):
         #get_features
         data = self._get_features(data)
         transform_features = TransformDataIntraday(self.mbed_conf)
-        array = np.diff(transform_features(data), axis=1).astype(np.float32)[-1-shape_0:-1]
+        sequences = transform_features(data)[-shape_0:].astype(np.float32)
+        print('intraday', sequences[0, [-3, -2, -1], -2])
+        array = np.diff(sequences, axis=1).astype(np.float32)
         assert array.shape[0] == shape_0
+        
         return array
 
     @classmethod

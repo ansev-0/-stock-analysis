@@ -38,4 +38,5 @@ class GetDataTask:
                                   .reindex(columns=['open', 'high', 'low', 'close'])
                                   .ffill(axis=1).bfill(axis=1)).ffill()\
                                   .loc[df.index.to_series().dt.date.isin(index.date)]
+        
         return df

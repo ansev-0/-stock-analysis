@@ -17,13 +17,19 @@ class UpdateForexData(DataBaseAdminAcquisition):
 
 
     def update(self, list_dicts_to_update, from_symbol, to_symbol, **kwargs):
-        collection = self.database[f'{from_symbol}_TO_{to_symbol}']
+        
         self.show_status.notify_try_update_database(from_symbol=from_symbol, to_symbol=to_symbol,
                                                     database=self.database)
         for dict_to_update in list_dicts_to_update:
-            collection.update_one({'_id' : dict_to_update['_id']},
-                                  {'$set' : dict_to_update['data']},
-                                  upsert=True,
-                                  **kwargs)
+            self._update_with_collection(self.database[f'{from_symbol}_TO_{to_symbol}'], dict_to_update, **kwargs)
+
         self.show_status.notify_database_updated()
+
+    @DataBaseAdminAcquisition.try_and_wakeup
+    def _update_with_collection(self, collection, dict_to_update, **kwargs):
+        collection.update_one({'_id' : dict_to_update['_id']},
+                              {'$set' : dict_to_update['data']},
+                              upsert=True,
+                              **kwargs)
+
 

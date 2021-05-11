@@ -24,6 +24,8 @@ class CheckErrorsSaveFromApi(DataBaseAdminAcquisition):
         if self.api not in list_apis:
             raise ToDataBaseError(f'Invalid API: {self.api}, the valid API are: {list_apis}',
                                   ValueError)
+                                  
+    @DataBaseAdminAcquisition.try_and_wakeup
     def __get_apis(self):
         return list(
                     map(lambda x: x['_id'], 

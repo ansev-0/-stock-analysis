@@ -1,6 +1,10 @@
 import pandas as pd
+import numpy as np
 
 class DoneRules:
+
+    def never(self, time_values):
+        return np.array([False]*len(time_values))
 
     def local_min_or_max(self, time_values):
         

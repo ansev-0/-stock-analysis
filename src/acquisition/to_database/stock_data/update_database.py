@@ -17,15 +17,20 @@ class UpdateStockData(DataBaseAdminAcquisition):
         
         #Create object to notify events
         self.show_status = UpdateStockDataBaseShowStatus(database_name)
-        
+
+ 
     def update(self, list_dicts_to_update, company, **kwargs):
-        collection = self.database[company]
-        self.show_status.notify_try_update_database(company=company, database = self.database)
-        for dict_to_update in list_dicts_to_update:
-            collection.update_one({'_id' : dict_to_update['_id']},
-                                  {'$set' : dict_to_update['data']},
-                                  upsert=True,
-                                  **kwargs)
+        self.show_status.notify_try_update_database(company=company, database =self.database)
+        for dict_to_update in list_dicts_to_update: 
+            self._update_with_collection(self.database[company], dict_to_update, **kwargs)
         self.show_status.notify_database_updated()
+
+    @DataBaseAdminAcquisition.try_and_wakeup   
+    def _update_with_collection(self, collection, dict_to_update, **kwargs):
+        collection.update_one({'_id' : dict_to_update['_id']},
+                              {'$set' : dict_to_update['data']},
+                              upsert=True,
+                              **kwargs)
+
 
 
