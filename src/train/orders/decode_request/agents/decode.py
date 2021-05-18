@@ -54,7 +54,7 @@ class DecodeOrder:
             if train_params['validation_data'] is not None else None
         
         #return agent and params to call train function
-        return lambda: self._decode_conf_agent(order_dict).train(**train_params, **order_dict['conf_call_agent'])
+        return train_params, lambda: self._decode_conf_agent(order_dict).train(**train_params, **order_dict['conf_call_agent'])
 
     def _decode_data(self, order_dict):
         #decode train

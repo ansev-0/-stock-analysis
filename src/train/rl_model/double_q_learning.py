@@ -78,15 +78,16 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
         mem_size = train_data.shape[0] - 1 if mem_size is None else mem_size
         self._batch_learn_size = train_data.shape[0] - 1 if batch_learn_size is None else mem_size
         self._epsilon_decay.reset()
+        train_financial.array = train_financial.array  / 1000
         self._agent_training = PlayAndRememberDoubleQlearning(mem_size=mem_size, 
                                                               q_eval=self.q_eval, env=env_train,
-                                                              states_price=train_data,
+                                                              states_price=train_data / 1000,
                                                               states_financial=train_financial,
-                                                              states_commision=train_commision,
-                                                              states_price_intraday_1=states_price_intraday_1_train,
-                                                              states_price_intraday_5=states_price_intraday_5_train,
-                                                              states_price_intraday_30=states_price_intraday_30_train,
-                                                              states_price_intraday_180=states_price_intraday_180_train,
+                                                              states_commision=train_commision/ 100,
+                                                              states_price_intraday_1=states_price_intraday_1_train / 1000,
+                                                              states_price_intraday_5=states_price_intraday_5_train / 1000,
+                                                              states_price_intraday_30=states_price_intraday_30_train / 1000,
+                                                              states_price_intraday_180=states_price_intraday_180_train / 1000,
                                                             )
 
 
@@ -148,15 +149,16 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
                             states_price_intraday_1_validation, states_price_intraday_5_validation, states_price_intraday_30_validation, states_price_intraday_180_validation):
         
         if validation_data is not None and env_validation is not None:
+            validation_financial.array = validation_financial.array  / 1000
             self._agent_validation = PlayValidationDoubleQlearning(q_eval=self.q_eval, 
                                                                    env=env_validation, 
-                                                                   states_price=validation_data,
+                                                                   states_price=validation_data / 1000,
                                                                    states_financial=validation_financial,
-                                                                   states_commision=validation_commision,
-                                                                   states_price_intraday_1=states_price_intraday_1_validation,
-                                                                   states_price_intraday_5=states_price_intraday_5_validation,
-                                                                   states_price_intraday_30=states_price_intraday_30_validation,
-                                                                   states_price_intraday_180=states_price_intraday_180_validation)
+                                                                   states_commision=validation_commision / 100,
+                                                                   states_price_intraday_1=states_price_intraday_1_validation / 1000,
+                                                                   states_price_intraday_5=states_price_intraday_5_validation / 1000,
+                                                                   states_price_intraday_30=states_price_intraday_30_validation / 1000,
+                                                                   states_price_intraday_180=states_price_intraday_180_validation / 1000)
             self._validation_func = self._validation
         else:
             self._validation_func = lambda probability, *args, **kwargs: None

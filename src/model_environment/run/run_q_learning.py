@@ -58,9 +58,9 @@ class RunQlearningEnv(RunEnv):
                                                          max_sales=current_max_sales)
 
 
-        return rewards / self.states_actions.stock_price , (self.states_actions.stock_price, 
-                                                            self.states_actions.max_float_purchases,
-                                                            self.states_actions.n_stocks)
+        return (rewards / (self.states_actions.stock_price * 10)) , (self.states_actions.stock_price / 1000, 
+                                                                      self.states_actions.max_float_purchases / 10,
+                                                                      self.states_actions.n_stocks / 10)
 
     def reset(self):
 

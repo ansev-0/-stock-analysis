@@ -6,7 +6,7 @@ class RuleTrend:
                         favorite_count_f=5e-3, 
                         user_followers_f=4e-4, 
                         repeat_f=0.95,
-                        min_factor=350,
+                        min_factor=500,
                         repeat_fail_factor=10000,
                         current_search_priority=2,
                         ):

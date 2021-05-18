@@ -12,6 +12,10 @@ class TimeStatesValues:
         self._time_values_diff = np.concatenate(([np.nan], np.diff(self._time_values)))
         self._time_values_done = self._get_values_done(done_rule)
 
+    @property
+    def time_values_diff(self):
+        return self._time_values_diff
+
     def __len__(self):
         return len(self._time_values)
 

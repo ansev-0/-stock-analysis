@@ -17,6 +17,10 @@ class FinancialArray:
     def array(self):
         return self._array
 
+    @array.setter
+    def array(self, array):
+        self._array = array
+
     @property
     def shape(self):
         return self._array.shape
