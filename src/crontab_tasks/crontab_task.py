@@ -15,22 +15,22 @@ class TaskCronTab(CronTab):
         return f'python3 {path}'
 
 
-
-
-#cron = TaskCronTab()
-#print(cron.intab)
-#for job in cron:
-#    
-#    print(job)
-#    print(job.is_enabled())
-#    #print(job.is_valid())
-#    print(job.schedule(date_from=datetime.now()).get_next())
-#    if '_id' in job.command:
+if __name__ == "__main__":
+    pass
+#    cron = TaskCronTab()
+#    print(cron.intab)
+#    for job in cron:
+#
+#        print(job)
+#        print(job.is_enabled())
+#        #print(job.is_valid())
+#        print(job.schedule(date_from=datetime.now()).get_next())
+#        print('-'*50)
+#        #if '_id' in job.command:
 #        cron.remove(job)
-#    #print(type(job.schedule(date_from=datetime.now()).get_next()))
-#    #cron.remove(job)
-#cron.write()
-
+#        #print(type(job.schedule(date_from=datetime.now()).get_next()))
+#        #cron.remove(job)
+#    #cron.write()
 
 
 

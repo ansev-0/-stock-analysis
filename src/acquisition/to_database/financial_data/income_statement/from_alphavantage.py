@@ -9,9 +9,6 @@ class UpdateIncomeStatementAlphaVantage(UpdateFinancialFeatureAlphaVantage):
     Parameters
     ----------
 
-    apikey: str.
-        key of API Alphavantage.
-
     new_database: str
         valid parameters = 'create' and 'not create'
 

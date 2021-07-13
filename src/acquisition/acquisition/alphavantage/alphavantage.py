@@ -1,10 +1,12 @@
 from functools import wraps
-import time
 from src.acquisition.acquisition.readers.alphavantage_reader import AlphavantageReader
 from src.acquisition.acquisition.errors.check_alphavantage import ErrorsResponseApiAlphavantage
 from src.exceptions.acquisition_exceptions import AlphaVantageError
 from src.tools.mappers import switch_none
 from src.view.acquisition.acquisition.status_api import ApiShowStatus
+import time
+import json
+
 
 class AlphaVantage:
 
@@ -13,11 +15,13 @@ class AlphaVantage:
     https://www.alphavantage.co/
 
     '''
+    with open('filestore/credentials/alphavantage/appkey.json') as f:
+        _APIKEY = json.load(f)['appkey']
+
 
     _AV_URL = "https://www.alphavantage.co/query?"
     
-    def __init__(self, apikey, delays=None, **kwargs):
-        self.apikey = apikey
+    def __init__(self, delays=None, **kwargs):
         self.config(delays)
         self.__check_response = ErrorsResponseApiAlphavantage()
         self._reader = AlphavantageReader(base_url=self._AV_URL, **kwargs)
@@ -26,8 +30,7 @@ class AlphaVantage:
     @property
     def default_params(self):
         return {
-                #'datatype' : 'json',
-                'apikey' : self.apikey
+                'apikey' : self._APIKEY
                 }
 
     def config(self, delays=None):

@@ -16,7 +16,7 @@ class UpdateIntradayAlphavantage(UpdateIntraday):
         it must be supported by the API, consult:
         https://www.alphavantage.co/documentation/#intraday
 
-    apikey: str.
+    : str.
         key of API Alphavantage.
 
     new_database: str
@@ -29,14 +29,14 @@ class UpdateIntradayAlphavantage(UpdateIntraday):
         full returns the full-length daily time series.
     '''
 
-    def __init__(self, frecuency, apikey, outputsize='full', new_database='create', **kwargs):
+    def __init__(self, frecuency, outputsize='full', new_database='create', **kwargs):
 
         #Get outputsize
         self._outputsize = outputsize
         #Create connection to the database
         super().__init__(frecuency=frecuency, new_database=new_database)
         # Create reader from AlphaVantage
-        self.__reader = Forex(apikey=apikey, **kwargs)
+        self.__reader = Forex(**kwargs)
         self._create_dict_to_db = CreateDictsWithSameId('intraday')
 
 

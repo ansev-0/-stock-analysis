@@ -27,7 +27,7 @@ def build_dqn(lr, n_actions,
     lstm_portfolio_input = Concatenate(axis=2)([lstm2_tensor, fc2_portfolio, lstm_commision_tensor])
     lstm3_tensor = LSTM(lstm2_units, bias_regularizer=L1L2(0.001, 0.001))(lstm_portfolio_input)
 
-    output_fc = Dense(output_fc_dims, activation = 'linear', bias_regularizer=L1L2(0.001, 0.001))(lstm3_tensor)
+    output_fc = Dense(output_fc_dims, activation = 'relu', bias_regularizer=L1L2(0.001, 0.001))(lstm3_tensor)
     output_fc = Dropout(0.1)(output_fc)
     output = Dense(n_actions, activation = 'linear', bias_regularizer=L1L2(0.001, 0.001))(output_fc)
     output = Dropout(0.1)(output)
@@ -165,11 +165,11 @@ def build_intraday_dqn_financial(lr,
     intraday_features = 9
     #wavenet = CausalSimpleWaveBlock(100, 2, 10)
 
-    squeeze_f = Lambda(lambda x: K.squeeze(x, axis=1))
+
 
     input_daily_serie = Input(shape = input_dims_serie)
     input_commision = Input(shape = input_dims_commision)
-    input_portfolio_status = Input(shape = (1, input_dims_portfolio), name='states_env')
+    input_portfolio_status = Input(shape = (input_dims_serie[0], input_dims_portfolio), name='states_env')
     input_financial_status = Input(shape = (4, input_dims_financial), name='states_financial')
     #intraday
     input_intraday_1 = Input(shape = (900, intraday_features), name='intraday_1')
@@ -190,8 +190,9 @@ def build_intraday_dqn_financial(lr,
     lstm2_commision_tensor = LSTM(lstm_units_commision)(lstm_commision_tensor)
     
     # env status
-    fc2_portfolio_data = squeeze_f(input_portfolio_status)
-    fc2_portfolio_data = Dense(50)(fc2_portfolio_data)
+    fc2_portfolio_data = LSTM(50, 
+                              return_sequences=True)(input_portfolio_status)
+    fc2_portfolio_data = LSTM(50)(fc2_portfolio_data)
     
 
     output_1min_arr = LSTM(lstm1_units, 
@@ -210,44 +211,22 @@ def build_intraday_dqn_financial(lr,
     output_180min_arr = LSTM(lstm1_units, return_sequences=True)(input_intraday_180)
     output_180min = LSTM(lstm2_units)(output_180min_arr)
 
-
-    intraday_tensor = Concatenate(axis=1)([output_1min, output_5min, output_30min, output_180min])
-    intraday_data = Dense(512)(intraday_tensor)
-    intraday_data2 = Dense(50)(intraday_data)
-
-
-    data = Concatenate(axis=1)([lstm2_tensor, intraday_data2])     
-    data = Dense(512)(data)
-    data = Dense(100)(data)
-    data = Concatenate(axis=1)([data, lstm2_tensor])  
-
-
     ## financial status
-    input_financial_status_1 = LayerNormalization(axis=1)(input_financial_status)
+
     financial_status = LSTM(50, 
                             return_sequences=True, 
-                            )(input_financial_status_1)
+                            )(input_financial_status)
     financial_status2 = LSTM(50,  
                              )(financial_status)
-    financial_status2=LayerNormalization(axis=1)(financial_status2)
-    financial_status2 = Dense(256)(financial_status2)
-    #
     
-    tensor_2d = Concatenate(axis=1)([data, lstm2_commision_tensor])
-    tensor_2d = Dense(50)(tensor_2d)
-
-    tensor_2d = Concatenate(axis=1)([tensor_2d, financial_status2])
-    tensor_2d = Dense(50)(tensor_2d)
-
-    tensor_2d = Concatenate(axis=1)([tensor_2d, fc2_portfolio_data, lstm2_tensor])
-
+    tensor_2d = Concatenate(axis=1)([lstm2_tensor, output_1min, output_5min, output_30min, output_180min, lstm2_commision_tensor, fc2_portfolio_data, financial_status2])
     #output
-    dense_all = Dense(1024)(tensor_2d)
-    dense_all = Dense(512)(tensor_2d)
-    output_fc = Dense(output_fc_dims, activation = 'linear')(dense_all)
-    output_fc = Dropout(0.1)(output_fc)
+    dense_all = Dense(1024, activation='relu')(tensor_2d)
+    dense_all = Dropout(0.2)(dense_all)
+    dense_all = Dense(512, activation='relu')(dense_all)
+    output_fc = Dense(output_fc_dims, activation='relu')(dense_all)
+    output_fc = Dropout(0.2)(output_fc)
     output = Dense(n_actions, activation = 'linear')(output_fc)
-    output = Dropout(0.1)(output)
 
     model = Model(inputs = [input_daily_serie, input_commision, input_financial_status, 
                             input_portfolio_status, input_intraday_1, input_intraday_5, 

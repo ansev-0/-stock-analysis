@@ -52,3 +52,4 @@ class TimeSeries(AlphaVantage):
     def get_quote_endpoint(self, symbol):
         FUNCTION = 'GLOBAL_QUOTE'
         return symbol, FUNCTION
+

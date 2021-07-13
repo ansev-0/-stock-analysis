@@ -12,7 +12,7 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
     Parameters
     ----------
 
-    apikey: str.
+    : str.
         key of API Alphavantage.
 
     new_database: str
@@ -24,14 +24,14 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
         compact returns only the latest 100 data points in the daily time series;
         full returns the full-length daily time series.
     '''
-    def __init__(self, apikey, outputsize='full', new_database='create', **kwargs):
+    def __init__(self, outputsize='full', new_database='create', **kwargs):
 
         #Get outputsize
         self._outputsize = outputsize
         #Create connection to the database
         super().__init__(new_database=new_database)
         # Create reader from AlphaVantage
-        self.__reader = TimeSeries(apikey=apikey, **kwargs)
+        self.__reader = TimeSeries(**kwargs)
         self._create_dict_to_db = CreateDictsWithSameId('daily')
 
 
@@ -73,12 +73,12 @@ class UpdateDailyAdjAlphaVantage(UpdateDailyAdj):
                                                 outputsize=self._outputsize)
 
     @classmethod
-    def full(cls, apikey, **kwargs):
-        return cls(apikey=apikey, outputsize='full', **kwargs)
+    def full(cls, **kwargs):
+        return cls(outputsize='full', **kwargs)
 
     @classmethod
-    def compact(cls, apikey, **kwargs):
-        return cls(apikey=apikey, outputsize='compact', **kwargs)
+    def compact(cls, **kwargs):
+        return cls(outputsize='compact', **kwargs)
 
 
 class UpdateDailyAdjAlphaVantageMany(UpdateDailyAdjAlphaVantage, UpdateManyStockData):

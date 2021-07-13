@@ -109,7 +109,7 @@ class ReplayBuffer:
     def sample_buffer(self, batch_size, sort=False, replace=True):
 
         max_mem = self.mem_ctr if self.mem_ctr > 0 else self.mem_size
-        batch = self._rng.choice(max_mem, size=batch_size, replace=replace)
+        batch = self._rng.choice(max_mem, size=batch_size if batch_size < max_mem else max_mem, replace=replace)
 
         if sort:
             batch = list(sorted(batch))

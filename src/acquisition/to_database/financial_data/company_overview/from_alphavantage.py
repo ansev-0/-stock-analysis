@@ -11,18 +11,15 @@ class UpdateOverviewAlphaVantage(UpdateOverview):
     Parameters
     ----------
 
-    apikey: str.
-        key of API Alphavantage.
-
     new_database: str
         valid parameters = 'create' and 'not create'
 
     '''
-    def __init__(self, apikey, new_database='create', **kwargs):
+    def __init__(self, new_database='create', **kwargs):
         #Create connection to the database
         super().__init__(new_database=new_database)
         # Create reader from AlphaVantage
-        self.__reader = FundamentalData(apikey=apikey, **kwargs)
+        self.__reader = FundamentalData(**kwargs)
 
     def to_database(self, company):
         '''

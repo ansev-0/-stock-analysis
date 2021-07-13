@@ -27,4 +27,7 @@ src/models/save.py
 twitter_app.json
 /twitter_app.json
 /twitter_credentials
+/example_tingo
+/filestore
+/twitter_analisys.ipynb
 

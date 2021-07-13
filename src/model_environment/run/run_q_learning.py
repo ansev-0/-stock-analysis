@@ -16,7 +16,10 @@ class RunQlearningEnv(RunEnv):
         if not self.states_actions.terminal:
             self.states_actions.step()
 
-        return self.states_actions.stock_price, self.states_actions.max_float_purchases, self.states_actions.n_stocks
+        return (self.states_actions.profit,
+                self.states_actions.stock_price, 
+                self.states_actions.max_float_purchases,
+                self.states_actions.n_stocks)
 
     def transition_with_rewards(self, action, n_stocks=None, frac=None):
 
@@ -35,10 +38,11 @@ class RunQlearningEnv(RunEnv):
             self.states_actions.step()
 
 
+        incr_profit = self.states_actions.incr_profit
 
         if action_done:
             rewards = self.reward_action_done.reward(current_profit=current_profit, 
-                                                     incr_profit=self.states_actions.incr_profit,
+                                                     incr_profit=incr_profit,
                                                      action=action, 
                                                      time=time, 
                                                      n_stocks=real_n_stocks, 
@@ -49,7 +53,7 @@ class RunQlearningEnv(RunEnv):
                                                      max_sales=current_max_sales)   
         else:
             rewards = self.reward_action_not_done.reward(current_profit=current_profit, 
-                                                         incr_profit=self.states_actions.incr_profit, 
+                                                         incr_profit=incr_profit, 
                                                          action=action, 
                                                          time=time,
                                                          price=price,
@@ -58,9 +62,10 @@ class RunQlearningEnv(RunEnv):
                                                          max_sales=current_max_sales)
 
 
-        return (rewards / (self.states_actions.stock_price * 10)) , (self.states_actions.stock_price / 1000, 
-                                                                      self.states_actions.max_float_purchases / 10,
-                                                                      self.states_actions.n_stocks / 10)
+        return rewards / 100 , (self.states_actions.profit / 100,
+                                  self.states_actions.stock_price / 100, 
+                                  self.states_actions.max_float_purchases,
+                                  self.states_actions.n_stocks)
 
     def reset(self):
 

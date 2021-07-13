@@ -84,7 +84,7 @@ class CausalWaveBlock:
                                                            bias_regularizer=self._sigmoid_bias_regularizer,
                                                            kernel_regularizer=self._tsigmoid_kernel_regularizer))
         self.outputs_dense = self._list_map_dilation_rates(lambda dilation_rate:\
-                                                           Conv1D(filters=filters,
+                                                           Conv1D(filters=self.filters,
                                                                   kernel_size=1, 
                                                                   padding='same'))
         
@@ -108,8 +108,6 @@ class CausalWaveBlock:
         setattr(self.sigmoid_branches[position], parameter, value) 
 
 
-
-
 class CausalSimpleWaveBlock:
     
     def __init__(self,
@@ -120,12 +118,8 @@ class CausalSimpleWaveBlock:
                  kernel_regularizer=None):
         
         self.list_conv1d = None
-
-
         self._bias_regularizer = bias_regularizer
         self._kernel_regularizer = kernel_regularizer
-
-
         self.filters = filters
         self.kernel_size = kernel_size
         self._n_layers = n_layers
@@ -166,6 +160,7 @@ class CausalSimpleWaveBlock:
         return Conv1D(filters=self.filters,
                        kernel_size=self.kernel_size, 
                        padding='causal',
+                       activation='relu',
                        dilation_rate=dilation_rate,
                        **kwargs)
     

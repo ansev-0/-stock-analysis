@@ -29,11 +29,11 @@ class UpdateFinancialFeatureAlphaVantage(metaclass=ABCMeta):
     def feature(cls):
         pass
 
-    def __init__(self, apikey, new_database='create', **kwargs):
+    def __init__(self, new_database='create', **kwargs):
         # Create connection to the database
         self._init_databases(new_database)
         # Create reader from AlphaVantage
-        self.__reader = FundamentalData(apikey=apikey, **kwargs)
+        self.__reader = FundamentalData(**kwargs)
 
     def to_database(self, company):
         '''
@@ -80,19 +80,3 @@ class UpdateFinancialFeatureAlphaVantage(metaclass=ABCMeta):
             setattr(self, f'_{type_db}_{self.feature}', 
                     UpdateFinancialFeatureData(new_database=new_database, 
                                                database_name=f'{self.feature}_{type_db}'))
-
-
-
-
-#class UpdateBalanceSheetAlphaVantageMany(UpdateBalanceSheetAlphaVantage):
-#
-#    __save_many=SaveMany()
-#    
-#    def to_database_getting_errors(self, list_company):
-#        return self.__save_many.save_and_return_errors(self.to_database, list_company)
-#
-#    def to_database_ignoring_errors(self, list_company):
-#        return self.__save_many.save(self.to_database, list_company)
-#        
-#update = UpdateBalanceSheetAlphaVantage(apikey='O39L8VIVYYJYUN3P')
-#update.to_database('IBM')

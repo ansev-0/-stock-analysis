@@ -37,3 +37,4 @@ class Forex(AlphaVantage):
         DATATYPE = 'json'
         FUNCTION = 'FX_MONTHLY'
         return from_symbol, to_symbol, DATATYPE, FUNCTION
+

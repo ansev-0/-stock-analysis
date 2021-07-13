@@ -18,7 +18,7 @@ class UpdateExtendedIntradayAlphaVantage(UpdateIntraday):
         it must be supported by the API, consult:
         https://www.alphavantage.co/documentation/#intraday-extended
 
-    apikey: str.
+    : str.
         key of API Alphavantage.
 
     new_database: str
@@ -26,7 +26,7 @@ class UpdateExtendedIntradayAlphaVantage(UpdateIntraday):
         if there is no database for the specified frequency, action to be taken.
     '''
 
-    def __init__(self, frecuency, apikey, new_database='create', **kwargs):
+    def __init__(self, frecuency, new_database='create', **kwargs):
 
         #Create connection to the database
         super().__init__(frecuency=frecuency, new_database=new_database)
@@ -34,7 +34,7 @@ class UpdateExtendedIntradayAlphaVantage(UpdateIntraday):
         self.__check_alphavantage = CheckErrorsFromAlphaVantage(frecuency=self._frecuency)
         self.__check_alphavantage.check_frecuency_in_api()
         # Create reader from AlphaVantage
-        self.__reader = timeseries.TimeSeries(apikey=apikey, **kwargs)
+        self.__reader = timeseries.TimeSeries(**kwargs)
         # custom dict
         self._create_dict_to_db = CreateDictsWithSameId('intraday')
 
@@ -70,25 +70,24 @@ class UpdateExtendedIntradayAlphaVantage(UpdateIntraday):
                                                    slice=slice)
 
     @classmethod
-    def slice_1min(cls, apikey, **kwargs):
-        return cls(frecuency='1min', apikey=apikey, **kwargs)
+    def slice_1min(cls, **kwargs):
+        return cls(frecuency='1min', **kwargs)
 
     @classmethod
-    def slice_5min(cls, apikey, **kwargs):
-        return cls(frecuency='5min', apikey=apikey, **kwargs)
+    def slice_5min(cls, **kwargs):
+        return cls(frecuency='5min', **kwargs)
 
     @classmethod
-    def slice_15min(cls, apikey, **kwargs):
-        return cls(frecuency='15min', apikey=apikey, **kwargs)
-
-
-    @classmethod
-    def slice_30min(cls, apikey, **kwargs):
-        return cls(frecuency='30min', apikey=apikey, **kwargs)
+    def slice_15min(cls, **kwargs):
+        return cls(frecuency='15min', **kwargs)
 
     @classmethod
-    def slice_60min(cls, apikey, **kwargs):
-        return cls(frecuency='60min', apikey=apikey, **kwargs)
+    def slice_30min(cls, **kwargs):
+        return cls(frecuency='30min', **kwargs)
+
+    @classmethod
+    def slice_60min(cls, **kwargs):
+        return cls(frecuency='60min', **kwargs)
 
 
 
@@ -96,4 +95,8 @@ class UpdateExtendedIntradayAlphaVantageMany(UpdateExtendedIntradayAlphaVantage,
     pass
 
 
-
+#years = range(1, 3)
+#months = range(1, 13)
+#l = [f'year{year}month{month}' for year in years for month in months]
+#companies = ['AAPL'] * len(l)
+#UpdateExtendedIntradayAlphaVantageMany('1min').to_database_getting_errors(list(zip(companies, l)))

@@ -6,7 +6,7 @@ import os
 
 class TwitterAPIAuthJson(API):
 
-    PATH_PREDENTIALS = 'twitter_credentials'
+    PATH_PREDENTIALS = os.path.join('filestore', 'credentials', 'twitter')
     DEFAULT_CREDENTIAL_NAME = 'twitter_app'
     TWITTER_CREDENTIALS = os.path.join(get_financial_path(), PATH_PREDENTIALS)
     _DEFAULT_CREDENTIALS_PATH = os.path.join(TWITTER_CREDENTIALS,
@@ -18,7 +18,6 @@ class TwitterAPIAuthJson(API):
             else self._default_credentials
         super().__init__(self._credentials, *args, **kwargs)
 
-
     @property
     def auth_credentials(self):
         return self._credentials
@@ -26,7 +25,6 @@ class TwitterAPIAuthJson(API):
     @auth_credentials.setter
     def auth_credentials(self, credentials):
         self._credentials = self._auth_from_credentials(credentials)
-
 
     @property
     def _default_credentials(self):

@@ -20,7 +20,7 @@ class StatesActions(States, BasicActions):
         init_states = super().reset()
         self._commision_costs = self.init.commision
         self._action_done = False
-        return init_states
+        return (self.incr_profit, *init_states)
 
     def step(self):
         if not self._action_done and self.time != 0:
