@@ -34,4 +34,5 @@ twitter_app.json
 airflow
 *.csv
 *.json
+/Aspect-Based-Sentiment-Analysis
 
