@@ -26,17 +26,17 @@ class SaveForexDataFromApi(SaveDataFromApi):
 
 
     @classmethod
-    def intraday_alphavantage(cls, frecuency, apikey, **kwargs):
+    def intraday_alphavantage(cls, frecuency, **kwargs):
         class_collector = cls.__get_intraday_collector('alphavantage')
         return cls(api='alphavantage',
                    data_collector=class_collector(frecuency=frecuency,
-                                                  apikey=apikey, **kwargs),
+                                                  **kwargs),
                    collection='forex_data_intraday')
     @classmethod
-    def daily_alphavantage(cls, apikey, **kwargs):
+    def daily_alphavantage(cls, **kwargs):
         class_collector = cls.__get_daily_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(apikey=apikey, **kwargs),
+                   data_collector=class_collector(**kwargs),
                    collection='forex_data_daily')
 
     @classmethod

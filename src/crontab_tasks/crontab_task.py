@@ -15,8 +15,8 @@ class TaskCronTab(CronTab):
         return f'python3 {path}'
 
 
-if __name__ == "__main__":
-    pass
+#if __name__ == "__main__":
+#    pass
 #    cron = TaskCronTab()
 #    print(cron.intab)
 #    for job in cron:

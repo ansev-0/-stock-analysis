@@ -106,7 +106,11 @@ class DataBaseAdminTwitterRequests(DataBase):
 class DataBaseAdminTiingo(DataBase):
     '''
     This class is used to create the client
-    to connect to the databases related to Twitter API.
+    to connect to the databases related to Tiingo API.
     '''
     pass
 
+class DataBaseJobsAcquisition(DataBase):
+    '''
+    This class is used to create data acquistion jobs.
+    '''

@@ -10,7 +10,10 @@ daily_tasks = (
          'forex_data_1min_acquisition.py', 
          'forex_data_daily_acquisition.py',
          'stock_data_1min_acquisition.py',
-         'stock_data_daily_acquisition.py', 
+         'stock_data_daily_acquisition.py'
+         'reset_twitter.py',
+         'twitter_search_job.py' 
+         'news.py'
          )
 
 monthly_tasks = (         
@@ -19,6 +22,7 @@ monthly_tasks = (
          'earnings_acquisition.py', 
          'income_statement_acquisition.py',
          'overview_acquisition.py'
+
          )
 
 
@@ -36,4 +40,5 @@ for module in daily_tasks:
 for module in monthly_tasks:
     job = cron.add_monthly_task(module)
 
+cron.add_every_minute_task(15, 'twitter_status.py')
 cron.write()

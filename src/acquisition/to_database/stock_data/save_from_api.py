@@ -26,26 +26,25 @@ class SaveStockDataFromApi(SaveDataFromApi):
         return self._show_status
 
     @classmethod
-    def intraday_alphavantage(cls, frecuency, apikey, **kwargs):
+    def intraday_alphavantage(cls, frecuency, **kwargs):
         class_collector = cls.__get_intraday_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(frecuency=frecuency,
-                                                  apikey=apikey, **kwargs),
+                   data_collector=class_collector(frecuency=frecuency, **kwargs),
                    collection='stock_data_intraday')
 
     @classmethod
-    def extended_intraday_alphavantage(cls, frecuency, apikey, **kwargs):
+    def extended_intraday_alphavantage(cls, frecuency, **kwargs):
 
         return cls(api='alphavantage',
                    data_collector=extended_intraday_alphavantage.UpdateExtendedIntradayAlphaVantageMany(frecuency=frecuency,
-                                                                                                        apikey=apikey, **kwargs),
+                                                                                                        **kwargs),
                    collection='stock_data_intraday')
 
     @classmethod
-    def dailyadj_alphavantage(cls, apikey, **kwargs):
+    def dailyadj_alphavantage(cls, **kwargs):
         class_collector = cls.__get_dailyadj_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(apikey=apikey, **kwargs),
+                   data_collector=class_collector(**kwargs),
                    collection='stock_data_dailyadj')
 
     @classmethod

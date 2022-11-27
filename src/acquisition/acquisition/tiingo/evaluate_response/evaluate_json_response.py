@@ -9,7 +9,7 @@ class EvaluateJsonResponse:
         pass
 
     def __call__(self, response):
-        if isinstance(dict, response):
+        if isinstance(response, dict):
             self._check(response)
         elif isinstance(response, list):
             map(lambda resp: self._check(resp), response)

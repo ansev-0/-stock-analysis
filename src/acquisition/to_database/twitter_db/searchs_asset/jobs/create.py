@@ -26,15 +26,3 @@ class CreateNewJob(CronTwitterJob):
         ## write job
         #self._cron_tasks.write()
 
-from src.assets.database.find import FindAssetInDataBase
-assets = FindAssetInDataBase().many(False, {})
-from pymongo import MongoClient
-companies = MongoClient()['acquisition_orders']['stock_data_intraday'].find_one({'_id' : 'alphavantage'})['orders']
-create = CreateNewJob()
-for company in assets:
-    if company['label'] not in ('MSFT', 'GOOGL', 'GOOG', 'AMZN', 'AMD', 'NLFX', 'TWTR', 'FB', 'TSLA', 'NVDA', 'EBAY', 'ADSK'):
-        continue
-    if isinstance(company['name'], str):
-        create.one(dict_job={'word' : company['name'], 'since_id' : None, 'max_id' : None, 'factor_priority' : 900, 'status' : 'pending'})
-    if isinstance(company['label'], str):
-        create.one(dict_job={'word' : company['label'], 'since_id' : None, 'max_id' : None, 'factor_priority' : 900, 'status' : 'pending'})

@@ -3,7 +3,7 @@ from src.assets.asset import Asset
 
 class FindAssetInDataBase(AssetsDatabase):
 
-
+    
     def one(self, return_asset, *args, **kwargs):
         result = self._one(*args, **kwargs)
         if not isinstance(result, dict):
@@ -15,7 +15,6 @@ class FindAssetInDataBase(AssetsDatabase):
         output = [Asset(**self._filter_id(result)) 
                 for result in self._many(*args, **kwargs)]\
         if return_asset else self._many(*args, **kwargs)
-
         return output
 
     def find_label(self, label, return_asset, **kwargs):

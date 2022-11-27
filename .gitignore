@@ -30,4 +30,8 @@ twitter_app.json
 /example_tingo
 /filestore
 /twitter_analisys.ipynb
+*.ipynb
+airflow
+*.csv
+*.json
 

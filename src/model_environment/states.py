@@ -3,7 +3,6 @@ from src.model_environment.init_state import InitState
 
 
 class States:
-
     def __init__(self, time_values, init_n_stocks, init_money, commision, from_cache=False, done_rule='local_min'):
 
         #init

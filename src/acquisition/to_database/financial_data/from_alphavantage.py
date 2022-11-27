@@ -9,15 +9,6 @@ class UpdateFinancialFeatureAlphaVantage(metaclass=ABCMeta):
     '''
     This class is an interface to save the financial features data of  Alphavantage API
 
-    Parameters
-    ----------
-
-    apikey: str.
-        key of API Alphavantage.
-
-    new_database: str
-        valid parameters = 'create' and 'not create'
-
     '''
 
     _TYPES_DB = ('annual', 'quarterly')
@@ -30,6 +21,13 @@ class UpdateFinancialFeatureAlphaVantage(metaclass=ABCMeta):
         pass
 
     def __init__(self, new_database='create', **kwargs):
+        '''    
+        Parameters
+        ----------
+        new_database: str
+        valid parameters = 'create' and 'not create'
+        '''
+
         # Create connection to the database
         self._init_databases(new_database)
         # Create reader from AlphaVantage

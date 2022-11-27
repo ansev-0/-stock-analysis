@@ -109,10 +109,9 @@ class CausalWaveBlock:
 
 
 class CausalSimpleWaveBlock:
-    
+    KERNEL_SIZE = 2
     def __init__(self,
                  filters,
-                 kernel_size,
                  n_layers,
                  bias_regularizer=None,
                  kernel_regularizer=None):

@@ -8,7 +8,7 @@ from src.tools.path import get_financial_path
 class UpdateStatusFromAPI:
 
     _update_status = UpdateTwitterApiStatusDataBase()
-    folder = os.path.join(get_financial_path(), 'twitter_credentials')
+    folder = os.path.join(get_financial_path(), 'filestore', 'credentials', 'twitter')
 
     def __call__(self):
         for credentials in os.listdir(self.folder):

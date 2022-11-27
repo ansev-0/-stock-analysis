@@ -12,3 +12,8 @@ class TiingoToDBNews(TiingoToDB):
     distributor = NewsDistributor()
     evaluate_response = EvaluateJsonResponseNews()
     process_response = ProcessResponseNews()
+
+    def __call__(self, **params):
+        super().__call__(method='get_news', **params)
+
+

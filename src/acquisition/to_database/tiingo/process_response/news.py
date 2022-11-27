@@ -28,9 +28,9 @@ class ProcessResponseNews:
                 json_in['id'] : data_struct}
 
     def __call__(self, json_in):
-        return reduce(lambda result, func: func(result), 
+        return [reduce(lambda result, func: func(result), 
                       (self.rename_fields, self.change_type_fields, self.build_struct_to_db), 
-                      json_in)
+                      dict_) for dict_ in json_in]
 
     def filter_fields(self):
         pass

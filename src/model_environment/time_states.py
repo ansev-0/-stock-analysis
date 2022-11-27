@@ -6,10 +6,9 @@ import numpy as np
 class TimeStatesValues:
 
     def __init__(self, done_rule, time_data=None, from_cache=False):
-
-
         self._time_values = self._init_time_values(time_data, from_cache)
-        self._time_values_diff = np.concatenate(([np.nan], np.diff(self._time_values)))
+        self._time_values_diff = np.concatenate(([np.nan], 
+                                                 np.diff(self._time_values)))
         self._time_values_done = self._get_values_done(done_rule)
 
     @property
@@ -36,9 +35,7 @@ class TimeStatesValues:
             time_data = time_data[:-1]
         return self._time_values_input(time_data)
 
-
     def _time_values_input(self, time_data):
-
         if isinstance(time_data, np.ndarray):
             return time_data
         elif isinstance(time_data, pd.Series):

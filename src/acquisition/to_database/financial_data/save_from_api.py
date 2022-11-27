@@ -26,38 +26,38 @@ class SaveFinancialDataFromApi(SaveDataFromApi):
         return self._show_status
 
     @classmethod
-    def cash_flow_alphavantage(cls, apikey, **kwargs):
+    def cash_flow_alphavantage(cls, **kwargs):
         class_collector = cls.__get_cash_flow_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(apikey=apikey, **kwargs),
+                   data_collector=class_collector(**kwargs),
                    collection='cash_flow')
 
     @classmethod
-    def balance_sheet_alphavantage(cls,  apikey, **kwargs):
+    def balance_sheet_alphavantage(cls, **kwargs):
         class_collector = cls.__get_balance_sheet_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(apikey=apikey, **kwargs),
+                   data_collector=class_collector(**kwargs),
                    collection='balance_sheet')
 
     @classmethod
-    def overview_alphavantage(cls, apikey, **kwargs):
+    def overview_alphavantage(cls, **kwargs):
         class_collector = cls.__get_overview_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(apikey=apikey, **kwargs),
+                   data_collector=class_collector(**kwargs),
                    collection='overview')
 
     @classmethod
-    def income_statement_alphavantage(cls, apikey, **kwargs):
+    def income_statement_alphavantage(cls, **kwargs):
         class_collector = cls.__get_income_statement_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(apikey=apikey, **kwargs),
+                   data_collector=class_collector(**kwargs),
                    collection='income_statement')
 
     @classmethod
-    def earnings_alphavantage(cls, apikey, **kwargs):
+    def earnings_alphavantage(cls, **kwargs):
         class_collector = cls.__get_earnings_collector('alphavantage')
         return cls(api='alphavantage',
-                   data_collector=class_collector(apikey=apikey, **kwargs),
+                   data_collector=class_collector(**kwargs),
                    collection='earnings')
 
     @classmethod

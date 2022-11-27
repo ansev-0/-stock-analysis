@@ -67,7 +67,9 @@ class TrainAgentDoubleQlearning(LearnDoubleQlearning):
               validation_random=False,
               *args, 
               **kwargs):
-              
+        #import tensorflow as tf
+        #from tensorflow.compat.v1.keras.backend import set_session
+      
         config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
         config.log_device_placement = True  # to log device placement (on which device the operation ran)
