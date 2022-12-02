@@ -9,5 +9,3 @@ def get_stock_data_daily_alphavantage():
                                                       .save_reporting_errors(attemps=2))
     return 'Done func'
 
-#if __name__ == '__main__':
-#    get_stock_data_daily_alphavantage()

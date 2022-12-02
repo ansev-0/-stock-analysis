@@ -35,4 +35,5 @@ airflow
 *.csv
 *.json
 /Aspect-Based-Sentiment-Analysis
+/mock
 

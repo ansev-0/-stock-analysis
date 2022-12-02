@@ -114,3 +114,8 @@ class DataBaseJobsAcquisition(DataBase):
     '''
     This class is used to create data acquistion jobs.
     '''
+    
+class DataBasePublishInstagram(DataBase):
+    '''
+    This class is used to cregister post in Instagram.
+    '''

@@ -101,5 +101,5 @@ class UpdateExtendedIntradayAlphaVantageMany(UpdateExtendedIntradayAlphaVantage,
 #    l = [f'year{year}month{month}' for year in years for month in months]
 #    from src.acquisition.acquisition_orders.orders import AcquisitionOrders
 #    orders = AcquisitionOrders('stock_data_intraday').get_acquisition_api_orders('alphavantage')
-#    queries = [(order, rang) for order in orders for rang in l]
-#    UpdateExtendedIntradayAlphaVantageMany('1min').to_database_getting_errors(queries[:100])
+#    queries = [(order, rang) for rang in l for order in orders]
+#    UpdateExtendedIntradayAlphaVantageMany('1min').to_database_getting_errors(queries[500:])
