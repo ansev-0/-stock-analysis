@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np  
+from datetime import timedelta
+
     
 class CalculateDailyCloseChanges:
     
@@ -55,4 +57,11 @@ def filter_significative_changes(serie, threshold, incr):
     pos_neg_changes = SelectSignificativeChanges.from_dataframe_changes(changes.pct_changes,
                                                                         threshold,
                                                                         incr)(changes.pct_changes)
-    serie_incr = pd.concat(list(pos_neg_changes.values()))
+    serie_incr = pd.concat(list(pos_neg_changes.values())).rename('incr')
+    indices = [i for ind in serie_incr.index for i in ind]
+    if not indices:
+        return {}
+    min_indices = np.min(indices)
+    max_indices = np.max(indices)
+    min_indices = min_indices if (max_indices-min_indices) > timedelta(days=7) else max_indices - timedelta(days=7) 
+    return {'data' : serie.loc[min_indices: max_indices], 'incr': serie_incr}
