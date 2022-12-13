@@ -26,7 +26,7 @@ class NeedPublish:
         if data is None:
             return
         if (data.index.max() - end_time_window) >= self._time_threshold:
-            data_to_publish = self._filter_data(data['close'], threshold, incr)
+            data_to_publish = self._filter_data(data, threshold, incr)
             if not data_to_publish:
                 return 
             if np.max(data_to_publish['incr'].index.get_level_values(0)) > end_time_window:

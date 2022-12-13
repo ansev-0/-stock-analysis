@@ -52,7 +52,8 @@ class SelectSignificativeChanges:
                 'big_pos_changes' : table.where(table > self.threshold_pos).stack()}
     
     
-def filter_significative_changes(serie, threshold, incr):
+def filter_significative_changes(data, threshold, incr):
+    serie = data['close']
     changes = CalculateDailyCloseChanges(serie)
     pos_neg_changes = SelectSignificativeChanges.from_dataframe_changes(changes.pct_changes,
                                                                         threshold,
@@ -64,4 +65,5 @@ def filter_significative_changes(serie, threshold, incr):
     min_indices = np.min(indices)
     max_indices = np.max(indices)
     min_indices = min_indices if (max_indices-min_indices) > timedelta(days=7) else max_indices - timedelta(days=7) 
-    return {'data' : serie.loc[min_indices: max_indices], 'incr': serie_incr}
+    return {'data' : data.loc[min_indices: max_indices, ['open', 'low', 'high', 'close']],
+                              'incr': serie_incr}

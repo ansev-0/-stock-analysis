@@ -15,7 +15,7 @@ class MongoDBLocalConnector(DataBasePublishInstagram):
         start = start if isinstance(start, datetime) else datetime(1900, 1, 1)
         end = end if isinstance(end, datetime) else datetime.now()   
         for dict_items in request_result:
-            serie = pd.Series(dict_items['data'])
+            serie = pd.DataFrame(dict_items['data'])
             serie.index = pd.to_datetime(serie.index)
             yield serie.astype(float).loc[start:end]
 

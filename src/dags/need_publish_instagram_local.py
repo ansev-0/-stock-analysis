@@ -1,4 +1,4 @@
-from src.publish_instagram.need_publish.run_local import run_local_need_publish
+from src.publish_instagram.need_publish.local_need_publish import run_local_need_publish
 
 
 def run():
