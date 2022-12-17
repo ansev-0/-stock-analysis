@@ -12,7 +12,7 @@ class BuildImageFile:
         color_candlestick = self._infraestructure_data_connector.get_color_candlestick(**data)
         cand = Candlestick.from_dataframe(data['dataframe'], **color_candlestick)
         layout = self._infraestructure_data_connector.get_layout(data['name'])
-        fig = go.Figure([cand], layout=layout)
+        fig = go.Figure([cand], layout=dict(margin=dict(l=10, r=10, t=5, b=5)))
         fig.add_layout_image(
             dict(
                 source=icon,
@@ -23,5 +23,5 @@ class BuildImageFile:
             )
         )
         fig.update_layout(**layout)
-        path_local_iamge = self._infraestructure_data_connector.save_local_image(fig, data)
-        return path_local_iamge
+        path_local_image = self._infraestructure_data_connector.save_local_image(fig, data)
+        return path_local_image

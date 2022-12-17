@@ -22,4 +22,3 @@ class ImageInSequence(PublicationInPublicationSequence):
         
         super().__init__(url, product_tags)
         self.user_tags = user_tags
-        

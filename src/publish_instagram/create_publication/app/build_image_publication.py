@@ -11,6 +11,6 @@ class BuildImage:
         path_local_image = self._build_image(data['data_image'])
         url = self._http_saver_infraestructure(path_local_image)
         publication = image(url=url, caption=data['caption'])
-        self._infraestructure_save_publication.save(publication, path_local_image, data)
+        self._infraestructure_save_publication.save(publication, path_local_image, data['data_image'])
         return publication
         

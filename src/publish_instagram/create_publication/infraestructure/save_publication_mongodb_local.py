@@ -9,6 +9,6 @@ class SavePublicationMongoDBLocal(DataBasePublishInstagram):
     @DataBasePublishInstagram.try_and_wakeup
     def save(self, publication, path_local_image, data):
         return self._collection.update_one({'date': data['date'], 'name': data['name']},
-                                           {'status': 'publication_created', 
+                                           {"$set": {'status': 'publication_created', 
                                             'url': publication.url,
-                                            'path_local': path_local_image})
+                                            'path_local': path_local_image}})

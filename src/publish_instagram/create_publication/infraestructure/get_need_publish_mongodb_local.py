@@ -9,13 +9,7 @@ class GetAllNeedPublishMongoDBLocal(DataBasePublishInstagram):
     
     @DataBasePublishInstagram.try_and_wakeup
     def get(self, query):
-        cursor = self._collection.find(query, projection={'_id': 0,
-                                                          'date': 1, 
-                                                          'name': 1, 
-                                                          'data': 1, 
-                                                          'incr': 0,
-                                                          'status': 0, 
-                                                          'description': 1})
+        cursor = self._collection.find(query)
         #if cursor.count() == 0:
         #    return iter()
         
@@ -24,6 +18,6 @@ class GetAllNeedPublishMongoDBLocal(DataBasePublishInstagram):
             df.index = pd.to_datetime(df.index)
             yield {'data_image': {'dataframe': df, 
                                   'name': data['name'],
-                                  'caption': data['description'],
-                                  'date': data['date']}}
+                                  'date': data['date']},
+                   'caption': data['description']}
         

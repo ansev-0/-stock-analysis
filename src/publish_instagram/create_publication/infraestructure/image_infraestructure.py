@@ -40,9 +40,7 @@ class ImageInfraestructure(DataBasePublishInstagram):
         
     @DataBasePublishInstagram.try_and_wakeup
     def get_layout(self, name):
-        data = self._collection.find_one({'name': name}, 
-                                          projection={'layout': 1, 'large_name': 1,
-                                                      'name': 0, '_id': 0})
+        data = self._collection.find_one({'name': name})
         return self.build_layout(data['layout'], data['large_name'])
     
     @staticmethod
