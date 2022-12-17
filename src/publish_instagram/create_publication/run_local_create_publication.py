@@ -1,0 +1,13 @@
+from src.publish_instagram.create_publication.domain.create_publication import CreatePublication
+from src.publish_instagram.create_publication.app.build_image_file import BuildImageFile
+from src.publish_instagram.create_publication.app.build_image_publication import BuildImage
+from src.publish_instagram.create_publication.app.handler_data_publication import HandlerCreatePublicationApp
+from src.publish_instagram.create_publication.infraestructure.get_need_publish_mongodb_local import GetAllNeedPublishMongoDBLocal
+from src.publish_instagram.create_publication.infraestructure.http_saver_image import SaverImageHttp
+from src.publish_instagram.create_publication.infraestructure.image_infraestructure import ImageInfraestructure
+from src.publish_instagram.create_publication.infraestructure.save_publication_mongodb_local import SavePublicationMongoDBLocal
+
+
+
+def run_local_create_publication():
+    query = {'name': 'AAPL', 'status': 'added_description'}

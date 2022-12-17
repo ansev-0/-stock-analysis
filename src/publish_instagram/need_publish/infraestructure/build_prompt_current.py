@@ -2,9 +2,8 @@ from datetime import datetime
 import json
 import pandas as pd
 
-def build_prompt_current(data):
-    
-    df = pd.DataFrame(data)
+def build_prompt_current(data, **kwargs):
+    df = pd.DataFrame(data['data'])
     df.index = pd.to_datetime(df.index)
     name = data['name']
     data_s = data['data']

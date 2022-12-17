@@ -11,6 +11,6 @@ class PublishDescription(DataBasePublishInstagram):
         name = data['name']
         date = pd.to_datetime(pd.DataFrame(data['data']).index).max()
         return self._collection.update_one({"name": name, "date": date},
-                                           {'status': 'added_description',
-                                            'description': description})
+                                           {"$set": {'status': 'added_description',
+                                            'description': description}})
         

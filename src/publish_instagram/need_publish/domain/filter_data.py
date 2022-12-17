@@ -64,6 +64,6 @@ def filter_significative_changes(data, threshold, incr):
         return {}
     min_indices = np.min(indices)
     max_indices = np.max(indices)
-    min_indices = min_indices if (max_indices-min_indices) > timedelta(days=7) else max_indices - timedelta(days=7) 
+    min_indices = min_indices if (max_indices-min_indices) > timedelta(days=10) else max_indices - timedelta(days=10) 
     return {'data' : data.loc[min_indices: max_indices, ['open', 'low', 'high', 'close']],
                               'incr': serie_incr}

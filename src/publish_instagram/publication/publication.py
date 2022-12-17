@@ -1,12 +1,18 @@
 from abc import ABCMeta, abstractproperty
 
-class Publication(metaclass=ABCMeta):
+class CreatePublication:
+    
+    def __call__(self, builder_publication, data):
+        return builder_publication.build(self, data)
+
+class Publication(CreatePublication, metaclass=ABCMeta):
     
     @abstractproperty
     def url(self):
         pass
     
-class PublicationSequence(metaclass=ABCMeta):
+    
+class PublicationSequence(CreatePublication, metaclass=ABCMeta):
     
     @abstractproperty
     def caption(self):

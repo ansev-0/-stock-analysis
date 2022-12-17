@@ -1,5 +1,5 @@
-import os
 import json
+
 class GetCredentials:
     
     def __call__(self):

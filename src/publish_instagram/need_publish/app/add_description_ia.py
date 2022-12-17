@@ -7,7 +7,7 @@ class AddDescriptionIA:
     def describe(self, data):
         description = self.model_object.predict(data)
         if description != '':
-            return self.connector_need_publish.publish_description(description, data)
+            self.connector_need_publish.publish_description(description, data)
 
 
         

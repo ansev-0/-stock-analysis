@@ -17,5 +17,5 @@ def run_local_need_publish(names):
                                time_threshold)
     for name in names:
         print(name)
-        need_publish(name, timedelta(days=8), threshold=0.01)
+        need_publish(name, timedelta(days=8))
         
