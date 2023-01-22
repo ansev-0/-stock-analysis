@@ -8,3 +8,7 @@ def get_stock_1min_alphavantage():
             lambda *args: SaveStockDataFromApi.intraday_alphavantage(frecuency='1min')\
                                                   .save_reporting_errors(attemps=2))
     return 'Done func'
+
+#if __name__ == '__main__':
+#    get_stock_1min_alphavantage()
+    

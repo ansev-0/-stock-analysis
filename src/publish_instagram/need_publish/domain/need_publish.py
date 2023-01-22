@@ -14,7 +14,7 @@ class NeedPublish:
     def time_threshold(self):
         return self._time_threshold
         
-    def __call__(self, company, limit_time_window, threshold=0.05, incr=0.01):
+    def __call__(self, company, limit_time_window, threshold=0.07, incr=0.01):
         # last time published
         start_time_window, end_time_window = self._connector_published.last_time(company)
         if (datetime.now() - end_time_window) < self._time_threshold:

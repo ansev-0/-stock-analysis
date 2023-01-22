@@ -43,6 +43,11 @@ class ImageInfraestructure(DataBasePublishInstagram):
         data = self._collection.find_one({'name': name})
         return self.build_layout(data['layout'], data['large_name'])
     
+    @DataBasePublishInstagram.try_and_wakeup
+    def get_layout_icon(self, name):
+        data = self._collection.find_one({'name': name})
+        return data.get('layout_icon')
+    
     @staticmethod
     def build_layout(layout, real_name):
         layout['xaxis']['title'] = go.layout.xaxis.Title(**layout['xaxis']['title'])
